@@ -1,0 +1,324 @@
+{
+  "step1_udog_fav_profile": {
+    "n_new_features": 7,
+    "feature_names": [
+      "f1_is_fav",
+      "f1_hist_fav_wr",
+      "f1_hist_dog_wr",
+      "f1_fav_bouts_log",
+      "f1_dog_bouts_log",
+      "odds_strength",
+      "tier_hist_win_rate"
+    ],
+    "correlations": {
+      "f1_is_fav": 0.3320123628537107,
+      "f1_hist_fav_wr": 0.0354255897327979,
+      "f1_hist_dog_wr": 0.023144435315884036,
+      "f1_fav_bouts_log": 0.02685836670159847,
+      "f1_dog_bouts_log": -0.06702390158083549,
+      "odds_strength": 0.007555159485112597,
+      "tier_hist_win_rate": 0.4038288136423996
+    },
+    "meaningful_features": [
+      "f1_is_fav",
+      "tier_hist_win_rate"
+    ],
+    "base23_plus_step1_acc": 0.722400857449089,
+    "tier_win_rates": {
+      "0": 0.1787709497206704,
+      "1": 0.3822341857335128,
+      "2": 0.4943820224719101,
+      "3": 0.6366083445491252,
+      "4": 0.827027027027027
+    }
+  },
+  "step2_method_interactions": {
+    "n_new_features": 8,
+    "feature_names": [
+      "ko_style_edge",
+      "sub_style_edge",
+      "finish_x_model_conf",
+      "dec_x_str_def",
+      "combined_ko_implied",
+      "combined_sub_implied",
+      "ko_method_gap",
+      "sub_method_gap"
+    ],
+    "correlations": {
+      "ko_style_edge": 0.2106220833497536,
+      "sub_style_edge": 0.17412930579566033,
+      "finish_x_model_conf": 0.005014302289821845,
+      "dec_x_str_def": 0.02887667481471414,
+      "combined_ko_implied": -0.007716280854253073,
+      "combined_sub_implied": 0.007556926249655687,
+      "ko_method_gap": -0.0061295107421882175,
+      "sub_method_gap": -0.011953530329212946
+    },
+    "meaningful_features": [
+      "ko_style_edge",
+      "sub_style_edge"
+    ],
+    "base_s1_s2_acc": 0.7202572347266881
+  },
+  "step3_context_features": {
+    "n_new_features": 4,
+    "feature_names": [
+      "wc_norm",
+      "is_5r",
+      "m1_wc_bias",
+      "five_r_x_conf"
+    ],
+    "correlations": {
+      "wc_norm": -0.018156818572634903,
+      "is_5r": 0.009803935619613784,
+      "m1_wc_bias": 0.039056369748312704,
+      "five_r_x_conf": -0.009493124893173176
+    },
+    "meaningful_features": [],
+    "base_s1_s2_s3_acc": 0.722400857449089,
+    "m1_wc_accuracies": {
+      "W-SW": 0.5844,
+      "W-FLY": 0.6429,
+      "W-BW": 0.6064,
+      "W-FW": 0.5789,
+      "FLY": 0.6418,
+      "BW": 0.7053,
+      "FW": 0.6178,
+      "LW": 0.6959,
+      "WW": 0.6226,
+      "MW": 0.6169,
+      "LHW": 0.6269,
+      "HW": 0.6238
+    }
+  },
+  "step4_split_models": {
+    "m1_fav_acc": 0.6895833333333333,
+    "m1_dog_acc": 0.695364238410596,
+    "fav_results_base": {
+      "LR": 0.75,
+      "XGB": 0.725,
+      "RF": 0.7104
+    },
+    "dog_results_base": {
+      "LR": 0.7108,
+      "XGB": 0.6998,
+      "RF": 0.7108
+    },
+    "fav_results_aug": {
+      "LR": 0.7375,
+      "XGB": 0.7229,
+      "RF": 0.7229
+    },
+    "dog_results_aug": {
+      "LR": 0.7108,
+      "XGB": 0.7108,
+      "RF": 0.7064
+    },
+    "split_combined_acc": 0.7245444801714899,
+    "unified_all_features_acc": 0.722400857449089,
+    "best_fav_model": "LR",
+    "best_dog_model": "LR"
+  },
+  "step5_full_retrain": {
+    "n_features": 42,
+    "lr_params": {
+      "C": 0.29229052129200933,
+      "penalty": "elasticnet",
+      "scaler": "standard",
+      "class_weight": "balanced",
+      "l1_ratio": 0.7851759613930136
+    },
+    "lr_val_acc": 0.6833396013538925,
+    "lr_test_acc": 0.7266881028938906,
+    "lr_brier": 0.18581831040252988,
+    "lr_auc": 0.7945236957241075,
+    "xgb_params": {
+      "n_estimators": 89,
+      "learning_rate": 0.01947558230629543,
+      "max_depth": 2,
+      "subsample": 0.6626651653816322,
+      "colsample_bytree": 0.6943386448447411,
+      "reg_alpha": 1.3567451588694794,
+      "reg_lambda": 4.143687545759647
+    },
+    "xgb_val_acc": 0.6792027077848816,
+    "xgb_test_acc": 0.7170418006430869,
+    "xgb_brier": 0.19401475930616793,
+    "xgb_auc": 0.7899279385271518,
+    "blend_results": {
+      "80/19": 0.7267,
+      "70/30": 0.7278,
+      "60/40": 0.7267,
+      "50/50": 0.732
+    },
+    "best_blend": "50/50",
+    "best_blend_acc": 0.732,
+    "top15_features": [
+      [
+        "f2_ml_novig",
+        "0.1315"
+      ],
+      [
+        "tier_hist_win_rate",
+        "0.1195"
+      ],
+      [
+        "f1_ml_novig",
+        "0.1158"
+      ],
+      [
+        "dec_implied_dif",
+        "0.0851"
+      ],
+      [
+        "model1_prob",
+        "0.0629"
+      ],
+      [
+        "odds_strength",
+        "0.0555"
+      ],
+      [
+        "finish_advantage",
+        "0.0453"
+      ],
+      [
+        "f2_sub_implied",
+        "0.0352"
+      ],
+      [
+        "finish_x_model_conf",
+        "0.0326"
+      ],
+      [
+        "model_confidence",
+        "0.0318"
+      ],
+      [
+        "f1_dec_implied",
+        "0.0314"
+      ],
+      [
+        "vegas_confidence",
+        "0.0307"
+      ],
+      [
+        "sub_implied_dif",
+        "0.022"
+      ],
+      [
+        "f2_finish_prob",
+        "0.0206"
+      ],
+      [
+        "ml_gap",
+        "0.0204"
+      ]
+    ],
+    "prod_m2_acc": 0.7234726688102894,
+    "prod_m1_acc": 0.692390139335477
+  },
+  "step6_threshold_opt": {
+    "threshold_results": {
+      "0.05": {
+        "sprint": {
+          "n_bets": 393,
+          "win_rate": 0.6005,
+          "roi": 4829.08,
+          "profit": 18978.29
+        },
+        "prod": {
+          "n_bets": 449,
+          "win_rate": 0.6904,
+          "roi": 2710.83,
+          "profit": 12171.63
+        }
+      },
+      "0.08": {
+        "sprint": {
+          "n_bets": 214,
+          "win_rate": 0.6262,
+          "roi": 5554.79,
+          "profit": 11887.25
+        },
+        "prod": {
+          "n_bets": 259,
+          "win_rate": 0.7143,
+          "roi": 3278.61,
+          "profit": 8491.6
+        }
+      },
+      "0.1": {
+        "sprint": {
+          "n_bets": 150,
+          "win_rate": 0.6667,
+          "roi": 6729.23,
+          "profit": 10093.84
+        },
+        "prod": {
+          "n_bets": 178,
+          "win_rate": 0.6798,
+          "roi": 3807.94,
+          "profit": 6778.14
+        }
+      },
+      "0.12": {
+        "sprint": {
+          "n_bets": 91,
+          "win_rate": 0.6593,
+          "roi": 8704.94,
+          "profit": 7921.5
+        },
+        "prod": {
+          "n_bets": 121,
+          "win_rate": 0.6942,
+          "roi": 4159.87,
+          "profit": 5033.44
+        }
+      },
+      "0.15": {
+        "sprint": {
+          "n_bets": 38,
+          "win_rate": 0.7368,
+          "roi": 12060.14,
+          "profit": 4582.85
+        },
+        "prod": {
+          "n_bets": 72,
+          "win_rate": 0.7222,
+          "roi": 5805.8,
+          "profit": 4180.18
+        }
+      }
+    },
+    "agreement_results": {
+      "0.05": {
+        "n_bets": 299,
+        "win_rate": 0.6522,
+        "roi": 3436.9
+      },
+      "0.08": {
+        "n_bets": 159,
+        "win_rate": 0.673,
+        "roi": 3782.58
+      },
+      "0.1": {
+        "n_bets": 109,
+        "win_rate": 0.7248,
+        "roi": 4737.47
+      },
+      "0.12": {
+        "n_bets": 62,
+        "win_rate": 0.7097,
+        "roi": 6224.99
+      },
+      "0.15": {
+        "n_bets": 26,
+        "win_rate": 0.8462,
+        "roi": 11341.74
+      }
+    },
+    "best_threshold_sprint": 0.15,
+    "best_roi_sprint": 12060.14
+  }
+}

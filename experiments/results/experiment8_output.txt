@@ -1,0 +1,198 @@
+========================================================================
+UFC EXPERIMENT 8  —  2026-04-20T22:17:33.167870
+Data: career_fights_updated.csv + ufc_fighters_final_updated.csv
+Primary target: temporal accuracy > 0.7154
+========================================================================
+
+========================================================================
+STEP 1 — Feature engineering on clean data
+========================================================================
+  career_fights_updated: 49,953 rows
+  ufc-master:            7,177 rows
+  ufc_fighters_updated:  4,458 rows
+  Feature engineering done in 1.3s
+
+  Row counts:
+    Total master rows:         7,177
+    After date≥2018-01-01:       4,082
+    After 3+ UFC fights filter: 4,023
+    After NaN drop:            3,295
+    Training (2018-2023):      2,275
+    Test     (2024+):          1,020
+    Features available:        108/108
+
+========================================================================
+STEP 2 — Baseline retrain (same hyperparams, new data)
+========================================================================
+  baseline_LR                                                   t=0.7137  r=0.6601  feats=108  2s
+  baseline_XGB                                                  t=0.6794  r=0.6555  feats=108  2s
+  baseline_LR90_XGB10                                           t=0.7167  r=0.0000  feats=108  0s  *** NEW BEST ***
+
+  Previous best (old data):  0.7154
+  Baseline blend (new data): 0.7167  (delta: +0.0013)
+
+========================================================================
+STEP 3 — LR Optuna (100 trials, temporal objective)
+========================================================================
+  Best LR temporal: 0.7186
+  Params: {'penalty': 'l2', 'C': 0.3178669534749141, 'scaler': 'robust', 'solver': 'liblinear'}
+  LR_tuned_100trials                                            t=0.7186  r=0.6737  feats=108  211s  *** NEW BEST ***
+
+========================================================================
+STEP 4 — XGBoost Optuna (50 trials, temporal objective)
+========================================================================
+  Best XGB temporal: 0.7069
+  Params: {'n_estimators': 588, 'learning_rate': 0.017001754132211097, 'max_depth': 3, 'subsample': 0.7301321323053057, 'colsample_bytree': 0.7554709158757927, 'min_child_weight': 3, 'gamma': 1.6574750183038587, 'reg_alpha': 0.7135066533871786}
+  XGB_tuned_50trials                                            t=0.7069  r=0.6677  feats=108  36s
+
+========================================================================
+STEP 5 — Blend ratio sweep (tuned LR + tuned XGB)
+========================================================================
+  blend_LR100_XGB0                                              t=0.7186  r=0.0000  feats=108  0s
+  blend_LR95_XGB5                                               t=0.7167  r=0.0000  feats=108  0s
+  blend_LR90_XGB9                                               t=0.7176  r=0.0000  feats=108  0s
+  blend_LR85_XGB15                                              t=0.7206  r=0.0000  feats=108  0s  *** NEW BEST ***
+  blend_LR80_XGB19                                              t=0.7206  r=0.0000  feats=108  0s
+  blend_LR70_XGB30                                              t=0.7206  r=0.0000  feats=108  0s
+
+========================================================================
+STEP 6 — CatBoost Optuna (50 trials)
+========================================================================
+  Best CatBoost temporal: 0.7039
+  Params: {'iterations': 595, 'learning_rate': 0.013855639219700842, 'depth': 5, 'l2_leaf_reg': 5.639653264198497}
+  CatBoost_tuned_50trials                                       t=0.7039  r=0.6677  feats=108  102s
+  blend_LR85_CB15                                               t=0.7167  r=0.0000  feats=108  102s
+  blend_LR90_CB10                                               t=0.7167  r=0.0000  feats=108  102s
+
+========================================================================
+STEP 7 — LightGBM Optuna (50 trials)
+========================================================================
+  Best LightGBM temporal: 0.6990
+  Params: {'n_estimators': 625, 'learning_rate': 0.0138170840215538, 'max_depth': 5, 'num_leaves': 74, 'subsample': 0.8735399960684637, 'colsample_bytree': 0.958296002421506, 'reg_alpha': 0.7869112201147377, 'reg_lambda': 0.834403474839225}
+  LGB_tuned_50trials                                            t=0.6990  r=0.6601  feats=108  34s
+  blend_LR85_LGB15                                              t=0.7186  r=0.0000  feats=108  34s
+  blend_LR90_LGB10                                              t=0.7167  r=0.0000  feats=108  34s
+
+========================================================================
+SAVING BEST MODEL
+========================================================================
+  [save] Saved to model/ufc_model_best.pkl + model/model_metadata.json
+
+========================================================================
+ALL RESULTS (ranked by temporal accuracy):
+========================================================================
+  Config                                                        Temporal    Random  Feats
+  ----------------------------------------------------------------------------------------
+  blend_LR85_XGB15                                              0.7206    0.0000    108
+  blend_LR80_XGB19                                              0.7206    0.0000    108
+  blend_LR70_XGB30                                              0.7206    0.0000    108
+  LR_tuned_100trials                                            0.7186    0.6737    108
+  blend_LR100_XGB0                                              0.7186    0.0000    108
+  blend_LR85_LGB15                                              0.7186    0.0000    108
+  blend_LR90_XGB9                                               0.7176    0.0000    108
+  baseline_LR90_XGB10                                           0.7167    0.0000    108
+  blend_LR95_XGB5                                               0.7167    0.0000    108
+  blend_LR85_CB15                                               0.7167    0.0000    108
+  blend_LR90_CB10                                               0.7167    0.0000    108
+  blend_LR90_LGB10                                              0.7167    0.0000    108
+  baseline_LR                                                   0.7137    0.6601    108
+  XGB_tuned_50trials                                            0.7069    0.6677    108
+  CatBoost_tuned_50trials                                       0.7039    0.6677    108
+  LGB_tuned_50trials                                            0.6990    0.6601    108
+  baseline_XGB                                                  0.6794    0.6555    108
+
+========================================
+RETRAINING — FINAL SUMMARY
+========================================
+Data: career_fights_updated.csv (49,953 rows)
+Filter: date≥2018-01-01, 3+ UFC fights
+Training rows: 2275 | Test rows (2024+): 1020
+
+BASELINE (same hyperparams, new data):
+  LR:              temporal 0.7137 | random 0.6601
+  XGBoost:         temporal 0.6794 | random 0.6555
+  90/10 blend:     temporal 0.7167 | random 0.0000
+  vs old baseline: +0.0013 (+0.13% pts)
+
+TUNED RESULTS (ranked by temporal):
+  Config                                    Temporal     Random
+  --------------------------------------------------------------
+  blend_LR85_XGB15                          0.7206    0.0000
+  blend_LR80_XGB19                          0.7206    0.0000
+  blend_LR70_XGB30                          0.7206    0.0000
+  LR_tuned_100trials                        0.7186    0.6737
+  blend_LR100_XGB0                          0.7186    0.0000
+  blend_LR85_LGB15                          0.7186    0.0000
+  blend_LR90_XGB9                           0.7176    0.0000
+  baseline_LR90_XGB10                       0.7167    0.0000
+  blend_LR95_XGB5                           0.7167    0.0000
+  blend_LR85_CB15                           0.7167    0.0000
+  blend_LR90_CB10                           0.7167    0.0000
+  blend_LR90_LGB10                          0.7167    0.0000
+  baseline_LR                               0.7137    0.6601
+  XGB_tuned_50trials                        0.7069    0.6677
+  CatBoost_tuned_50trials                   0.7039    0.6677
+  LGB_tuned_50trials                        0.6990    0.6601
+  baseline_XGB                              0.6794    0.6555
+
+Best config: blend_LR85_XGB15
+Best temporal accuracy: 0.7206
+vs previous best (71.54%): +0.0052
+
+LR hyperparams:  penalty=l2, C=0.31787, l1_ratio=N/A, scaler=robust, solver=liblinear
+XGB hyperparams: n_est=588, lr=0.0170, max_depth=3
+
+Files saved:
+  ✓ model/ufc_model_best.pkl
+  ✓ model/ufc_model_xgb.pkl
+  ✓ model/feature_columns_best.pkl
+  ✓ model/model_metadata.json
+========================================
+
+========================================
+RETRAINING — FINAL SUMMARY
+========================================
+Data: career_fights_updated.csv (49,953 rows)
+Filter: date≥2018-01-01, 3+ UFC fights
+Training rows: 2275 | Test rows (2024+): 1020
+
+BASELINE (same hyperparams, new data):
+  LR:              temporal 71.37% | random 66.01%
+  XGBoost:         temporal 67.94% | random 65.55%
+  90/10 blend:     temporal 71.67% | random 0.00%
+  vs old baseline: +0.13% (data fix impact)
+
+TUNED RESULTS (ranked by temporal):
+  Config                                    Temporal     Random
+  --------------------------------------------------------------
+  blend_LR85_XGB15                          72.06%    0.00%
+  blend_LR80_XGB19                          72.06%    0.00%
+  blend_LR70_XGB30                          72.06%    0.00%
+  LR_tuned_100trials                        71.86%    67.37%
+  blend_LR100_XGB0                          71.86%    0.00%
+  blend_LR85_LGB15                          71.86%    0.00%
+  blend_LR90_XGB9                           71.76%    0.00%
+  baseline_LR90_XGB10                       71.67%    0.00%
+  blend_LR95_XGB5                           71.67%    0.00%
+  blend_LR85_CB15                           71.67%    0.00%
+  blend_LR90_CB10                           71.67%    0.00%
+  blend_LR90_LGB10                          71.67%    0.00%
+  baseline_LR                               71.37%    66.01%
+  XGB_tuned_50trials                        70.69%    66.77%
+  CatBoost_tuned_50trials                   70.39%    66.77%
+  LGB_tuned_50trials                        69.90%    66.01%
+  baseline_XGB                              67.94%    65.55%
+
+Best config: blend_LR85_XGB15
+Best temporal accuracy: 72.06%
+vs previous best (71.54%): +0.52%
+
+LR hyperparams: penalty=l2, C=0.31787, l1_ratio=N/A, scaler=robust, solver=liblinear
+XGB hyperparams: n_est=588, lr=0.0170, max_depth=3
+
+Files saved:
+  ✓ model/ufc_model_best.pkl
+  ✓ model/ufc_model_xgb.pkl
+  ✓ model/feature_columns_best.pkl
+  ✓ model/model_metadata.json
+========================================

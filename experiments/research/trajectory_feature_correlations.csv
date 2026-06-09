@@ -1,0 +1,8 @@
+feature,R_corr,B_corr,diff_corr
+fights_since_finish,-0.0654,0.0425,-0.0799
+win_rate_l5_vs_career,0.0908,-0.0558,0.1054
+finish_rate_trend,0.044,-0.031,0.0532
+longest_lose_streak_ever,-0.1231,0.0794,-0.1494
+comeback_flag,-0.0873,0.0642,-0.109
+avg_fights_between_losses,,,
+age_at_fight,-0.153,0.113,-0.2052

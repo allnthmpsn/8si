@@ -1,0 +1,118 @@
+Loaded feature_columns_best.pkl: 114 features
+LR params: penalty=l2, C=0.00711, scaler=robust, solver=liblinear
+XGB params: n_est=708, lr=0.0236, depth=4
+========================================================================
+UFC EXPERIMENT 12  —  2026-04-21T14:22:30.417970
+Experiments: A (quality-weighted K variants) + B (retune if A wins)
+Baseline: 0.7324 temporal (K=48 fixed)
+========================================================================
+
+STEP 1 — Feature engineering
+  career_fights_updated: 49,953 rows
+  Feature engineering done in 1.4s
+  Base rows — train: 2275 | test: 1020
+
+========================================================================
+EXPERIMENT A — QUALITY-WEIGHTED K VARIANTS
+========================================================================
+
+  A1 — sqrt scaling
+  A1 — sqrt scaling                                     t=0.7324  r=0.7071  feats=114  3s
+
+  A2 — linear
+  A2 — linear                                           t=0.7294  r=0.7041  feats=114  3s
+
+  A3 — log
+  A3 — log                                              t=0.7324  r=0.7056  feats=114  3s
+
+  A4 — clipped linear
+  A4 — clipped linear                                   t=0.7294  r=0.7041  feats=114  3s
+
+  A5 — Exponent sweep (sqrt variant)
+  A5 — sqrt exp=0.25                                    t=0.7314  r=0.7056  feats=114  3s
+    exp=0.25  t=0.7314  3s
+  A5 — sqrt exp=0.33                                    t=0.7314  r=0.7056  feats=114  3s
+    exp=0.33  t=0.7314  3s
+    exp=0.50  t=0.7324  (reused A1)
+  A5 — sqrt exp=0.67                                    t=0.7324  r=0.7041  feats=114  3s
+    exp=0.67  t=0.7324  3s
+  A5 — sqrt exp=0.75                                    t=0.7324  r=0.7071  feats=114  3s
+    exp=0.75  t=0.7324  3s
+    exp=1.00  t=0.7294  (reused A2)
+
+  Best A variant: A1 — sqrt scaling (temporal=0.7324)
+
+========================================================================
+EXPERIMENT B — LR RETUNE ON BEST VARIANT
+========================================================================
+  Skipped — best A (0.7324) does not beat baseline (0.7324)
+
+========================================================================
+SAVING BEST MODEL
+========================================================================
+  [save] No improvement — original files unchanged
+
+========================================
+EXPERIMENT 12 — OPPONENT-QUALITY ELO
+========================================
+Baseline: 73.24% temporal (K=48 fixed)
+
+EXPERIMENT A — QUALITY-WEIGHTED K VARIANTS:
+  Variant                Temporal    Random  elo_dif corr
+  -------------------    --------    ------  ------------
+  A1 — sqrt scaling        73.24%    70.71%        0.1906
+  A2 — linear              72.94%    70.41%        0.1949
+  A3 — log                 73.24%    70.56%        0.1888
+  A4 — clipped linear      72.94%    70.41%        0.1949
+
+  A5 — exponent sweep (sqrt variant):
+    exp=0.25   73.14%
+    exp=0.33   73.14%
+    exp=0.50   73.24%  (A1 baseline)
+    exp=0.67   73.24%
+    exp=0.75   73.24%
+    exp=1.00   72.94%  (= A2 linear)
+
+  Best variant: A1 — sqrt scaling (temporal: 73.24%)
+
+EXPERIMENT B — RETUNE ON BEST VARIANT:
+  Ran: No — best A (73.24%) did not beat 73.24%
+
+BEST RESULT: 73.24% (config: A1 — sqrt scaling)
+vs baseline: -0.00%
+
+Saved: ✗ models  ✗ elo  ✗ metadata
+========================================
+
+
+========================================
+EXPERIMENT 12 — OPPONENT-QUALITY ELO
+========================================
+Baseline: 73.24% temporal (K=48 fixed)
+
+EXPERIMENT A — QUALITY-WEIGHTED K VARIANTS:
+  Variant                Temporal    Random  elo_dif corr
+  -------------------    --------    ------  ------------
+  A1 — sqrt scaling        73.24%    70.71%        0.1906
+  A2 — linear              72.94%    70.41%        0.1949
+  A3 — log                 73.24%    70.56%        0.1888
+  A4 — clipped linear      72.94%    70.41%        0.1949
+
+  A5 — exponent sweep (sqrt variant):
+    exp=0.25   73.14%
+    exp=0.33   73.14%
+    exp=0.50   73.24%  (A1 baseline)
+    exp=0.67   73.24%
+    exp=0.75   73.24%
+    exp=1.00   72.94%  (= A2 linear)
+
+  Best variant: A1 — sqrt scaling (temporal: 73.24%)
+
+EXPERIMENT B — RETUNE ON BEST VARIANT:
+  Ran: No — best A (73.24%) did not beat 73.24%
+
+BEST RESULT: 73.24% (config: A1 — sqrt scaling)
+vs baseline: -0.00%
+
+Saved: ✗ models  ✗ elo  ✗ metadata
+========================================

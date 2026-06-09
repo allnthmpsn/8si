@@ -1,0 +1,160 @@
+[23:15:09] ====================================================================
+[23:15:09] UFC EXPERIMENT 2 – Sequential, crash-safe
+[23:15:09] ====================================================================
+[23:15:09] 
+[1/5] Loading data …
+[23:15:09]   ufc-master      : 7,177 rows
+[23:15:09]   career_fights   : 48,144 rows  2,231 fighters
+[23:15:09]   fighters        : 4,455 rows
+[23:15:09]   training_data   : 4,704 rows
+[23:15:09] 
+[2/5] Engineering features …
+[23:15:09]   Joining career features (R) …
+[23:15:09]   Joining career features (B) …
+[23:15:09]   UFC after career join: (7177, 136)
+[23:15:09]   UFC after style join: (7224, 156)
+[23:15:09]   UFC after training_data join: (7224, 168)
+[23:15:09]   Final UFC shape  : (7216, 208)  |  Red wins: 0.578
+[23:15:09] 
+[3/5] Feature group grid search …
+[23:15:09]   date≥2015 mf=2 feats=base               train=5,632 test=705 acc=0.5872
+[23:15:10]   date≥2015 mf=2 feats=base+career        train=5,632 test=705 acc=0.5858
+[23:15:10]   date≥2015 mf=2 feats=base+career+ufc    train=5,632 test=705 acc=0.6199
+[23:15:10]   date≥2015 mf=2 feats=all                train=4,890 test=612 acc=0.6487
+[23:15:11]   date≥2015 mf=3 feats=base               train=4,532 test=567 acc=0.6173
+[23:15:11]   date≥2015 mf=3 feats=base+career        train=4,532 test=567 acc=0.5961
+[23:15:11]   date≥2015 mf=3 feats=base+career+ufc    train=4,532 test=567 acc=0.6384
+[23:15:11]   date≥2015 mf=3 feats=all                train=4,052 test=507 acc=0.6647
+[23:15:12]   date≥2016 mf=2 feats=base               train=5,216 test=653 acc=0.6233
+[23:15:12]   date≥2016 mf=2 feats=base+career        train=5,216 test=653 acc=0.6340
+[23:15:12]   date≥2016 mf=2 feats=base+career+ufc    train=5,216 test=653 acc=0.6554
+[23:15:13]   date≥2016 mf=2 feats=all                train=4,766 test=596 acc=0.6661
+[23:15:13]   date≥2016 mf=3 feats=base               train=4,224 test=529 acc=0.6068
+[23:15:13]   date≥2016 mf=3 feats=base+career        train=4,224 test=529 acc=0.6257
+[23:15:13]   date≥2016 mf=3 feats=base+career+ufc    train=4,224 test=529 acc=0.6125
+[23:15:14]   date≥2016 mf=3 feats=all                train=3,952 test=494 acc=0.6235
+[23:15:14] 
+  ✓ Best grid: date≥2016 mf=2 feats=all acc=0.6661
+[23:15:14]   Working split → train=4,766 test=596 features=103
+[23:15:14] 
+[3b/5] Feature-addition experiment (XGBoost, no tuning) …
+[23:15:14]   Baseline (base_32): 0.6233
+[23:15:14]   + career features              acc=0.6340  Δ=+0.0107  ✓ HELPED
+[23:15:15]   + UFC extras                   acc=0.6554  Δ=+0.0214  ✓ HELPED
+[23:15:15]   + style features               acc=0.6672  Δ=+0.0118  ✓ HELPED
+[23:15:15]   + age prime                    acc=0.6656  Δ=-0.0016  ≈ neutral
+[23:15:16]   + training_data                acc=0.6577  Δ=-0.0095  ✗ HURT
+[23:15:16] 
+  Best cumulative feature set: 85 features  acc=0.6672
+[23:15:16]   Final split → train=5,048 test=631 features=85
+[23:15:16] 
+[4/5] Tuning models (20 Optuna trials each, sequential) …
+[23:15:16] 
+  ── XGBoost ──
+[23:15:31]   XGBoost → 0.6846
+[23:15:31]   ★ NEW BEST 0.6846 (XGBoost) → saved to model/
+[23:15:31] 
+  ── LightGBM ──
+[23:15:53]   LightGBM → 0.6815
+[23:15:53] 
+  ── CatBoost ──
+[23:16:09]   CatBoost → 0.6894
+[23:16:09]   ★ NEW BEST 0.6894 (CatBoost) → saved to model/
+[23:16:09] 
+  ── RandomForest ──
+[23:16:15]   RandomForest → 0.6735
+[23:16:15] 
+  ── Voting Ensemble (top 3) ──
+[23:16:15]   Using: ['CatBoost', 'XGBoost', 'LightGBM']
+[23:16:18]   Voting Ensemble → 0.6815
+[23:16:18] 
+[5/5] Final results …
+[23:16:18] 
+====================================================================
+[23:16:18] MODEL COMPARISON  (clean test set)
+[23:16:18] ====================================================================
+[23:16:18]   Model                      Acc    Prec     Rec
+[23:16:18]   ---------------------------------------------
+[23:16:18]   CatBoost                0.6894  0.7227  0.7061
+[23:16:18]   XGBoost                 0.6846  0.7164  0.7061
+[23:16:18]   LightGBM                0.6815  0.7173  0.6945
+[23:16:18]   VotingEnsemble          0.6815  0.7135  0.7032
+[23:16:18]   RandomForest            0.6735  0.7183  0.6686
+[23:16:18] 
+  Overall best: 0.6894 → model/ufc_model.pkl
+[23:16:18] 
+Classification Report (best model on clean test set):
+[23:16:18]                precision    recall  f1-score   support
+
+Blue wins (0)       0.65      0.67      0.66       284
+ Red wins (1)       0.72      0.71      0.71       347
+
+     accuracy                           0.69       631
+    macro avg       0.69      0.69      0.69       631
+ weighted avg       0.69      0.69      0.69       631
+
+[23:16:18] Feature Importances (XGBoost, top 25):
+[23:16:18]   career_win_rate_dif                           0.0206  █████
+[23:16:18]   SLpM_dif                                      0.0187  ████
+[23:16:18]   SApM_dif                                      0.0165  ████
+[23:16:18]   B_age                                         0.0149  ███
+[23:16:18]   td_dif                                        0.0145  ███
+[23:16:18]   R_age                                         0.0145  ███
+[23:16:18]   win_streak_dif                                0.0144  ███
+[23:16:18]   Str_Def_dif                                   0.0144  ███
+[23:16:18]   total_losses_dif                              0.0140  ███
+[23:16:18]   B_avg_SIG_STR_pct                             0.0134  ███
+[23:16:18]   TD_Def_dif                                    0.0134  ███
+[23:16:18]   R_avg_SIG_STR_pct                             0.0133  ███
+[23:16:18]   R_s_TD_Avg                                    0.0132  ███
+[23:16:18]   B_s_SApM                                      0.0130  ███
+[23:16:18]   R_s_SApM                                      0.0130  ███
+[23:16:18]   TD_Avg_dif                                    0.0129  ███
+[23:16:18]   B_s_SLpM                                      0.0128  ███
+[23:16:18]   R_s_SLpM                                      0.0127  ███
+[23:16:18]   B_losses                                      0.0126  ███
+[23:16:18]   B_s_TD_Avg                                    0.0125  ███
+[23:16:18]   R_s_TD_Def                                    0.0124  ███
+[23:16:18]   win_dif                                       0.0124  ███
+[23:16:18]   lose_streak_dif                               0.0123  ███
+[23:16:18]   B_s_TD_Def                                    0.0123  ███
+[23:16:18]   B_avg_TD_pct                                  0.0123  ███
+[23:16:18] 
+Bottom 10 (least useful):
+[23:16:18]   B_pre_ufc_losses                              0.0108
+[23:16:18]   total_wins_dif                                0.0108
+[23:16:18]   southpaw_clash                                0.0107
+[23:16:18]   B_Height_cms                                  0.0106
+[23:16:18]   B_s_is_southpaw                               0.0104
+[23:16:18]   R_s_is_southpaw                               0.0104
+[23:16:18]   R_c_last5_won                                 0.0090
+[23:16:18]   times_finished_dif                            0.0000
+[23:16:18]   B_times_finished                              0.0000
+[23:16:18]   R_times_finished                              0.0000
+[23:16:18] 
+Best model hyperparameters:
+[23:16:18]   Model: CatBoost
+[23:16:18]   iterations = 420
+[23:16:18]   learning_rate = 0.10015392353697065
+[23:16:18]   depth = 4
+[23:16:18]   l2_leaf_reg = 12.72775204918682
+[23:16:18]   border_count = 128
+[23:16:18] 
+====================================================================
+[23:16:18] SUMMARY
+[23:16:18] ====================================================================
+[23:16:18]   Best accuracy        : 0.6894
+[23:16:18]   Best model           : CatBoost
+[23:16:18]   Feature set          : all
+[23:16:18]   Date cutoff          : 2016
+[23:16:18]   Min UFC fights       : 2
+[23:16:18]   # features used      : 85
+[23:16:18]   Train size           : 5,048  (incl. augmented flips)
+[23:16:18]   Test size            : 631  (clean, unaugmented)
+[23:16:18]   Red-win rate in test : 0.550
+[23:16:18]   Lift over naive      : +0.1395
+[23:16:18] 
+  Saved → model/ufc_model.pkl  +  model/feature_columns.pkl
+[23:16:18] 
+Finished: 2026-04-19 23:16:18
+[23:16:18] ====================================================================

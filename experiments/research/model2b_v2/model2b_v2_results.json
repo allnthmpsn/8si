@@ -1,0 +1,278 @@
+{
+  "model_type": "M2B_V2_ensemble_LR_RF_XGB_equal",
+  "best_ensemble": "ens_333",
+  "blend_ratio": "1/3 LR (isotonic) + 1/3 RF + 1/3 XGB",
+  "n_features": 20,
+  "features": [
+    "gap_size",
+    "gap_zone",
+    "gap_direction",
+    "m1_prob",
+    "m2a_prob",
+    "m1_confidence",
+    "m2a_confidence",
+    "m1_m2a_agree",
+    "vegas_agree",
+    "triple_agree",
+    "odds_tier",
+    "weight_class_ord",
+    "is_5round",
+    "vig",
+    "closing_odds",
+    "gap_signed",
+    "m1_conviction",
+    "m2a_conviction",
+    "conviction_product",
+    "conviction_gap"
+  ],
+  "test_acc": 0.7077,
+  "brier": 0.1961,
+  "promoted": false,
+  "failed_criteria": [
+    "brier_pass",
+    "split_cal_pass"
+  ],
+  "criteria": {
+    "acc_pass": true,
+    "brier_pass": false,
+    "counter_cal_pass": true,
+    "split_cal_pass": false,
+    "gap_sign_pass": true
+  },
+  "model_comparison": {
+    "lr": {
+      "cv_mean": 0.7652,
+      "cv_std": 0.0221,
+      "test_acc": 0.7051,
+      "brier": 0.2013
+    },
+    "rf": {
+      "cv_mean": 0.7638,
+      "cv_std": 0.0272,
+      "test_acc": 0.7014,
+      "brier": 0.1944
+    },
+    "xgb": {
+      "cv_mean": 0.7638,
+      "cv_std": 0.025,
+      "test_acc": 0.7051,
+      "brier": 0.1957
+    },
+    "ens_5050": {
+      "test_acc": 0.7051,
+      "brier": 0.1976
+    },
+    "ens_333": {
+      "test_acc": 0.7077,
+      "brier": 0.1961
+    },
+    "prod_m2b": {
+      "test_acc": 0.7051,
+      "brier": 0.1943
+    }
+  },
+  "xgb_best_params": {
+    "n_estimators": 321,
+    "learning_rate": 0.0147,
+    "max_depth": 2,
+    "min_child_weight": 11,
+    "subsample": 0.6637,
+    "colsample_bytree": 0.7182,
+    "reg_alpha": 0.8187,
+    "reg_lambda": 1.9501,
+    "random_state": 42,
+    "n_jobs": 1
+  },
+  "new_feature_corrs": {
+    "gap_signed": 0.2489,
+    "m1_conviction": 0.3106,
+    "m2a_conviction": 0.2877,
+    "conviction_product": 0.3083,
+    "conviction_gap": -0.1247,
+    "gap_size": 0.0226,
+    "m1_m2a_agree": 0.3176
+  },
+  "xgb_top15_features": [
+    {
+      "feature": "m1_m2a_agree",
+      "importance": 0.1518,
+      "rank": 1
+    },
+    {
+      "feature": "conviction_product",
+      "importance": 0.1485,
+      "rank": 2
+    },
+    {
+      "feature": "gap_direction",
+      "importance": 0.0957,
+      "rank": 3
+    },
+    {
+      "feature": "m1_confidence",
+      "importance": 0.0888,
+      "rank": 4
+    },
+    {
+      "feature": "triple_agree",
+      "importance": 0.0825,
+      "rank": 5
+    },
+    {
+      "feature": "m1_conviction",
+      "importance": 0.069,
+      "rank": 6
+    },
+    {
+      "feature": "m2a_conviction",
+      "importance": 0.0541,
+      "rank": 7
+    },
+    {
+      "feature": "gap_signed",
+      "importance": 0.0524,
+      "rank": 8
+    },
+    {
+      "feature": "vegas_agree",
+      "importance": 0.0377,
+      "rank": 9
+    },
+    {
+      "feature": "m2a_confidence",
+      "importance": 0.0295,
+      "rank": 10
+    },
+    {
+      "feature": "gap_zone",
+      "importance": 0.0238,
+      "rank": 11
+    },
+    {
+      "feature": "closing_odds",
+      "importance": 0.0228,
+      "rank": 12
+    },
+    {
+      "feature": "conviction_gap",
+      "importance": 0.0216,
+      "rank": 13
+    },
+    {
+      "feature": "gap_size",
+      "importance": 0.0213,
+      "rank": 14
+    },
+    {
+      "feature": "m2a_prob",
+      "importance": 0.0211,
+      "rank": 15
+    }
+  ],
+  "gap_signed_rank": 8,
+  "gap_size_rank": 14,
+  "gap_signed_validates": true,
+  "calibration_by_zone_test": [
+    {
+      "zone": 0,
+      "n": 114,
+      "avg_pred": 0.748,
+      "actual_wr": 0.728,
+      "diff": 0.02
+    },
+    {
+      "zone": 1,
+      "n": 103,
+      "avg_pred": 0.752,
+      "actual_wr": 0.66,
+      "diff": 0.091
+    },
+    {
+      "zone": 2,
+      "n": 103,
+      "avg_pred": 0.752,
+      "actual_wr": 0.728,
+      "diff": 0.024
+    },
+    {
+      "zone": 3,
+      "n": 147,
+      "avg_pred": 0.763,
+      "actual_wr": 0.741,
+      "diff": 0.021
+    },
+    {
+      "zone": 4,
+      "n": 169,
+      "avg_pred": 0.73,
+      "actual_wr": 0.74,
+      "diff": -0.01
+    },
+    {
+      "zone": 5,
+      "n": 51,
+      "avg_pred": 0.717,
+      "actual_wr": 0.725,
+      "diff": -0.009
+    },
+    {
+      "zone": 6,
+      "n": 110,
+      "avg_pred": 0.685,
+      "actual_wr": 0.7,
+      "diff": -0.015
+    }
+  ],
+  "calibration_mae_by_type": {
+    "CONFIRM": {
+      "raw_mae": 0.2982,
+      "calib_mae": 0.1057
+    },
+    "COUNTER": {
+      "raw_mae": 0.3288,
+      "calib_mae": 0.0528
+    },
+    "SPLIT": {
+      "raw_mae": 0.5019,
+      "calib_mae": 0.1988
+    }
+  },
+  "agreement_type_preds": {
+    "CONFIRM": {
+      "n": 409,
+      "mean_pred": 0.842,
+      "actual_wr": 0.77
+    },
+    "COUNTER": {
+      "n": 246,
+      "mean_pred": 0.766,
+      "actual_wr": 0.752
+    },
+    "SPLIT": {
+      "n": 142,
+      "mean_pred": 0.384,
+      "actual_wr": 0.521
+    }
+  },
+  "permutation_importance_by_type": {
+    "COUNTER_top5": [
+      "conviction_product",
+      "m2a_conviction",
+      "conviction_gap",
+      "gap_signed",
+      "m2a_confidence"
+    ],
+    "SPLIT_top5": [
+      "gap_signed",
+      "m2a_prob",
+      "gap_size",
+      "m2a_confidence",
+      "m1_confidence"
+    ],
+    "m2a_conviction_rank_in_COUNTER": 2,
+    "m1_conviction_rank_in_SPLIT": 13
+  },
+  "date_trained": "2026-05-14",
+  "candidate_path": "experiments/research/model2b_v2/model2b_v2_candidate.pkl",
+  "note": "vig approximated as (implied_prob - pick_novig) \u2014 one-sided only; opponent odds not in log"
+}

@@ -1,0 +1,7 @@
+{
+  "split_floor": 0.45,
+  "model_type": "RandomForest",
+  "n_estimators": 200,
+  "apply_floor_to": "SPLIT",
+  "floor_rationale": "SPLIT fights actual WR 52.1% — model floor prevents systematic underconfidence"
+}

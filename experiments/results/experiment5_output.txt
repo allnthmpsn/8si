@@ -1,0 +1,234 @@
+======================================================================
+UFC EXPERIMENT 5  —  2026-04-20T16:02:49.862386
+Target: beat 0.6800  Config: date≥2017, min_cum_fights≥3
+======================================================================
+
+[1] Loading data and engineering features...
+  career_fights: (49233, 9)  master: (7177, 118)
+  career rolling: done
+  opponent quality: done
+  after career join: (7177, 153)
+  after style join: (7177, 169)
+  after diffs/interactions: (7177, 201)
+  new interaction features: 11
+  BASE_108=108, ALL_WITH_NEW=119
+
+======================================================================
+STEP 1 — Confirm baseline (top-50 LR, clean data)
+======================================================================
+  Dataset: train=5688, test=712, features=108
+  LR-L2-C2.12-robust-108feats → 0.6784  (0.1s)
+  LR-top50-by-coef         → 0.6791  (0.1s)
+  Baseline confirmed. Target to beat: 0.6800
+  LR_top50_baseline_confirm                                     acc=0.6791  feats= 50  0s
+
+  Top 20 features by |coef|:
+        feature      coef  abs_coef
+   B_cum_fights -0.884475  0.884475
+   R_cum_fights  0.884474  0.884474
+  age_x_exp_dif -0.581476  0.581476
+       SApM_dif -0.367876  0.367876
+    R_age_x_exp -0.325573  0.325573
+    B_age_x_exp  0.325573  0.325573
+       SLpM_dif  0.312024  0.312024
+         R_SApM -0.253109  0.253109
+         B_SApM  0.253108  0.253108
+         R_SLpM  0.209333  0.209333
+         B_SLpM -0.209332  0.209332
+  B_avg_SUB_ATT -0.209065  0.209065
+  R_avg_SUB_ATT  0.209065  0.209065
+       B_losses -0.137091  0.137091
+       R_losses  0.137090  0.137090
+     avg_td_dif -0.135481  0.135481
+          R_age -0.131699  0.131699
+          B_age  0.131698  0.131698
+B_layoff_90_180 -0.121452  0.121452
+R_layoff_90_180  0.121451  0.121451
+
+======================================================================
+STEP 2 — Tree models with Optuna (108 features)
+======================================================================
+  Dataset: train=5688, test=712, features=108
+
+  -- XGBoost --
+  Best params: {'n_estimators': 992, 'learning_rate': 0.057338447379760536, 'max_depth': 5, 'subsample': 0.7577905622611881, 'colsample_bytree': 0.674191396199946, 'min_child_weight': 8}
+  XGBoost_Optuna_108feat                                        acc=0.6994  feats=108  38s  *** NEW BEST ***
+  *** Saved new best → model/ufc_model_best.pkl
+
+  XGBoost top 10 features:
+            feature  importance
+           SApM_dif    0.017424
+           SLpM_dif    0.015594
+career_win_rate_dif    0.014817
+              B_age    0.013896
+              R_age    0.013714
+     B_layoff_gt365    0.012781
+     R_layoff_gt365    0.012574
+          B_Str_Acc    0.012345
+        sig_str_dif    0.011685
+  B_avg_SIG_STR_pct    0.011291
+
+  -- LightGBM --
+  Best params: {'n_estimators': 973, 'learning_rate': 0.014809986776247164, 'max_depth': 8, 'num_leaves': 66, 'subsample': 0.958713981524705, 'min_child_samples': 46}
+  LightGBM_Optuna_108feat                                       acc=0.6868  feats=108  44s
+
+  LightGBM top 10 features:
+            feature  importance
+           SApM_dif        1240
+           SLpM_dif         854
+        sig_str_dif         775
+         TD_Def_dif         764
+      R_opp_quality         748
+             B_SApM         716
+             R_SApM         711
+    opp_quality_dif         704
+       B_avg_TD_pct         683
+career_win_rate_dif         655
+
+  -- CatBoost --
+  Best params: {'iterations': 415, 'learning_rate': 0.21325573644815657, 'depth': 5, 'l2_leaf_reg': 5.839972363883316}
+  CatBoost_Optuna_108feat                                       acc=0.6966  feats=108  55s
+
+  CatBoost top 10 features:
+            feature  importance
+           SApM_dif    4.172889
+           SLpM_dif    2.797646
+             R_SApM    2.184182
+             B_SApM    2.125811
+        sig_str_dif    2.033716
+         TD_Def_dif    2.008159
+   B_ko_finish_rate    1.934697
+career_win_rate_dif    1.792939
+       R_avg_TD_pct    1.697028
+             R_SLpM    1.662092
+
+  Best tree in Step 2: XGBoost → 0.6994
+
+======================================================================
+STEP 3 — Feature selection on best tree (XGBoost)
+======================================================================
+  XGBoost_top20_by_importance                                   acc=0.6512  feats= 20  0s
+  XGBoost_top30_by_importance                                   acc=0.6484  feats= 30  0s
+  XGBoost_top50_by_importance                                   acc=0.6688  feats= 50  1s
+
+  Diff-only features: 28
+  XGBoost_diff_only_28feat                                      acc=0.6248  feats= 28  0s
+
+======================================================================
+STEP 4 — New interaction features + best tree model
+======================================================================
+  Features: 108 base + 11 new = 119 total
+  Dataset: train=5688, test=712, features=119
+  XGBoost_108+new_119feat                                       acc=0.6882  feats=119  1s
+
+  New feature importances:
+            feature  importance
+     experience_gap    0.010855
+finish_x_streak_dif    0.009811
+   age_x_layoff_dif    0.009154
+       peak_age_dif    0.008861
+  R_finish_x_streak    0.008398
+     B_age_x_layoff    0.008264
+     R_age_x_layoff    0.007965
+  B_finish_x_streak    0.007883
+striker_vs_wrestler    0.007215
+         R_peak_age    0.006906
+         B_peak_age    0.006790
+
+  -- Optuna on XGBoost with 119 features --
+  Best params (new feats): {'n_estimators': 414, 'learning_rate': 0.07421034857199447, 'max_depth': 3, 'subsample': 0.9547881339109422, 'colsample_bytree': 0.788812170137854, 'min_child_weight': 5}
+  XGBoost_Optuna_119feat_new_interactions                       acc=0.6868  feats=119  21s
+
+======================================================================
+STEP 5 — Stacking ensemble (XGB + LGB + CB, LR meta, 5-fold OOF)
+======================================================================
+  All 3 trees > 67% — proceeding with stacking
+  Dataset: train=5688, test=712, features=108
+  Generating OOF predictions (5 folds × 3 models)...
+    Fold 1/5 done
+    Fold 2/5 done
+    Fold 3/5 done
+    Fold 4/5 done
+    Fold 5/5 done
+  Training base models on full training set...
+    XGBoost solo: 0.6994
+    LightGBM solo: 0.6868
+    CatBoost solo: 0.6966
+  Training LR meta-learner on OOF...
+  Stack OOF train accuracy: 0.6426
+  Stack TEST accuracy:      0.6924  (25s)
+  Stacking_XGB+LGB+CB_LRmeta_OOF5fold                           acc=0.6924  feats=108  25s
+
+======================================================================
+FINAL RESULTS — RANKED
+======================================================================
+                                 config      acc  n_feats      secs
+                 XGBoost_Optuna_108feat 0.699438      108 38.370832
+                CatBoost_Optuna_108feat 0.696629      108 55.496742
+    Stacking_XGB+LGB+CB_LRmeta_OOF5fold 0.692416      108 24.970754
+                XGBoost_108+new_119feat 0.688202      119  1.243164
+                LightGBM_Optuna_108feat 0.686798      108 44.176121
+XGBoost_Optuna_119feat_new_interactions 0.686798      119 20.986249
+              LR_top50_baseline_confirm 0.679063       50  0.089841
+            XGBoost_top50_by_importance 0.668823       50  0.650986
+            XGBoost_top20_by_importance 0.651163       20  0.321517
+            XGBoost_top30_by_importance 0.648447       30  0.432341
+               XGBoost_diff_only_28feat 0.624833       28  0.403835
+
+Target (exp4 best):  0.6800
+New best:            0.6994  (delta: +0.0194)
+
+✓ IMPROVEMENT — saved to model/ufc_model_best.pkl
+  Model type: XGBClassifier
+  Features (108): ['R_wins', 'R_losses', 'R_Height_cms', 'R_age', 'R_avg_SIG_STR_landed', 'R_avg_TD_landed', 'R_current_win_streak', 'R_current_lose_streak', 'R_longest_win_streak', 'R_avg_SIG_STR_pct', 'R_avg_SUB_ATT', 'R_avg_TD_pct', 'R_Reach_cms', 'R_total_title_bouts', 'B_wins', 'B_losses', 'B_Height_cms', 'B_age', 'B_avg_SIG_STR_landed', 'B_avg_TD_landed'] ...
+
+  Winner top 20 feature importances:
+              feature  importance
+             SApM_dif    0.017424
+             SLpM_dif    0.015594
+  career_win_rate_dif    0.014817
+                B_age    0.013896
+                R_age    0.013714
+       B_layoff_gt365    0.012781
+       R_layoff_gt365    0.012574
+            B_Str_Acc    0.012345
+          sig_str_dif    0.011685
+    B_avg_SIG_STR_pct    0.011291
+last5_finish_rate_dif    0.011259
+            B_Sub_Avg    0.011216
+       win_streak_dif    0.011147
+  R_last5_finish_rate    0.011120
+           TD_Def_dif    0.010998
+            R_Str_Acc    0.010839
+           avg_td_dif    0.010838
+               R_SApM    0.010825
+      lose_streak_dif    0.010563
+    R_avg_SIG_STR_pct    0.010511
+
+[DONE]  2026-04-20T16:05:58.777568
+ed', 'B_avg_TD_landed'] ...
+
+  Winner top 20 feature importances:
+              feature  importance
+             SApM_dif    0.017424
+             SLpM_dif    0.015594
+  career_win_rate_dif    0.014817
+                B_age    0.013896
+                R_age    0.013714
+       B_layoff_gt365    0.012781
+       R_layoff_gt365    0.012574
+            B_Str_Acc    0.012345
+          sig_str_dif    0.011685
+    B_avg_SIG_STR_pct    0.011291
+last5_finish_rate_dif    0.011259
+            B_Sub_Avg    0.011216
+       win_streak_dif    0.011147
+  R_last5_finish_rate    0.011120
+           TD_Def_dif    0.010998
+            R_Str_Acc    0.010839
+           avg_td_dif    0.010838
+               R_SApM    0.010825
+      lose_streak_dif    0.010563
+    R_avg_SIG_STR_pct    0.010511
+
+[DONE]  2026-04-20T16:05:58.777568

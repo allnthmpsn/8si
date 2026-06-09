@@ -1,0 +1,6 @@
+cluster,current_age,career_win_rate_traj,career_finish_rate,finish_rate_trend,win_rate_l5_vs_career,fights_since_finish,n_fighters,archetype
+0,29.824,0.727,0.519,-0.31,-0.265,2.332,515,Fading Contender
+1,43.578,0.693,0.525,-0.275,-0.266,1.994,482,Veteran Contender
+2,32.079,0.838,0.686,-0.07,-0.013,0.75,512,Elite Finisher
+3,36.547,0.65,0.326,-0.303,-0.29,7.558,265,Veteran Contender
+4,36.757,0.628,0.386,0.004,-0.032,1.115,462,Active Performer

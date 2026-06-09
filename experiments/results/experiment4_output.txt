@@ -1,0 +1,160 @@
+======================================================================
+UFC EXPERIMENT 4  —  2026-04-20T15:50:55.587015
+Target: beat 0.7018  Config: date≥2017, min_cum_fights≥3
+======================================================================
+
+[1] Data verification...
+  career_fights: (49233, 9)
+  Jon Jones: 28-2 (30 fights) ✓
+  Conor McGregor: 22-6 (28 fights) ✓
+  Islam Makhachev: 28-1 (29 fights) ✓
+
+[2] Feature engineering...
+  career rolling: done
+  opponent quality: done
+  after career join: (7177, 153)
+  after style join: (7177, 169)
+  after diffs/interactions: (7177, 201)
+  BASE_108=108, ALL=117, new=9
+
+======================================================================
+STEP 4A — Baseline 108-feature LogReg (clean data)
+======================================================================
+  Dataset: train=5688, test=712, features=108
+  Baseline (L1, C=1, std) → 0.6756  (1.3s)
+  Delta from prev best: -0.0262  (data fix neutral/hurt)
+  Baseline_L1_C1_std_108feat                               acc=0.6756  feats=108  1s  
+
+  Top 20 features by |coefficient|:
+              feature      coef  abs_coef
+        age_x_exp_dif -0.818315  0.818315
+         B_cum_fights -0.644589  0.644589
+         R_cum_fights  0.644588  0.644588
+             SApM_dif -0.573474  0.573474
+             SLpM_dif  0.479111  0.479111
+           avg_td_dif -0.227872  0.227872
+           TD_Def_dif  0.185835  0.185835
+        R_avg_SUB_ATT  0.176392  0.176392
+        B_avg_SUB_ATT -0.176392  0.176392
+  career_win_rate_dif  0.148176  0.148176
+       win_streak_dif -0.117412  0.117412
+             R_losses  0.111800  0.111800
+             B_losses -0.111800  0.111800
+   ko_finish_rate_dif  0.104807  0.104807
+      opp_quality_dif  0.103701  0.103701
+                R_age -0.101208  0.101208
+                B_age  0.101208  0.101208
+           TD_Avg_dif -0.090206  0.090206
+last5_finish_rate_dif  0.089357  0.089357
+              win_dif  0.081300  0.081300
+
+======================================================================
+STEP 4B — Optuna LR hyperparameter search (50 trials)
+======================================================================
+  Best params: {'penalty': 'l2', 'C': 2.1242802137208896, 'scaler': 'robust'}
+  Optuna_LR_l2_C2.1243_robust                              acc=0.6798  feats=108  110s  
+
+======================================================================
+STEP 4C — All features (108 + new) with best LR
+======================================================================
+  Dataset: train=5662, test=708, features=117
+  LR_all_feats_117                                         acc=0.6525  feats=117  61s  
+
+======================================================================
+STEP 4D — Feature selection by coefficient magnitude
+======================================================================
+  LR_top20_by_coef                                         acc=0.6534  feats= 20  0s  
+  LR_top30_by_coef                                         acc=0.6561  feats= 30  0s  
+  LR_top40_by_coef                                         acc=0.6726  feats= 40  0s  
+  LR_top50_by_coef                                         acc=0.6800  feats= 50  0s  
+
+  Features with |coef| >= 0.01: 53
+  LR_coef>=0.01_53feat                                     acc=0.6772  feats= 53  0s  
+
+======================================================================
+STEP 4E — Polynomial features (top-10 interactions, degree-2)
+======================================================================
+  Poly features: 153 (rest=98, poly_block=55)
+  Poly result: 0.6784  C=0.0602  (1.1s)
+  LR_poly_top10_interactions_153feat                       acc=0.6784  feats=153  1s  
+
+======================================================================
+STEP 4F — Calibrated ensemble: LR + CatBoost + LightGBM
+======================================================================
+  LR:       0.6784
+  CatBoost: 0.6713
+  LightGBM: 0.6601
+  Ensemble: 0.6713  (10.4s)
+  Weights: LR=0.338 CB=0.334 LGB=0.328
+  VotingClassifier check: 0.6742
+  CalibEnsemble_LR+CB+LGB_acc_weighted                     acc=0.6713  feats=108  10s  
+
+======================================================================
+STEP 5 — Final push: all features + Optuna, wider C range
+======================================================================
+  Final_l1_C0.2108_robust_117feat                          acc=0.6525  feats=117  58s  
+
+  Final model top 20 features:
+               feature      coef  abs_coef
+              SApM_dif -0.687856  0.687856
+              SLpM_dif  0.633960  0.633960
+                 B_age  0.294477  0.294477
+                 R_age -0.294477  0.294477
+            avg_td_dif -0.288578  0.288578
+   career_win_rate_dif  0.265643  0.265643
+  recency_win_rate_dif -0.255970  0.255970
+          B_cum_fights -0.205546  0.205546
+          R_cum_fights  0.205546  0.205546
+         R_avg_SUB_ATT  0.194007  0.194007
+         B_avg_SUB_ATT -0.194006  0.194006
+            TD_Def_dif  0.191403  0.191403
+career_finish_rate_dif  0.148891  0.148891
+         age_x_exp_dif -0.145643  0.145643
+       opp_quality_dif  0.127660  0.127660
+        win_streak_dif -0.123011  0.123011
+             B_Str_Acc -0.116820  0.116820
+             R_Str_Acc  0.116820  0.116820
+           Str_Def_dif  0.102759  0.102759
+       B_layoff_90_180 -0.099820  0.099820
+
+======================================================================
+FINAL RESULTS — RANKED
+======================================================================
+                              config      acc  n_feats       secs
+                    LR_top50_by_coef 0.680000       50   0.155599
+         Optuna_LR_l2_C2.1243_robust 0.679775      108 110.277210
+  LR_poly_top10_interactions_153feat 0.678371      153   1.061846
+                LR_coef>=0.01_53feat 0.677241       53   0.165391
+          Baseline_L1_C1_std_108feat 0.675562      108   1.261429
+                    LR_top40_by_coef 0.672627       40   0.122335
+CalibEnsemble_LR+CB+LGB_acc_weighted 0.671348      108  10.419494
+                    LR_top30_by_coef 0.656121       30   0.095062
+                    LR_top20_by_coef 0.653370       20   0.047205
+                    LR_all_feats_117 0.652542      117  60.980053
+     Final_l1_C0.2108_robust_117feat 0.652542      117  57.729793
+
+Prev best:  0.7018
+New best:   0.7018  (delta: +0.0000)
+
+✗ No improvement over 70.18% — model files unchanged.
+
+[DONE]  2026-04-20T15:55:18.627519
+ acc  n_feats       secs
+                    LR_top50_by_coef 0.680000       50   0.155599
+         Optuna_LR_l2_C2.1243_robust 0.679775      108 110.277210
+  LR_poly_top10_interactions_153feat 0.678371      153   1.061846
+                LR_coef>=0.01_53feat 0.677241       53   0.165391
+          Baseline_L1_C1_std_108feat 0.675562      108   1.261429
+                    LR_top40_by_coef 0.672627       40   0.122335
+CalibEnsemble_LR+CB+LGB_acc_weighted 0.671348      108  10.419494
+                    LR_top30_by_coef 0.656121       30   0.095062
+                    LR_top20_by_coef 0.653370       20   0.047205
+                    LR_all_feats_117 0.652542      117  60.980053
+     Final_l1_C0.2108_robust_117feat 0.652542      117  57.729793
+
+Prev best:  0.7018
+New best:   0.7018  (delta: +0.0000)
+
+✗ No improvement over 70.18% — model files unchanged.
+
+[DONE]  2026-04-20T15:55:18.627519

@@ -1,0 +1,185 @@
+
+======================================================================
+  SHARED DATA LOADING & FEATURE ENGINEERING  [11:36:28]
+======================================================================
+[11:36:28] Loading data...
+  ufc-master: 7,177 | career: 50,018
+[11:36:29] Computing Elo K=48...
+  Elo history: 14,354 rows
+[11:36:29] Computing career stats (shift=1)...
+  Career rows: 50,018
+[11:36:30] Computing QA stats...
+  QA rows: 50,018
+[11:36:31] Building fight DataFrame...
+  Fights after filter: 4,612
+[11:36:31] Computing interaction features...
+  After debut filter: 4,589  train=3629  test=960
+  Train (augmented): 7,258  Test: 960  Features: 129
+[11:36:31] Shared setup complete. Starting experiments...
+
+
+======================================================================
+  BASELINE — LR 70% + XGB 30%, 129 features, Elo K=48  [11:36:31]
+======================================================================
+  Baseline: acc=71.4583%  ll=0.557235  brier=0.189199  [0.8s]
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : BASELINE (LR70+XGB30, Elo, 129 feats)           │
+  │  Features   : 129                                             │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 71.4583%                                        │
+  │  Log-loss   : 0.557235                                             │
+  │  Brier      : 0.189199                                             │
+  │  Note       : Reference: 71.46%                               │
+  └────────────────────────────────────────────────────────────────┘
+
+======================================================================
+  EXPERIMENT 1 — Glicko-2 (standard + domain-separated)  [11:36:32]
+======================================================================
+[11:36:32] Computing Glicko-2 standard (tau=0.5)...
+  G2 history: 14,354 rows
+[11:36:32] Training Exp1-A (Glicko-2 standard, 129 feats)...
+  G2 standard: acc=57.2917%  ll=0.676767  brier=0.242095
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP1A: Glicko-2 Standard (replaces Elo)         │
+  │  Features   : 129                                             │
+  │  Rating sys : Glicko-2 tau=0.5                                │
+  │  Test acc   : 57.2917%                                        │
+  │  Log-loss   : 0.676767                                             │
+  │  Brier      : 0.242095                                             │
+  │  Note       : vs baseline: -14.167pp                          │
+  └────────────────────────────────────────────────────────────────┘
+
+[11:36:33] Computing domain-separated Glicko-2...
+[11:36:33] Training Exp1-B (Glicko-2 domain, 132 feats)...
+  G2 domain: acc=58.0208%  ll=0.667789  brier=0.237664
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP1B: Glicko-2 + Domain (striking/grappling/dec)│
+  │  Features   : 132                                             │
+  │  Rating sys : Glicko-2 standard + 3 domain                    │
+  │  Test acc   : 58.0208%                                        │
+  │  Log-loss   : 0.667789                                             │
+  │  Brier      : 0.237664                                             │
+  │  Note       : vs baseline: -13.438pp                          │
+  └────────────────────────────────────────────────────────────────┘
+
+  Best Glicko-2 variant: G2-domain
+
+======================================================================
+  EXPERIMENT 2 — SHAP Feature Reduction  [11:36:34]
+======================================================================
+[11:36:34] Running SHAP TreeExplainer on baseline XGBoost (129 features)...
+  Top 15 features by SHAP:
+     1. SLpM_dif                           : 0.28003
+     2. SApM_dif                           : 0.27520
+     3. age_dif                            : 0.15452
+     4. B_Str_Acc                          : 0.14064
+     5. R_Str_Acc                          : 0.13027
+     6. B_Sub_Avg                          : 0.09721
+     7. R_avg_SUB_ATT                      : 0.09075
+     8. R_SLpM                             : 0.09034
+     9. B_SApM                             : 0.08792
+    10. B_SLpM                             : 0.08784
+    11. R_Sub_Avg                          : 0.08388
+    12. B_avg_TD_pct                       : 0.08221
+    13. TD_Def_dif                         : 0.08182
+    14. elo_dif                            : 0.08103
+    15. B_TD_Def                           : 0.07942
+
+  Raw stats in top 25 (candidates for ratio replacement): ['R_avg_SIG_STR_landed']
+
+[11:36:34] Experiment 2 — Top60 (60 features)...
+  LR-Top60:  acc=71.6667%  ll=0.561756
+  XGB-Top60: acc=69.8958%  ll=0.581092
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 LR-Top60                                   │
+  │  Features   : 60                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 71.6667%                                        │
+  │  Log-loss   : 0.561756                                             │
+  │  Brier      : 0.190685                                             │
+  │  Note       : LR only, 60 feats                               │
+  └────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 XGB-Top60                                  │
+  │  Features   : 60                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 69.8958%                                        │
+  │  Log-loss   : 0.581092                                             │
+  │  Brier      : 0.197519                                             │
+  │  Note       : XGB only, 60 feats                              │
+  └────────────────────────────────────────────────────────────────┘
+
+[11:36:34] Experiment 2 — Top40 (40 features)...
+  LR-Top40:  acc=72.5000%  ll=0.565017
+  XGB-Top40: acc=69.2708%  ll=0.583954
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 LR-Top40                                   │
+  │  Features   : 40                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 72.5000%                                        │
+  │  Log-loss   : 0.565017                                             │
+  │  Brier      : 0.192064                                             │
+  │  Note       : LR only, 40 feats                               │
+  └────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 XGB-Top40                                  │
+  │  Features   : 40                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 69.2708%                                        │
+  │  Log-loss   : 0.583954                                             │
+  │  Brier      : 0.198604                                             │
+  │  Note       : XGB only, 40 feats                              │
+  └────────────────────────────────────────────────────────────────┘
+
+[11:36:35] Experiment 2 — Top25 (25 features)...
+  LR-Top25:  acc=71.0417%  ll=0.570257
+  XGB-Top25: acc=68.5417%  ll=0.593241
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 LR-Top25                                   │
+  │  Features   : 25                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 71.0417%                                        │
+  │  Log-loss   : 0.570257                                             │
+  │  Brier      : 0.194202                                             │
+  │  Note       : LR only, 25 feats                               │
+  └────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 XGB-Top25                                  │
+  │  Features   : 25                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 68.5417%                                        │
+  │  Log-loss   : 0.593241                                             │
+  │  Brier      : 0.203293                                             │
+  │  Note       : XGB only, 25 feats                              │
+  └────────────────────────────────────────────────────────────────┘
+
+  Best Exp2 subset: Top40 (lr) — acc=72.5000%
+  Using Top40 features (40 feats) for Exp 3-5
+
+======================================================================
+  EXPERIMENT 3 — LR-Only Baseline (best feature set)  [11:36:35]
+======================================================================
+[11:36:35] CV search over C=[0.001, 0.01, 0.1, 1.0, 10.0] on 40 features...
+Traceback (most recent call last):
+  File "/Users/allenthompson/Desktop/ufc-predictor/experiments/research/architecture_sprint.py", line 710, in <module>
+    cv_scores = cross_val_score(pipe, X_tr_best, y_tr_aug, cv=skf3,
+                                scoring='accuracy', n_jobs=1, fit_params={'lr__sample_weight': w_arr})
+  File "/opt/anaconda3/lib/python3.13/site-packages/sklearn/utils/_param_validation.py", line 194, in wrapper
+    params = func_sig.bind(*args, **kwargs)
+  File "/opt/anaconda3/lib/python3.13/inspect.py", line 3295, in bind
+    return self._bind(args, kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/inspect.py", line 3284, in _bind
+    raise TypeError(
+        'got an unexpected keyword argument {arg!r}'.format(
+            arg=next(iter(kwargs))))
+TypeError: got an unexpected keyword argument 'fit_params'

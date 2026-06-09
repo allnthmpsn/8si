@@ -1,0 +1,380 @@
+{
+  "dataset": {
+    "source": "data/value_bet_log.csv",
+    "total_rows": 3007,
+    "date_range": "2018-01-14 to 2026-03-28"
+  },
+  "proximity_bucket_stats": {
+    "within_1pct": {
+      "N": 235,
+      "overall_wr": 79.1,
+      "agree_N": 234,
+      "agree_wr": 79.1,
+      "disagree_N": 1,
+      "disagree_wr": 100.0,
+      "triple_agree_N": 202,
+      "triple_agree_wr": 81.2,
+      "avg_gap_vs_vegas_pct": 5.02,
+      "roi_pct": 25.65,
+      "most_common_gap_zone": 3
+    },
+    "within_3pct": {
+      "N": 659,
+      "overall_wr": 77.7,
+      "agree_N": 641,
+      "agree_wr": 78.5,
+      "disagree_N": 18,
+      "disagree_wr": 50.0,
+      "triple_agree_N": 567,
+      "triple_agree_wr": 79.9,
+      "avg_gap_vs_vegas_pct": 4.68,
+      "roi_pct": 21.5,
+      "most_common_gap_zone": 3
+    },
+    "within_5pct": {
+      "N": 1083,
+      "overall_wr": 76.5,
+      "agree_N": 1041,
+      "agree_wr": 77.7,
+      "disagree_N": 42,
+      "disagree_wr": 47.6,
+      "triple_agree_N": 929,
+      "triple_agree_wr": 78.8,
+      "avg_gap_vs_vegas_pct": 4.67,
+      "roi_pct": 19.33,
+      "most_common_gap_zone": 3
+    },
+    "within_10pct": {
+      "N": 1959,
+      "overall_wr": 75.9,
+      "agree_N": 1808,
+      "agree_wr": 78.4,
+      "disagree_N": 151,
+      "disagree_wr": 45.7,
+      "triple_agree_N": 1605,
+      "triple_agree_wr": 78.8,
+      "avg_gap_vs_vegas_pct": 4.66,
+      "roi_pct": 17.84,
+      "most_common_gap_zone": 3
+    },
+    "within_20pct": {
+      "N": 2784,
+      "overall_wr": 73.9,
+      "agree_N": 2397,
+      "agree_wr": 79.0,
+      "disagree_N": 387,
+      "disagree_wr": 41.9,
+      "triple_agree_N": 2109,
+      "triple_agree_wr": 79.1,
+      "avg_gap_vs_vegas_pct": 4.88,
+      "roi_pct": 13.68,
+      "most_common_gap_zone": 3
+    },
+    "gt_20pct": {
+      "N": 223,
+      "overall_wr": 56.5,
+      "agree_N": 82,
+      "agree_wr": 81.7,
+      "disagree_N": 141,
+      "disagree_wr": 41.8,
+      "triple_agree_N": 56,
+      "triple_agree_wr": 76.8,
+      "avg_gap_vs_vegas_pct": 7.84,
+      "roi_pct": -14.21,
+      "most_common_gap_zone": 6
+    },
+    "1_to_3pct_only": {
+      "N": 424,
+      "overall_wr": 76.9,
+      "agree_N": 407,
+      "agree_wr": 78.1,
+      "disagree_N": 17,
+      "disagree_wr": 47.1,
+      "triple_agree_N": 365,
+      "triple_agree_wr": 79.2,
+      "avg_gap_vs_vegas_pct": 4.5,
+      "roi_pct": 19.2,
+      "most_common_gap_zone": 3
+    },
+    "3_to_5pct_only": {
+      "N": 424,
+      "overall_wr": 74.8,
+      "agree_N": 400,
+      "agree_wr": 76.5,
+      "disagree_N": 24,
+      "disagree_wr": 45.8,
+      "triple_agree_N": 362,
+      "triple_agree_wr": 77.1,
+      "avg_gap_vs_vegas_pct": 4.65,
+      "roi_pct": 15.96,
+      "most_common_gap_zone": 3
+    },
+    "5_to_10pct_only": {
+      "N": 876,
+      "overall_wr": 75.0,
+      "agree_N": 767,
+      "agree_wr": 79.3,
+      "disagree_N": 109,
+      "disagree_wr": 45.0,
+      "triple_agree_N": 676,
+      "triple_agree_wr": 78.7,
+      "avg_gap_vs_vegas_pct": 4.65,
+      "roi_pct": 16.0,
+      "most_common_gap_zone": 4
+    },
+    "10_to_20pct_only": {
+      "N": 825,
+      "overall_wr": 69.1,
+      "agree_N": 589,
+      "agree_wr": 81.0,
+      "disagree_N": 236,
+      "disagree_wr": 39.4,
+      "triple_agree_N": 504,
+      "triple_agree_wr": 80.4,
+      "avg_gap_vs_vegas_pct": 5.39,
+      "roi_pct": 3.8,
+      "most_common_gap_zone": 4
+    }
+  },
+  "crosstab_proximity_x_gap_zone": {
+    "\u22641%": {
+      "z0_Lock(<1%)": {
+        "wr": 88.5,
+        "N": 26
+      },
+      "z1_Strong(<2%)": {
+        "wr": 73.0,
+        "N": 37
+      },
+      "z2_Lean(<3%)": {
+        "wr": 81.2,
+        "N": 32
+      },
+      "z3_Watch(<5%)": {
+        "wr": 71.1,
+        "N": 45
+      },
+      "z4_Value(<8%)": {
+        "wr": 70.7,
+        "N": 41
+      },
+      "z5_StrongVal(<10%)": {
+        "wr": 90.0,
+        "N": 20
+      },
+      "z6_MaxVal(>10%)": {
+        "wr": 91.2,
+        "N": 34
+      }
+    },
+    "1-3%": {
+      "z0_Lock(<1%)": {
+        "wr": 73.6,
+        "N": 72
+      },
+      "z1_Strong(<2%)": {
+        "wr": 82.1,
+        "N": 56
+      },
+      "z2_Lean(<3%)": {
+        "wr": 80.7,
+        "N": 57
+      },
+      "z3_Watch(<5%)": {
+        "wr": 69.2,
+        "N": 91
+      },
+      "z4_Value(<8%)": {
+        "wr": 75.7,
+        "N": 74
+      },
+      "z5_StrongVal(<10%)": {
+        "wr": 85.7,
+        "N": 35
+      },
+      "z6_MaxVal(>10%)": {
+        "wr": 82.1,
+        "N": 39
+      }
+    },
+    "3-5%": {
+      "z0_Lock(<1%)": {
+        "wr": 72.9,
+        "N": 59
+      },
+      "z1_Strong(<2%)": {
+        "wr": 69.8,
+        "N": 53
+      },
+      "z2_Lean(<3%)": {
+        "wr": 72.2,
+        "N": 54
+      },
+      "z3_Watch(<5%)": {
+        "wr": 72.3,
+        "N": 94
+      },
+      "z4_Value(<8%)": {
+        "wr": 81.5,
+        "N": 92
+      },
+      "z5_StrongVal(<10%)": {
+        "wr": 75.0,
+        "N": 40
+      },
+      "z6_MaxVal(>10%)": {
+        "wr": 78.1,
+        "N": 32
+      }
+    },
+    "5-10%": {
+      "z0_Lock(<1%)": {
+        "wr": 67.4,
+        "N": 129
+      },
+      "z1_Strong(<2%)": {
+        "wr": 66.9,
+        "N": 136
+      },
+      "z2_Lean(<3%)": {
+        "wr": 76.4,
+        "N": 110
+      },
+      "z3_Watch(<5%)": {
+        "wr": 76.2,
+        "N": 172
+      },
+      "z4_Value(<8%)": {
+        "wr": 77.7,
+        "N": 179
+      },
+      "z5_StrongVal(<10%)": {
+        "wr": 80.4,
+        "N": 51
+      },
+      "z6_MaxVal(>10%)": {
+        "wr": 84.8,
+        "N": 99
+      }
+    },
+    "10-20%": {
+      "z0_Lock(<1%)": {
+        "wr": 76.0,
+        "N": 121
+      },
+      "z1_Strong(<2%)": {
+        "wr": 68.5,
+        "N": 108
+      },
+      "z2_Lean(<3%)": {
+        "wr": 70.5,
+        "N": 105
+      },
+      "z3_Watch(<5%)": {
+        "wr": 69.2,
+        "N": 143
+      },
+      "z4_Value(<8%)": {
+        "wr": 62.6,
+        "N": 155
+      },
+      "z5_StrongVal(<10%)": {
+        "wr": 56.5,
+        "N": 62
+      },
+      "z6_MaxVal(>10%)": {
+        "wr": 75.6,
+        "N": 131
+      }
+    },
+    "20%+": {
+      "z0_Lock(<1%)": {
+        "wr": 64.5,
+        "N": 31
+      },
+      "z1_Strong(<2%)": {
+        "wr": 65.0,
+        "N": 20
+      },
+      "z2_Lean(<3%)": {
+        "wr": 55.6,
+        "N": 18
+      },
+      "z3_Watch(<5%)": {
+        "wr": 65.2,
+        "N": 23
+      },
+      "z4_Value(<8%)": {
+        "wr": 54.1,
+        "N": 37
+      },
+      "z5_StrongVal(<10%)": {
+        "wr": 50.0,
+        "N": 20
+      },
+      "z6_MaxVal(>10%)": {
+        "wr": 51.4,
+        "N": 74
+      }
+    }
+  },
+  "key_questions": {
+    "Q1_within3pct_plus_agreement": {
+      "question": "Does within-3% proximity + agreement outperform just agreement (79.1% benchmark)?",
+      "within_3pct_agree_wr": 78.5,
+      "within_3pct_agree_N": 641,
+      "just_agree_wr": 79.1,
+      "just_agree_N": 2479,
+      "outperforms_benchmark": false
+    },
+    "Q2_dropoff_threshold": {
+      "question": "At what proximity bucket does agree win rate drop off?",
+      "agree_wr_by_exclusive_bucket": {
+        "\u22641%": {
+          "agree_wr": 79.1,
+          "N": 234
+        },
+        "1-3%": {
+          "agree_wr": 78.1,
+          "N": 407
+        },
+        "3-5%": {
+          "agree_wr": 76.5,
+          "N": 400
+        },
+        "5-10%": {
+          "agree_wr": 79.3,
+          "N": 767
+        },
+        "10-20%": {
+          "agree_wr": 81.0,
+          "N": 589
+        },
+        "20%+": {
+          "agree_wr": 81.7,
+          "N": 82
+        }
+      }
+    },
+    "Q3_far_apart_agree": {
+      "question": "When models are 20%+ apart but agree, is the signal still meaningful?",
+      "gt20pct_agree_wr": 81.7,
+      "gt20pct_agree_N": 82,
+      "baseline_agree_wr": 79.1,
+      "still_meaningful": true
+    },
+    "Q4_within1pct_triple_agree": {
+      "question": "What is the win rate for within-1% proximity + triple_agree?",
+      "within_1pct_triple_agree_wr": 81.2,
+      "within_1pct_triple_agree_N": 202
+    },
+    "Q5_recommendation": {
+      "question": "Recommend adding m1_m2a_proximity as continuous feature to M2B?",
+      "correlation_overall": -0.1247,
+      "correlation_in_agree_group": 0.0331,
+      "correlation_in_disagree_group": -0.0138,
+      "recommend": true,
+      "reasoning": "Add if correlation within agree/disagree groups is meaningful (|r| > 0.04). Proximity captures how confidently the models converge, which is different from the binary m1_m2a_agree flag already in M2B."
+    }
+  }
+}

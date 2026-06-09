@@ -1,0 +1,82 @@
+{
+  "new_m2_test_acc": 0.7064,
+  "m1_test_acc": 0.7127,
+  "old_m2_test_acc": 0.732,
+  "delta_vs_old": -0.0256,
+  "promoted": false,
+  "n_train": 2210,
+  "n_test": 797,
+  "filter": "men_only_2018+",
+  "standard_thresholds": {
+    "0.05": {
+      "n_bets": 428,
+      "win_rate": 0.6519,
+      "roi_pct": 19.33,
+      "total_profit_units": 82.72
+    },
+    "0.08": {
+      "n_bets": 260,
+      "win_rate": 0.6846,
+      "roi_pct": 32.63,
+      "total_profit_units": 84.83
+    },
+    "0.1": {
+      "n_bets": 185,
+      "win_rate": 0.6919,
+      "roi_pct": 41.55,
+      "total_profit_units": 76.86
+    },
+    "0.12": {
+      "n_bets": 117,
+      "win_rate": 0.7521,
+      "roi_pct": 54.31,
+      "total_profit_units": 63.54
+    },
+    "0.15": {
+      "n_bets": 61,
+      "win_rate": 0.7869,
+      "roi_pct": 76.32,
+      "total_profit_units": 46.56
+    }
+  },
+  "agreement_thresholds": {
+    "0.05": {
+      "n_bets": 350,
+      "win_rate": 0.7,
+      "roi_pct": 18.76,
+      "total_profit_units": 65.65
+    },
+    "0.08": {
+      "n_bets": 211,
+      "win_rate": 0.7299,
+      "roi_pct": 30.1,
+      "total_profit_units": 63.5
+    },
+    "0.1": {
+      "n_bets": 147,
+      "win_rate": 0.7415,
+      "roi_pct": 39.35,
+      "total_profit_units": 57.84
+    },
+    "0.12": {
+      "n_bets": 96,
+      "win_rate": 0.8021,
+      "roi_pct": 55.61,
+      "total_profit_units": 53.39
+    },
+    "0.15": {
+      "n_bets": 52,
+      "win_rate": 0.8269,
+      "roi_pct": 74.26,
+      "total_profit_units": 38.62
+    }
+  },
+  "tier_win_rates": {
+    "0": 0.1361,
+    "1": 0.3613,
+    "2": 0.5106,
+    "3": 0.6268,
+    "4": 0.777
+  },
+  "m1_train_acc_oof": 0.6466
+}

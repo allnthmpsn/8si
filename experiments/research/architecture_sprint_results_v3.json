@@ -1,0 +1,179 @@
+{
+  "baseline_acc": 0.725,
+  "best_acc": 0.726042,
+  "best_name": "EXP5: Stacking (LR+CatBoost+RF)",
+  "delta_pp": 0.10419999999999874,
+  "results": [
+    {
+      "name": "EXP5: Stacking (LR+CatBoost+RF)",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.726042,
+      "log_loss": 0.562019,
+      "brier": 0.190219,
+      "note": "+0.10pp \u25c4 BEATS BASELINE"
+    },
+    {
+      "name": "BASELINE (LR70+XGB30, Elo, 129 feats)",
+      "feat_count": 129,
+      "rating": "Elo K=48",
+      "acc": 0.725,
+      "log_loss": 0.555988,
+      "brier": 0.188584,
+      "note": "Reference"
+    },
+    {
+      "name": "EXP1B: Glicko-2 + Domain",
+      "feat_count": 132,
+      "rating": "G2 std+domain",
+      "acc": 0.721875,
+      "log_loss": 0.558145,
+      "brier": 0.189579,
+      "note": "-0.31pp"
+    },
+    {
+      "name": "EXP6: Stacking + G2-Domain",
+      "feat_count": 132,
+      "rating": "G2 std+domain",
+      "acc": 0.7208333333333333,
+      "log_loss": 0.5600543026683574,
+      "brier": 0.18938671187994327,
+      "note": "-0.42pp vs baseline"
+    },
+    {
+      "name": "EXP4: SVM RBF (C=1, scale)",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.71875,
+      "log_loss": 0.572838,
+      "brier": 0.194059,
+      "note": "-0.63pp"
+    },
+    {
+      "name": "EXP2 LR-Top60",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.717708,
+      "log_loss": 0.56258,
+      "brier": 0.191046,
+      "note": "LR, 60 feats"
+    },
+    {
+      "name": "EXP2 LR-Top25",
+      "feat_count": 25,
+      "rating": "Elo K=48",
+      "acc": 0.715625,
+      "log_loss": 0.573714,
+      "brier": 0.195741,
+      "note": "LR, 25 feats"
+    },
+    {
+      "name": "EXP1A: Glicko-2 Standard",
+      "feat_count": 129,
+      "rating": "G2 tau=0.5",
+      "acc": 0.714583,
+      "log_loss": 0.55845,
+      "brier": 0.189734,
+      "note": "-1.04pp"
+    },
+    {
+      "name": "EXP2 LR-Top40",
+      "feat_count": 40,
+      "rating": "Elo K=48",
+      "acc": 0.713542,
+      "log_loss": 0.56688,
+      "brier": 0.192875,
+      "note": "LR, 40 feats"
+    },
+    {
+      "name": "EXP3: LR-Only C=10.0, Top60",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.7125,
+      "log_loss": 0.556988,
+      "brier": 0.189882,
+      "note": "-1.25pp"
+    },
+    {
+      "name": "EXP4: CatBoost Optuna",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.709375,
+      "log_loss": 0.573,
+      "brier": 0.196,
+      "note": "-1.56pp"
+    },
+    {
+      "name": "EXP4: Random Forest Optuna",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.705208,
+      "log_loss": 0.58649,
+      "brier": 0.200133,
+      "note": "-1.98pp"
+    },
+    {
+      "name": "EXP4: Random Forest Default",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.703125,
+      "log_loss": 0.594632,
+      "brier": 0.203449,
+      "note": "-2.19pp"
+    },
+    {
+      "name": "EXP2 XGB-Top40",
+      "feat_count": 40,
+      "rating": "Elo K=48",
+      "acc": 0.702083,
+      "log_loss": 0.594175,
+      "brier": 0.202177,
+      "note": "XGB, 40 feats"
+    },
+    {
+      "name": "EXP4: CatBoost Default",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.7,
+      "log_loss": 0.574177,
+      "brier": 0.19538,
+      "note": "-2.50pp"
+    },
+    {
+      "name": "EXP2 XGB-Top60",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.698958,
+      "log_loss": 0.584033,
+      "brier": 0.199772,
+      "note": "XGB, 60 feats"
+    },
+    {
+      "name": "EXP4: LightGBM Optuna",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.69375,
+      "log_loss": 0.569,
+      "brier": 0.195832,
+      "note": "-3.13pp"
+    },
+    {
+      "name": "EXP4: LightGBM Default",
+      "feat_count": 60,
+      "rating": "Elo K=48",
+      "acc": 0.6875,
+      "log_loss": 0.585927,
+      "brier": 0.200396,
+      "note": "-3.75pp"
+    },
+    {
+      "name": "EXP2 XGB-Top25",
+      "feat_count": 25,
+      "rating": "Elo K=48",
+      "acc": 0.665625,
+      "log_loss": 0.596045,
+      "brier": 0.205296,
+      "note": "XGB, 25 feats"
+    }
+  ]
+}

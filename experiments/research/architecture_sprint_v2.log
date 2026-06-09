@@ -1,0 +1,184 @@
+
+======================================================================
+  SHARED SETUP — Loading + Feature Engineering  [12:24:17]
+======================================================================
+[12:24:17] Loading data...
+  ufc-master: 7,177  career: 50,018
+[12:24:17] Computing Elo K=48...
+  Elo history: 14,354 rows
+[12:24:17] Computing career stats (shift=1)...
+  Career rows: 50,018
+[12:24:18] Computing QA stats...
+  QA rows: 50,018
+[12:24:19] Building main fight DataFrame (men's 2015+)...
+  Fights: 4,612
+[12:24:19] Interaction features...
+  After debut filter: 4,589  train=3629  test=960
+  Train aug: 7,258  Test: 960  Features: 129
+[12:24:19] Setup complete.
+
+
+======================================================================
+  BASELINE — LR 70% + XGB 30%, 129 features, Elo K=48  [12:24:19]
+======================================================================
+  acc=72.5000%  ll=0.555988  brier=0.188584  [0.8s]
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : BASELINE (LR70+XGB30, Elo, 129 feats)           │
+  │  Features   : 129                                             │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 72.5000%                                        │
+  │  Log-loss   : 0.555988                                             │
+  │  Brier      : 0.188584                                             │
+  │  Note       : Reference: 72.5000%                             │
+  └────────────────────────────────────────────────────────────────┘
+
+======================================================================
+  EXPERIMENT 1 — Glicko-2 (standard + domain-separated)  [12:24:20]
+======================================================================
+[12:24:20] Computing Glicko-2...
+  G2 history: 14,354 rows  r range: [1016, 2264]  rd range: [76, 350]
+  G2 features sample (first 3):
+    R_g2_r: [1591.89523316 2147.67815273 1933.94386408]
+    g2_r_dif: [160.49800966 194.12341352 -33.79015163]
+[12:24:20] Training Exp1-A (G2 standard, 129 feats)...
+  G2 standard: acc=71.4583%  vs baseline: -1.042pp
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP1A: Glicko-2 Standard (replaces Elo)         │
+  │  Features   : 129                                             │
+  │  Rating sys : Glicko-2 tau=0.5                                │
+  │  Test acc   : 71.4583%                                        │
+  │  Log-loss   : 0.558450                                             │
+  │  Brier      : 0.189734                                             │
+  │  Note       : vs baseline: -1.042pp                           │
+  └────────────────────────────────────────────────────────────────┘
+
+[12:24:21] Computing domain-separated G2...
+[12:24:22] Training Exp1-B (G2 domain, 132 feats)...
+  G2 domain:   acc=72.1875%  vs baseline: -0.312pp
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP1B: Glicko-2 + Domain (striking/grappling/dec)│
+  │  Features   : 132                                             │
+  │  Rating sys : Glicko-2 std+domain                             │
+  │  Test acc   : 72.1875%                                        │
+  │  Log-loss   : 0.558145                                             │
+  │  Brier      : 0.189579                                             │
+  │  Note       : vs baseline: -0.312pp                           │
+  └────────────────────────────────────────────────────────────────┘
+
+  Best Glicko-2: G2-domain  acc=72.1875%
+
+======================================================================
+  EXPERIMENT 2 — SHAP Feature Reduction  [12:24:22]
+======================================================================
+[12:24:22] Running SHAP TreeExplainer...
+  Top 15 features by SHAP:
+     1. SApM_dif                           : 0.30218
+     2. SLpM_dif                           : 0.30002
+     3. B_Str_Acc                          : 0.14819
+     4. age_dif                            : 0.14457
+     5. R_Str_Acc                          : 0.12986
+     6. B_Sub_Avg                          : 0.10572
+     7. TD_Def_dif                         : 0.09134
+     8. avg_td_dif                         : 0.08037
+     9. R_TD_Acc                           : 0.07931
+    10. age_x_layoff_dif                   : 0.07826
+    11. elo_dif                            : 0.07637
+    12. R_Sub_Avg                          : 0.07609
+    13. R_SLpM                             : 0.07265
+    14. R_TD_Def                           : 0.06813
+    15. B_SApM                             : 0.06812
+  Raw stats in top 25 (ratio replacement candidates): ['R_age', 'R_avg_SIG_STR_landed', 'B_avg_SIG_STR_landed']
+
+[12:24:23] Exp2 Top60 (60 features)...
+  LR-Top60:  71.7708%  XGB-Top60: 69.8958%
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 LR-Top60                                   │
+  │  Features   : 60                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 71.7708%                                        │
+  │  Log-loss   : 0.562580                                             │
+  │  Brier      : 0.191046                                             │
+  │  Note       : LR only, 60 feats vs baseline: -0.729pp         │
+  └────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 XGB-Top60                                  │
+  │  Features   : 60                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 69.8958%                                        │
+  │  Log-loss   : 0.584033                                             │
+  │  Brier      : 0.199772                                             │
+  │  Note       : XGB only, 60 feats vs baseline: -2.604pp        │
+  └────────────────────────────────────────────────────────────────┘
+
+[12:24:23] Exp2 Top40 (40 features)...
+  LR-Top40:  71.3542%  XGB-Top40: 70.2083%
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 LR-Top40                                   │
+  │  Features   : 40                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 71.3542%                                        │
+  │  Log-loss   : 0.566880                                             │
+  │  Brier      : 0.192875                                             │
+  │  Note       : LR only, 40 feats vs baseline: -1.146pp         │
+  └────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 XGB-Top40                                  │
+  │  Features   : 40                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 70.2083%                                        │
+  │  Log-loss   : 0.594175                                             │
+  │  Brier      : 0.202177                                             │
+  │  Note       : XGB only, 40 feats vs baseline: -2.292pp        │
+  └────────────────────────────────────────────────────────────────┘
+
+[12:24:23] Exp2 Top25 (25 features)...
+  LR-Top25:  71.5625%  XGB-Top25: 66.5625%
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 LR-Top25                                   │
+  │  Features   : 25                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 71.5625%                                        │
+  │  Log-loss   : 0.573714                                             │
+  │  Brier      : 0.195741                                             │
+  │  Note       : LR only, 25 feats vs baseline: -0.938pp         │
+  └────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │  Experiment : EXP2 XGB-Top25                                  │
+  │  Features   : 25                                              │
+  │  Rating sys : Elo K=48                                        │
+  │  Test acc   : 66.5625%                                        │
+  │  Log-loss   : 0.596045                                             │
+  │  Brier      : 0.205296                                             │
+  │  Note       : XGB only, 25 feats vs baseline: -5.937pp        │
+  └────────────────────────────────────────────────────────────────┘
+
+  Best Exp2 subset: Top60 (lr) — 71.7708%
+
+======================================================================
+  EXPERIMENT 3 — LR-Only Baseline (best feature set)  [12:24:24]
+======================================================================
+[12:24:24] Manual weighted CV over C=[0.001, 0.01, 0.1, 1.0, 10.0] on 60 features...
+Traceback (most recent call last):
+  File "/Users/allenthompson/Desktop/ufc-predictor/experiments/research/architecture_sprint_v2.py", line 690, in <module>
+    cv_s=cv_accuracy(pipe,X_tr_best,y_tr_aug,w_tr_aug,skf3)
+  File "/Users/allenthompson/Desktop/ufc-predictor/experiments/research/architecture_sprint_v2.py", line 90, in cv_accuracy
+    m.fit(X_arr[tr_i], y_arr[tr_i], sample_weight=w_arr[tr_i])
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.13/site-packages/sklearn/base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "/opt/anaconda3/lib/python3.13/site-packages/sklearn/pipeline.py", line 653, in fit
+    routed_params = self._check_method_params(method="fit", props=params)
+  File "/opt/anaconda3/lib/python3.13/site-packages/sklearn/pipeline.py", line 459, in _check_method_params
+    raise ValueError(
+    ...<5 lines>...
+    )
+ValueError: Pipeline.fit does not accept the sample_weight parameter. You can pass parameters to specific steps of your pipeline using the stepname__parameter format, e.g. `Pipeline.fit(X, y, logisticregression__sample_weight=sample_weight)`.

@@ -1,0 +1,78 @@
+{
+  "model": "50/50 LR+XGB blend, 42 features",
+  "m2_test_acc": 0.732,
+  "m1_test_acc": 0.6924,
+  "fix_description": "positive_odds_return = odds/100 (was: odds directly, inflated by 100x)",
+  "standard_thresholds": {
+    "0.05": {
+      "n_bets": 393,
+      "win_rate": 0.6005,
+      "roi_pct": 27.96,
+      "total_profit_units": 109.88
+    },
+    "0.08": {
+      "n_bets": 214,
+      "win_rate": 0.6262,
+      "roi_pct": 37.16,
+      "total_profit_units": 79.52
+    },
+    "0.1": {
+      "n_bets": 150,
+      "win_rate": 0.6667,
+      "roi_pct": 53.33,
+      "total_profit_units": 79.99
+    },
+    "0.12": {
+      "n_bets": 91,
+      "win_rate": 0.6593,
+      "roi_pct": 66.92,
+      "total_profit_units": 60.9
+    },
+    "0.15": {
+      "n_bets": 38,
+      "win_rate": 0.7368,
+      "roi_pct": 99.37,
+      "total_profit_units": 37.76
+    }
+  },
+  "agreement_thresholds": {
+    "0.05": {
+      "n_bets": 299,
+      "win_rate": 0.6522,
+      "roi_pct": 24.88,
+      "total_profit_units": 74.39
+    },
+    "0.08": {
+      "n_bets": 159,
+      "win_rate": 0.673,
+      "roi_pct": 29.92,
+      "total_profit_units": 47.57
+    },
+    "0.1": {
+      "n_bets": 109,
+      "win_rate": 0.7248,
+      "roi_pct": 46.32,
+      "total_profit_units": 50.49
+    },
+    "0.12": {
+      "n_bets": 62,
+      "win_rate": 0.7097,
+      "roi_pct": 53.46,
+      "total_profit_units": 33.15
+    },
+    "0.15": {
+      "n_bets": 26,
+      "win_rate": 0.8462,
+      "roi_pct": 105.24,
+      "total_profit_units": 27.36
+    }
+  },
+  "recommendation": {
+    "threshold": 0.15,
+    "roi_pct": 99.37,
+    "with_agreement": {
+      "threshold": 0.15,
+      "roi_pct": 105.24
+    }
+  }
+}

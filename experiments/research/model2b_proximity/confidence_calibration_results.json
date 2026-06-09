@@ -1,0 +1,1085 @@
+{
+  "dataset": {
+    "source": "data/value_bet_log.csv",
+    "total_rows": 3007,
+    "date_range": "2018-01-14 to 2026-03-28"
+  },
+  "cross_tab_zone_x_tier": {
+    "Z0_Lock (<1%)": {
+      "Heavy Fav (<-300)": {
+        "N": 72,
+        "win_rate": 81.9,
+        "roi_pct": 0.46,
+        "avg_odds": -432.0,
+        "reliable": true
+      },
+      "Mod Fav (-300 to -150)": {
+        "N": 120,
+        "win_rate": 65.8,
+        "roi_pct": -3.19,
+        "avg_odds": -200.0,
+        "reliable": true
+      },
+      "Slight Fav (-150 to -110)": {
+        "N": 31,
+        "win_rate": 61.3,
+        "roi_pct": 6.63,
+        "avg_odds": -135.0,
+        "reliable": true
+      },
+      "Pick'em (-110 to +110)": {
+        "N": 33,
+        "win_rate": 42.4,
+        "roi_pct": -15.86,
+        "avg_odds": 100.0,
+        "reliable": true
+      },
+      "Slight Dog (+110 to +200)": {
+        "N": 91,
+        "win_rate": 31.9,
+        "roi_pct": -18.08,
+        "avg_odds": 160.0,
+        "reliable": true
+      },
+      "Mod Dog (+200 to +400)": {
+        "N": 71,
+        "win_rate": 15.5,
+        "roi_pct": -39.04,
+        "avg_odds": 275.0,
+        "reliable": true
+      },
+      "Heavy Dog (+400+)": {
+        "N": 20,
+        "win_rate": 10.0,
+        "roi_pct": -47.0,
+        "avg_odds": 450.0,
+        "reliable": true
+      }
+    },
+    "Z1_Strong (1-2%)": {
+      "Heavy Fav (<-300)": {
+        "N": 77,
+        "win_rate": 80.5,
+        "roi_pct": -0.93,
+        "avg_odds": -420.0,
+        "reliable": true
+      },
+      "Mod Fav (-300 to -150)": {
+        "N": 102,
+        "win_rate": 71.6,
+        "roi_pct": 6.24,
+        "avg_odds": -200.0,
+        "reliable": true
+      },
+      "Slight Fav (-150 to -110)": {
+        "N": 47,
+        "win_rate": 68.1,
+        "roi_pct": 18.6,
+        "avg_odds": -135.0,
+        "reliable": true
+      },
+      "Pick'em (-110 to +110)": {
+        "N": 28,
+        "win_rate": 53.6,
+        "roi_pct": 7.21,
+        "avg_odds": 100.0,
+        "reliable": true
+      },
+      "Slight Dog (+110 to +200)": {
+        "N": 88,
+        "win_rate": 38.6,
+        "roi_pct": -1.15,
+        "avg_odds": 155.0,
+        "reliable": true
+      },
+      "Mod Dog (+200 to +400)": {
+        "N": 51,
+        "win_rate": 29.4,
+        "roi_pct": 7.55,
+        "avg_odds": 245.0,
+        "reliable": true
+      },
+      "Heavy Dog (+400+)": {
+        "N": 17,
+        "win_rate": 11.8,
+        "roi_pct": -36.76,
+        "avg_odds": 460.0,
+        "reliable": true
+      }
+    },
+    "Z2_Lean (2-3%)": {
+      "Heavy Fav (<-300)": {
+        "N": 58,
+        "win_rate": 82.8,
+        "roi_pct": 4.31,
+        "avg_odds": -375.0,
+        "reliable": true
+      },
+      "Mod Fav (-300 to -150)": {
+        "N": 101,
+        "win_rate": 79.2,
+        "roi_pct": 18.16,
+        "avg_odds": -200.0,
+        "reliable": true
+      },
+      "Slight Fav (-150 to -110)": {
+        "N": 42,
+        "win_rate": 76.2,
+        "roi_pct": 33.58,
+        "avg_odds": -135.0,
+        "reliable": true
+      },
+      "Pick'em (-110 to +110)": {
+        "N": 23,
+        "win_rate": 69.6,
+        "roi_pct": 38.54,
+        "avg_odds": 100.0,
+        "reliable": true
+      },
+      "Slight Dog (+110 to +200)": {
+        "N": 86,
+        "win_rate": 43.0,
+        "roi_pct": 11.36,
+        "avg_odds": 160.0,
+        "reliable": true
+      },
+      "Mod Dog (+200 to +400)": {
+        "N": 36,
+        "win_rate": 25.0,
+        "roi_pct": -13.75,
+        "avg_odds": 262.0,
+        "reliable": true
+      },
+      "Heavy Dog (+400+)": {
+        "N": 30,
+        "win_rate": 10.0,
+        "roi_pct": -38.17,
+        "avg_odds": 510.0,
+        "reliable": true
+      }
+    },
+    "Z3_Watch (3-5%)": {
+      "Heavy Fav (<-300)": {
+        "N": 86,
+        "win_rate": 93.0,
+        "roi_pct": 18.36,
+        "avg_odds": -360.0,
+        "reliable": true
+      },
+      "Mod Fav (-300 to -150)": {
+        "N": 147,
+        "win_rate": 82.3,
+        "roi_pct": 20.65,
+        "avg_odds": -210.0,
+        "reliable": true
+      },
+      "Slight Fav (-150 to -110)": {
+        "N": 58,
+        "win_rate": 67.2,
+        "roi_pct": 18.91,
+        "avg_odds": -132.0,
+        "reliable": true
+      },
+      "Pick'em (-110 to +110)": {
+        "N": 43,
+        "win_rate": 53.5,
+        "roi_pct": 6.64,
+        "avg_odds": -102.0,
+        "reliable": true
+      },
+      "Slight Dog (+110 to +200)": {
+        "N": 136,
+        "win_rate": 47.8,
+        "roi_pct": 20.02,
+        "avg_odds": 160.0,
+        "reliable": true
+      },
+      "Mod Dog (+200 to +400)": {
+        "N": 57,
+        "win_rate": 35.1,
+        "roi_pct": 20.53,
+        "avg_odds": 255.0,
+        "reliable": true
+      },
+      "Heavy Dog (+400+)": {
+        "N": 41,
+        "win_rate": 4.9,
+        "roi_pct": -72.2,
+        "avg_odds": 600.0,
+        "reliable": true
+      }
+    },
+    "Z4_Value (5-8%)": {
+      "Heavy Fav (<-300)": {
+        "N": 46,
+        "win_rate": 100.0,
+        "roi_pct": 28.18,
+        "avg_odds": -355.0,
+        "reliable": true
+      },
+      "Mod Fav (-300 to -150)": {
+        "N": 141,
+        "win_rate": 86.5,
+        "roi_pct": 29.08,
+        "avg_odds": -200.0,
+        "reliable": true
+      },
+      "Slight Fav (-150 to -110)": {
+        "N": 87,
+        "win_rate": 80.5,
+        "roi_pct": 41.68,
+        "avg_odds": -135.0,
+        "reliable": true
+      },
+      "Pick'em (-110 to +110)": {
+        "N": 60,
+        "win_rate": 68.3,
+        "roi_pct": 37.78,
+        "avg_odds": 102.0,
+        "reliable": true
+      },
+      "Slight Dog (+110 to +200)": {
+        "N": 134,
+        "win_rate": 56.7,
+        "roi_pct": 43.09,
+        "avg_odds": 144.0,
+        "reliable": true
+      },
+      "Mod Dog (+200 to +400)": {
+        "N": 75,
+        "win_rate": 40.0,
+        "roi_pct": 41.47,
+        "avg_odds": 245.0,
+        "reliable": true
+      },
+      "Heavy Dog (+400+)": {
+        "N": 35,
+        "win_rate": 8.6,
+        "roi_pct": -39.71,
+        "avg_odds": 600.0,
+        "reliable": true
+      }
+    },
+    "Z5_StrongVal (8-10%)": {
+      "Heavy Fav (<-300)": {
+        "N": 7,
+        "win_rate": 100.0,
+        "roi_pct": 28.94,
+        "avg_odds": -350.0,
+        "reliable": false
+      },
+      "Mod Fav (-300 to -150)": {
+        "N": 65,
+        "win_rate": 96.9,
+        "roi_pct": 44.49,
+        "avg_odds": -200.0,
+        "reliable": true
+      },
+      "Slight Fav (-150 to -110)": {
+        "N": 37,
+        "win_rate": 81.1,
+        "roi_pct": 42.93,
+        "avg_odds": -130.0,
+        "reliable": true
+      },
+      "Pick'em (-110 to +110)": {
+        "N": 28,
+        "win_rate": 71.4,
+        "roi_pct": 45.24,
+        "avg_odds": 105.0,
+        "reliable": true
+      },
+      "Slight Dog (+110 to +200)": {
+        "N": 50,
+        "win_rate": 78.0,
+        "roi_pct": 93.86,
+        "avg_odds": 145.0,
+        "reliable": true
+      },
+      "Mod Dog (+200 to +400)": {
+        "N": 29,
+        "win_rate": 48.3,
+        "roi_pct": 77.76,
+        "avg_odds": 310.0,
+        "reliable": true
+      },
+      "Heavy Dog (+400+)": {
+        "N": 12,
+        "win_rate": 8.3,
+        "roi_pct": -50.83,
+        "avg_odds": 570.0,
+        "reliable": true
+      }
+    },
+    "Z6_MaxVal (>10%)": {
+      "Heavy Fav (<-300)": {
+        "N": 2,
+        "win_rate": 100.0,
+        "roi_pct": 30.62,
+        "avg_odds": -328.0,
+        "reliable": false
+      },
+      "Mod Fav (-300 to -150)": {
+        "N": 61,
+        "win_rate": 96.7,
+        "roi_pct": 46.17,
+        "avg_odds": -190.0,
+        "reliable": true
+      },
+      "Slight Fav (-150 to -110)": {
+        "N": 57,
+        "win_rate": 87.7,
+        "roi_pct": 55.14,
+        "avg_odds": -135.0,
+        "reliable": true
+      },
+      "Pick'em (-110 to +110)": {
+        "N": 75,
+        "win_rate": 90.7,
+        "roi_pct": 82.7,
+        "avg_odds": 102.0,
+        "reliable": true
+      },
+      "Slight Dog (+110 to +200)": {
+        "N": 145,
+        "win_rate": 77.9,
+        "roi_pct": 93.25,
+        "avg_odds": 144.0,
+        "reliable": true
+      },
+      "Mod Dog (+200 to +400)": {
+        "N": 49,
+        "win_rate": 65.3,
+        "roi_pct": 150.0,
+        "avg_odds": 265.0,
+        "reliable": true
+      },
+      "Heavy Dog (+400+)": {
+        "N": 20,
+        "win_rate": 20.0,
+        "roi_pct": 21.25,
+        "avg_odds": 540.0,
+        "reliable": true
+      }
+    }
+  },
+  "zone_marginal": {
+    "0": {
+      "N": 438,
+      "win_rate": 48.6,
+      "roi_pct": -13.76
+    },
+    "1": {
+      "N": 410,
+      "win_rate": 56.8,
+      "roi_pct": 3.17
+    },
+    "2": {
+      "N": 376,
+      "win_rate": 59.8,
+      "roi_pct": 9.89
+    },
+    "3": {
+      "N": 568,
+      "win_rate": 61.6,
+      "roi_pct": 12.2
+    },
+    "4": {
+      "N": 578,
+      "win_rate": 67.1,
+      "roi_pct": 32.5
+    },
+    "5": {
+      "N": 228,
+      "win_rate": 76.3,
+      "roi_pct": 53.89
+    },
+    "6": {
+      "N": 409,
+      "win_rate": 80.2,
+      "roi_pct": 81.95
+    }
+  },
+  "tier_marginal": {
+    "Heavy Fav (<-300)": {
+      "N": 348,
+      "win_rate": 87.4,
+      "roi_pct": 9.63,
+      "avg_odds": -380.0
+    },
+    "Mod Fav (-300 to -150)": {
+      "N": 737,
+      "win_rate": 81.0,
+      "roi_pct": 20.26,
+      "avg_odds": -200.0
+    },
+    "Slight Fav (-150 to -110)": {
+      "N": 359,
+      "win_rate": 75.8,
+      "roi_pct": 33.27,
+      "avg_odds": -135.0
+    },
+    "Pick'em (-110 to +110)": {
+      "N": 290,
+      "win_rate": 67.9,
+      "roi_pct": 36.5,
+      "avg_odds": 100.0
+    },
+    "Slight Dog (+110 to +200)": {
+      "N": 730,
+      "win_rate": 53.8,
+      "roi_pct": 35.54,
+      "avg_odds": 150.0
+    },
+    "Mod Dog (+200 to +400)": {
+      "N": 368,
+      "win_rate": 35.6,
+      "roi_pct": 29.9,
+      "avg_odds": 260.0
+    },
+    "Heavy Dog (+400+)": {
+      "N": 175,
+      "win_rate": 9.7,
+      "roi_pct": -41.4,
+      "avg_odds": 525.0
+    }
+  },
+  "q1_heavy_dog_by_zone": {
+    "overall": {
+      "N": 175,
+      "win_rate": 9.7,
+      "roi_pct": -41.4
+    },
+    "by_zone": {
+      "0": {
+        "zone_label": "Lock (<1%)",
+        "N": 20,
+        "win_rate": 10.0,
+        "roi_pct": -47.0
+      },
+      "1": {
+        "zone_label": "Strong (1-2%)",
+        "N": 17,
+        "win_rate": 11.8,
+        "roi_pct": -36.76
+      },
+      "2": {
+        "zone_label": "Lean (2-3%)",
+        "N": 30,
+        "win_rate": 10.0,
+        "roi_pct": -38.17
+      },
+      "3": {
+        "zone_label": "Watch (3-5%)",
+        "N": 41,
+        "win_rate": 4.9,
+        "roi_pct": -72.2
+      },
+      "4": {
+        "zone_label": "Value (5-8%)",
+        "N": 35,
+        "win_rate": 8.6,
+        "roi_pct": -39.71
+      },
+      "5": {
+        "zone_label": "StrongVal (8-10%)",
+        "N": 12,
+        "win_rate": 8.3,
+        "roi_pct": -50.83
+      },
+      "6": {
+        "zone_label": "MaxVal (>10%)",
+        "N": 20,
+        "win_rate": 20.0,
+        "roi_pct": 21.25
+      }
+    }
+  },
+  "q2_dominance": {
+    "zone_wr_range_pp": 31.6,
+    "tier_wr_range_pp": 77.7
+  },
+  "q3_direction": {
+    "pos_gap": {
+      "N": 1820,
+      "win_rate": 79.8,
+      "roi_pct": 28.97,
+      "by_zone": {
+        "0": {
+          "N": 231,
+          "win_rate": 70.1,
+          "roi_pct": 0.05
+        },
+        "1": {
+          "N": 235,
+          "win_rate": 73.6,
+          "roi_pct": 7.24
+        },
+        "2": {
+          "N": 214,
+          "win_rate": 79.9,
+          "roi_pct": 20.32
+        },
+        "3": {
+          "N": 330,
+          "win_rate": 78.8,
+          "roi_pct": 17.53
+        },
+        "4": {
+          "N": 354,
+          "win_rate": 81.9,
+          "roi_pct": 33.05
+        },
+        "5": {
+          "N": 154,
+          "win_rate": 85.7,
+          "roi_pct": 45.31
+        },
+        "6": {
+          "N": 302,
+          "win_rate": 87.7,
+          "roi_pct": 73.49
+        }
+      }
+    },
+    "neg_gap": {
+      "N": 1187,
+      "win_rate": 38.6,
+      "roi_pct": 14.99,
+      "by_zone": {
+        "0": {
+          "N": 207,
+          "win_rate": 24.6,
+          "roi_pct": -29.16
+        },
+        "1": {
+          "N": 175,
+          "win_rate": 34.3,
+          "roi_pct": -2.29
+        },
+        "2": {
+          "N": 162,
+          "win_rate": 33.3,
+          "roi_pct": -3.89
+        },
+        "3": {
+          "N": 238,
+          "win_rate": 37.8,
+          "roi_pct": 4.81
+        },
+        "4": {
+          "N": 224,
+          "win_rate": 43.8,
+          "roi_pct": 31.62
+        },
+        "5": {
+          "N": 74,
+          "win_rate": 56.8,
+          "roi_pct": 71.76
+        },
+        "6": {
+          "N": 107,
+          "win_rate": 58.9,
+          "roi_pct": 105.84
+        }
+      }
+    },
+    "near_zero": {
+      "N": 0,
+      "win_rate": null,
+      "roi_pct": null
+    }
+  },
+  "q4_confidence_matrix": {
+    "Z0_Heavy Fav (<-300)": {
+      "zone": 0,
+      "zone_label": "Lock (<1%)",
+      "tier": "Heavy Fav (<-300)",
+      "win_rate": 81.9,
+      "N": 72,
+      "roi_pct": 0.46,
+      "avg_odds": -432.0,
+      "reliable": true
+    },
+    "Z0_Mod Fav (-300 to -150)": {
+      "zone": 0,
+      "zone_label": "Lock (<1%)",
+      "tier": "Mod Fav (-300 to -150)",
+      "win_rate": 65.8,
+      "N": 120,
+      "roi_pct": -3.19,
+      "avg_odds": -200.0,
+      "reliable": true
+    },
+    "Z0_Slight Fav (-150 to -110)": {
+      "zone": 0,
+      "zone_label": "Lock (<1%)",
+      "tier": "Slight Fav (-150 to -110)",
+      "win_rate": 61.3,
+      "N": 31,
+      "roi_pct": 6.63,
+      "avg_odds": -135.0,
+      "reliable": true
+    },
+    "Z0_Pick'em (-110 to +110)": {
+      "zone": 0,
+      "zone_label": "Lock (<1%)",
+      "tier": "Pick'em (-110 to +110)",
+      "win_rate": 42.4,
+      "N": 33,
+      "roi_pct": -15.86,
+      "avg_odds": 100.0,
+      "reliable": true
+    },
+    "Z0_Slight Dog (+110 to +200)": {
+      "zone": 0,
+      "zone_label": "Lock (<1%)",
+      "tier": "Slight Dog (+110 to +200)",
+      "win_rate": 31.9,
+      "N": 91,
+      "roi_pct": -18.08,
+      "avg_odds": 160.0,
+      "reliable": true
+    },
+    "Z0_Mod Dog (+200 to +400)": {
+      "zone": 0,
+      "zone_label": "Lock (<1%)",
+      "tier": "Mod Dog (+200 to +400)",
+      "win_rate": 15.5,
+      "N": 71,
+      "roi_pct": -39.04,
+      "avg_odds": 275.0,
+      "reliable": true
+    },
+    "Z0_Heavy Dog (+400+)": {
+      "zone": 0,
+      "zone_label": "Lock (<1%)",
+      "tier": "Heavy Dog (+400+)",
+      "win_rate": 10.0,
+      "N": 20,
+      "roi_pct": -47.0,
+      "avg_odds": 450.0,
+      "reliable": true
+    },
+    "Z1_Heavy Fav (<-300)": {
+      "zone": 1,
+      "zone_label": "Strong (1-2%)",
+      "tier": "Heavy Fav (<-300)",
+      "win_rate": 80.5,
+      "N": 77,
+      "roi_pct": -0.93,
+      "avg_odds": -420.0,
+      "reliable": true
+    },
+    "Z1_Mod Fav (-300 to -150)": {
+      "zone": 1,
+      "zone_label": "Strong (1-2%)",
+      "tier": "Mod Fav (-300 to -150)",
+      "win_rate": 71.6,
+      "N": 102,
+      "roi_pct": 6.24,
+      "avg_odds": -200.0,
+      "reliable": true
+    },
+    "Z1_Slight Fav (-150 to -110)": {
+      "zone": 1,
+      "zone_label": "Strong (1-2%)",
+      "tier": "Slight Fav (-150 to -110)",
+      "win_rate": 68.1,
+      "N": 47,
+      "roi_pct": 18.6,
+      "avg_odds": -135.0,
+      "reliable": true
+    },
+    "Z1_Pick'em (-110 to +110)": {
+      "zone": 1,
+      "zone_label": "Strong (1-2%)",
+      "tier": "Pick'em (-110 to +110)",
+      "win_rate": 53.6,
+      "N": 28,
+      "roi_pct": 7.21,
+      "avg_odds": 100.0,
+      "reliable": true
+    },
+    "Z1_Slight Dog (+110 to +200)": {
+      "zone": 1,
+      "zone_label": "Strong (1-2%)",
+      "tier": "Slight Dog (+110 to +200)",
+      "win_rate": 38.6,
+      "N": 88,
+      "roi_pct": -1.15,
+      "avg_odds": 155.0,
+      "reliable": true
+    },
+    "Z1_Mod Dog (+200 to +400)": {
+      "zone": 1,
+      "zone_label": "Strong (1-2%)",
+      "tier": "Mod Dog (+200 to +400)",
+      "win_rate": 29.4,
+      "N": 51,
+      "roi_pct": 7.55,
+      "avg_odds": 245.0,
+      "reliable": true
+    },
+    "Z1_Heavy Dog (+400+)": {
+      "zone": 1,
+      "zone_label": "Strong (1-2%)",
+      "tier": "Heavy Dog (+400+)",
+      "win_rate": 11.8,
+      "N": 17,
+      "roi_pct": -36.76,
+      "avg_odds": 460.0,
+      "reliable": true
+    },
+    "Z2_Heavy Fav (<-300)": {
+      "zone": 2,
+      "zone_label": "Lean (2-3%)",
+      "tier": "Heavy Fav (<-300)",
+      "win_rate": 82.8,
+      "N": 58,
+      "roi_pct": 4.31,
+      "avg_odds": -375.0,
+      "reliable": true
+    },
+    "Z2_Mod Fav (-300 to -150)": {
+      "zone": 2,
+      "zone_label": "Lean (2-3%)",
+      "tier": "Mod Fav (-300 to -150)",
+      "win_rate": 79.2,
+      "N": 101,
+      "roi_pct": 18.16,
+      "avg_odds": -200.0,
+      "reliable": true
+    },
+    "Z2_Slight Fav (-150 to -110)": {
+      "zone": 2,
+      "zone_label": "Lean (2-3%)",
+      "tier": "Slight Fav (-150 to -110)",
+      "win_rate": 76.2,
+      "N": 42,
+      "roi_pct": 33.58,
+      "avg_odds": -135.0,
+      "reliable": true
+    },
+    "Z2_Pick'em (-110 to +110)": {
+      "zone": 2,
+      "zone_label": "Lean (2-3%)",
+      "tier": "Pick'em (-110 to +110)",
+      "win_rate": 69.6,
+      "N": 23,
+      "roi_pct": 38.54,
+      "avg_odds": 100.0,
+      "reliable": true
+    },
+    "Z2_Slight Dog (+110 to +200)": {
+      "zone": 2,
+      "zone_label": "Lean (2-3%)",
+      "tier": "Slight Dog (+110 to +200)",
+      "win_rate": 43.0,
+      "N": 86,
+      "roi_pct": 11.36,
+      "avg_odds": 160.0,
+      "reliable": true
+    },
+    "Z2_Mod Dog (+200 to +400)": {
+      "zone": 2,
+      "zone_label": "Lean (2-3%)",
+      "tier": "Mod Dog (+200 to +400)",
+      "win_rate": 25.0,
+      "N": 36,
+      "roi_pct": -13.75,
+      "avg_odds": 262.0,
+      "reliable": true
+    },
+    "Z2_Heavy Dog (+400+)": {
+      "zone": 2,
+      "zone_label": "Lean (2-3%)",
+      "tier": "Heavy Dog (+400+)",
+      "win_rate": 10.0,
+      "N": 30,
+      "roi_pct": -38.17,
+      "avg_odds": 510.0,
+      "reliable": true
+    },
+    "Z3_Heavy Fav (<-300)": {
+      "zone": 3,
+      "zone_label": "Watch (3-5%)",
+      "tier": "Heavy Fav (<-300)",
+      "win_rate": 93.0,
+      "N": 86,
+      "roi_pct": 18.36,
+      "avg_odds": -360.0,
+      "reliable": true
+    },
+    "Z3_Mod Fav (-300 to -150)": {
+      "zone": 3,
+      "zone_label": "Watch (3-5%)",
+      "tier": "Mod Fav (-300 to -150)",
+      "win_rate": 82.3,
+      "N": 147,
+      "roi_pct": 20.65,
+      "avg_odds": -210.0,
+      "reliable": true
+    },
+    "Z3_Slight Fav (-150 to -110)": {
+      "zone": 3,
+      "zone_label": "Watch (3-5%)",
+      "tier": "Slight Fav (-150 to -110)",
+      "win_rate": 67.2,
+      "N": 58,
+      "roi_pct": 18.91,
+      "avg_odds": -132.0,
+      "reliable": true
+    },
+    "Z3_Pick'em (-110 to +110)": {
+      "zone": 3,
+      "zone_label": "Watch (3-5%)",
+      "tier": "Pick'em (-110 to +110)",
+      "win_rate": 53.5,
+      "N": 43,
+      "roi_pct": 6.64,
+      "avg_odds": -102.0,
+      "reliable": true
+    },
+    "Z3_Slight Dog (+110 to +200)": {
+      "zone": 3,
+      "zone_label": "Watch (3-5%)",
+      "tier": "Slight Dog (+110 to +200)",
+      "win_rate": 47.8,
+      "N": 136,
+      "roi_pct": 20.02,
+      "avg_odds": 160.0,
+      "reliable": true
+    },
+    "Z3_Mod Dog (+200 to +400)": {
+      "zone": 3,
+      "zone_label": "Watch (3-5%)",
+      "tier": "Mod Dog (+200 to +400)",
+      "win_rate": 35.1,
+      "N": 57,
+      "roi_pct": 20.53,
+      "avg_odds": 255.0,
+      "reliable": true
+    },
+    "Z3_Heavy Dog (+400+)": {
+      "zone": 3,
+      "zone_label": "Watch (3-5%)",
+      "tier": "Heavy Dog (+400+)",
+      "win_rate": 4.9,
+      "N": 41,
+      "roi_pct": -72.2,
+      "avg_odds": 600.0,
+      "reliable": true
+    },
+    "Z4_Heavy Fav (<-300)": {
+      "zone": 4,
+      "zone_label": "Value (5-8%)",
+      "tier": "Heavy Fav (<-300)",
+      "win_rate": 100.0,
+      "N": 46,
+      "roi_pct": 28.18,
+      "avg_odds": -355.0,
+      "reliable": true
+    },
+    "Z4_Mod Fav (-300 to -150)": {
+      "zone": 4,
+      "zone_label": "Value (5-8%)",
+      "tier": "Mod Fav (-300 to -150)",
+      "win_rate": 86.5,
+      "N": 141,
+      "roi_pct": 29.08,
+      "avg_odds": -200.0,
+      "reliable": true
+    },
+    "Z4_Slight Fav (-150 to -110)": {
+      "zone": 4,
+      "zone_label": "Value (5-8%)",
+      "tier": "Slight Fav (-150 to -110)",
+      "win_rate": 80.5,
+      "N": 87,
+      "roi_pct": 41.68,
+      "avg_odds": -135.0,
+      "reliable": true
+    },
+    "Z4_Pick'em (-110 to +110)": {
+      "zone": 4,
+      "zone_label": "Value (5-8%)",
+      "tier": "Pick'em (-110 to +110)",
+      "win_rate": 68.3,
+      "N": 60,
+      "roi_pct": 37.78,
+      "avg_odds": 102.0,
+      "reliable": true
+    },
+    "Z4_Slight Dog (+110 to +200)": {
+      "zone": 4,
+      "zone_label": "Value (5-8%)",
+      "tier": "Slight Dog (+110 to +200)",
+      "win_rate": 56.7,
+      "N": 134,
+      "roi_pct": 43.09,
+      "avg_odds": 144.0,
+      "reliable": true
+    },
+    "Z4_Mod Dog (+200 to +400)": {
+      "zone": 4,
+      "zone_label": "Value (5-8%)",
+      "tier": "Mod Dog (+200 to +400)",
+      "win_rate": 40.0,
+      "N": 75,
+      "roi_pct": 41.47,
+      "avg_odds": 245.0,
+      "reliable": true
+    },
+    "Z4_Heavy Dog (+400+)": {
+      "zone": 4,
+      "zone_label": "Value (5-8%)",
+      "tier": "Heavy Dog (+400+)",
+      "win_rate": 8.6,
+      "N": 35,
+      "roi_pct": -39.71,
+      "avg_odds": 600.0,
+      "reliable": true
+    },
+    "Z5_Heavy Fav (<-300)": {
+      "zone": 5,
+      "zone_label": "StrongVal (8-10%)",
+      "tier": "Heavy Fav (<-300)",
+      "win_rate": 100.0,
+      "N": 7,
+      "roi_pct": 28.94,
+      "avg_odds": -350.0,
+      "reliable": false
+    },
+    "Z5_Mod Fav (-300 to -150)": {
+      "zone": 5,
+      "zone_label": "StrongVal (8-10%)",
+      "tier": "Mod Fav (-300 to -150)",
+      "win_rate": 96.9,
+      "N": 65,
+      "roi_pct": 44.49,
+      "avg_odds": -200.0,
+      "reliable": true
+    },
+    "Z5_Slight Fav (-150 to -110)": {
+      "zone": 5,
+      "zone_label": "StrongVal (8-10%)",
+      "tier": "Slight Fav (-150 to -110)",
+      "win_rate": 81.1,
+      "N": 37,
+      "roi_pct": 42.93,
+      "avg_odds": -130.0,
+      "reliable": true
+    },
+    "Z5_Pick'em (-110 to +110)": {
+      "zone": 5,
+      "zone_label": "StrongVal (8-10%)",
+      "tier": "Pick'em (-110 to +110)",
+      "win_rate": 71.4,
+      "N": 28,
+      "roi_pct": 45.24,
+      "avg_odds": 105.0,
+      "reliable": true
+    },
+    "Z5_Slight Dog (+110 to +200)": {
+      "zone": 5,
+      "zone_label": "StrongVal (8-10%)",
+      "tier": "Slight Dog (+110 to +200)",
+      "win_rate": 78.0,
+      "N": 50,
+      "roi_pct": 93.86,
+      "avg_odds": 145.0,
+      "reliable": true
+    },
+    "Z5_Mod Dog (+200 to +400)": {
+      "zone": 5,
+      "zone_label": "StrongVal (8-10%)",
+      "tier": "Mod Dog (+200 to +400)",
+      "win_rate": 48.3,
+      "N": 29,
+      "roi_pct": 77.76,
+      "avg_odds": 310.0,
+      "reliable": true
+    },
+    "Z5_Heavy Dog (+400+)": {
+      "zone": 5,
+      "zone_label": "StrongVal (8-10%)",
+      "tier": "Heavy Dog (+400+)",
+      "win_rate": 8.3,
+      "N": 12,
+      "roi_pct": -50.83,
+      "avg_odds": 570.0,
+      "reliable": false
+    },
+    "Z6_Heavy Fav (<-300)": {
+      "zone": 6,
+      "zone_label": "MaxVal (>10%)",
+      "tier": "Heavy Fav (<-300)",
+      "win_rate": 100.0,
+      "N": 2,
+      "roi_pct": 30.62,
+      "avg_odds": -328.0,
+      "reliable": false
+    },
+    "Z6_Mod Fav (-300 to -150)": {
+      "zone": 6,
+      "zone_label": "MaxVal (>10%)",
+      "tier": "Mod Fav (-300 to -150)",
+      "win_rate": 96.7,
+      "N": 61,
+      "roi_pct": 46.17,
+      "avg_odds": -190.0,
+      "reliable": true
+    },
+    "Z6_Slight Fav (-150 to -110)": {
+      "zone": 6,
+      "zone_label": "MaxVal (>10%)",
+      "tier": "Slight Fav (-150 to -110)",
+      "win_rate": 87.7,
+      "N": 57,
+      "roi_pct": 55.14,
+      "avg_odds": -135.0,
+      "reliable": true
+    },
+    "Z6_Pick'em (-110 to +110)": {
+      "zone": 6,
+      "zone_label": "MaxVal (>10%)",
+      "tier": "Pick'em (-110 to +110)",
+      "win_rate": 90.7,
+      "N": 75,
+      "roi_pct": 82.7,
+      "avg_odds": 102.0,
+      "reliable": true
+    },
+    "Z6_Slight Dog (+110 to +200)": {
+      "zone": 6,
+      "zone_label": "MaxVal (>10%)",
+      "tier": "Slight Dog (+110 to +200)",
+      "win_rate": 77.9,
+      "N": 145,
+      "roi_pct": 93.25,
+      "avg_odds": 144.0,
+      "reliable": true
+    },
+    "Z6_Mod Dog (+200 to +400)": {
+      "zone": 6,
+      "zone_label": "MaxVal (>10%)",
+      "tier": "Mod Dog (+200 to +400)",
+      "win_rate": 65.3,
+      "N": 49,
+      "roi_pct": 150.0,
+      "avg_odds": 265.0,
+      "reliable": true
+    },
+    "Z6_Heavy Dog (+400+)": {
+      "zone": 6,
+      "zone_label": "MaxVal (>10%)",
+      "tier": "Heavy Dog (+400+)",
+      "win_rate": 20.0,
+      "N": 20,
+      "roi_pct": 21.25,
+      "avg_odds": 540.0,
+      "reliable": true
+    }
+  }
+}

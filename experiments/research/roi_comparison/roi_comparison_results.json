@@ -1,0 +1,241 @@
+{
+  "meta": {
+    "total_fights": 3007,
+    "date_range": [
+      "2018-01-14",
+      "2026-03-28"
+    ],
+    "m1_accuracy": 0.5118,
+    "m2a_accuracy": 0.5141
+  },
+  "overall_roi": {
+    "m1_bets": 3007,
+    "m1_profit": -302.38,
+    "m1_roi": -0.1006,
+    "m2a_bets": 3007,
+    "m2a_profit": -609.1,
+    "m2a_roi": -0.2026,
+    "roi_gap_pp": 10.2,
+    "winner": "M1"
+  },
+  "by_agreement": {
+    "Both agree (same pick)": {
+      "n": 2478,
+      "m1_wr": 0.5157,
+      "m1_roi": -0.1985,
+      "m2a_wr": 0.5157,
+      "m2a_roi": -0.1985,
+      "winner": "M2A"
+    },
+    "M1 picks F1 / M2A picks F2": {
+      "n": 308,
+      "m1_wr": 0.5357,
+      "m1_roi": 0.4192,
+      "m2a_wr": 0.4643,
+      "m2a_roi": -0.2613,
+      "winner": "M1"
+    },
+    "M1 picks F2 / M2A picks F1": {
+      "n": 221,
+      "m1_wr": 0.4344,
+      "m1_roi": 0.2732,
+      "m2a_wr": 0.5656,
+      "m2a_roi": -0.1662,
+      "winner": "M1"
+    },
+    "All disagreements": {
+      "n": 529,
+      "m1_wr": 0.4934,
+      "m1_roi": 0.3582,
+      "m2a_wr": 0.5066,
+      "m2a_roi": -0.2216,
+      "winner": "M1"
+    }
+  },
+  "m1_by_tier": {
+    "Heavy Fav": {
+      "n": 652,
+      "wr": 0.4709,
+      "roi": -0.4263
+    },
+    "Mod Fav": {
+      "n": 1086,
+      "wr": 0.5525,
+      "roi": -0.1806
+    },
+    "Slight Fav": {
+      "n": 453,
+      "wr": 0.4857,
+      "roi": -0.1433
+    },
+    "Pick'em": {
+      "n": 230,
+      "wr": 0.5043,
+      "roi": 0.0061
+    },
+    "Slight Dog": {
+      "n": 430,
+      "wr": 0.5256,
+      "roi": 0.3032
+    },
+    "Mod Dog": {
+      "n": 146,
+      "wr": 0.4452,
+      "roi": 0.5884
+    }
+  },
+  "m2a_by_tier": {
+    "Heavy Fav": {
+      "n": 733,
+      "wr": 0.4816,
+      "roi": -0.4118
+    },
+    "Mod Fav": {
+      "n": 1395,
+      "wr": 0.5412,
+      "roi": -0.1971
+    },
+    "Slight Fav": {
+      "n": 503,
+      "wr": 0.4851,
+      "roi": -0.1461
+    },
+    "Pick'em": {
+      "n": 233,
+      "wr": 0.515,
+      "roi": 0.0279
+    },
+    "Slight Dog": {
+      "n": 139,
+      "wr": 0.5036,
+      "roi": 0.1803
+    }
+  },
+  "by_year": [
+    {
+      "year": 2018,
+      "n": 382,
+      "m1_wr": 0.5157,
+      "m1_roi": -0.1098,
+      "m2a_wr": 0.5079,
+      "m2a_roi": -0.2066,
+      "gap_pp": 9.69
+    },
+    {
+      "year": 2019,
+      "n": 401,
+      "m1_wr": 0.4788,
+      "m1_roi": -0.1596,
+      "m2a_wr": 0.5187,
+      "m2a_roi": -0.1707,
+      "gap_pp": 1.11
+    },
+    {
+      "year": 2020,
+      "n": 358,
+      "m1_wr": 0.5223,
+      "m1_roi": -0.0683,
+      "m2a_wr": 0.5112,
+      "m2a_roi": -0.1872,
+      "gap_pp": 11.89
+    },
+    {
+      "year": 2021,
+      "n": 382,
+      "m1_wr": 0.4948,
+      "m1_roi": -0.1193,
+      "m2a_wr": 0.4948,
+      "m2a_roi": -0.214,
+      "gap_pp": 9.46
+    },
+    {
+      "year": 2022,
+      "n": 370,
+      "m1_wr": 0.5135,
+      "m1_roi": -0.1125,
+      "m2a_wr": 0.5243,
+      "m2a_roi": -0.2023,
+      "gap_pp": 8.98
+    },
+    {
+      "year": 2023,
+      "n": 317,
+      "m1_wr": 0.5016,
+      "m1_roi": -0.1171,
+      "m2a_wr": 0.5205,
+      "m2a_roi": -0.1873,
+      "gap_pp": 7.02
+    },
+    {
+      "year": 2024,
+      "n": 287,
+      "m1_wr": 0.5296,
+      "m1_roi": -0.0337,
+      "m2a_wr": 0.4913,
+      "m2a_roi": -0.2586,
+      "gap_pp": 22.49
+    },
+    {
+      "year": 2025,
+      "n": 409,
+      "m1_wr": 0.5428,
+      "m1_roi": -0.0537,
+      "m2a_wr": 0.5403,
+      "m2a_roi": -0.196,
+      "gap_pp": 14.23
+    },
+    {
+      "year": 2026,
+      "n": 101,
+      "m1_wr": 0.505,
+      "m1_roi": -0.1584,
+      "m2a_wr": 0.505,
+      "m2a_roi": -0.241,
+      "gap_pp": 8.25
+    }
+  ],
+  "strategies": [
+    {
+      "name": "A: Always M2A",
+      "bets": 3007,
+      "accuracy": 0.5141,
+      "roi": -0.2026
+    },
+    {
+      "name": "B: Always M1",
+      "bets": 3007,
+      "accuracy": 0.5118,
+      "roi": -0.1006
+    },
+    {
+      "name": "C: Agree only (M2A pick)",
+      "bets": 2478,
+      "accuracy": 0.5157,
+      "roi": -0.1985
+    },
+    {
+      "name": "D: M1 on splits, M2A on agrees",
+      "bets": 3007,
+      "accuracy": 0.5118,
+      "roi": -0.1006
+    },
+    {
+      "name": "E: M2A on splits, M1 on agrees",
+      "bets": 3007,
+      "accuracy": 0.5141,
+      "roi": -0.2026
+    },
+    {
+      "name": "F: Agree + dog picks only",
+      "bets": 252,
+      "accuracy": 0.504,
+      "roi": 0.1335
+    },
+    {
+      "name": "G: Agree + fav picks only",
+      "bets": 2226,
+      "accuracy": 0.5171,
+      "roi": -0.2361
+    }
+  ]
+}

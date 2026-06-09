@@ -1,0 +1,73 @@
+[14:51:18] EXP6 — Stacking + G2-Domain
+============================================================
+[14:51:18] Loading data + feature engineering...
+  Base df: 4,589  train=3629  test=960
+[14:51:20] Computing Glicko-2 domain ratings (standard + KO + Sub + Decision)...
+  G2 history rows: std=14,354  ko=14,354  sub=14,354  dec=14,354
+  G2 columns merged cleanly — df_g6: 4,589 rows
+  Exp6 feature count: 132
+  Train aug: 7,258  Test: 960
+[14:51:21] Rebuilding Exp5 base models on G2 features...
+[14:51:21]  CatBoost Optuna (30 trials)...
+[14:55:56]  RF Optuna (30 trials)...
+[15:56:16]  LR best C=10.0
+[15:56:16] Stacking OOF (3 base models × 5 folds)...
+  OOF [1/3] lr...
+  OOF [2/3] cat...
+  OOF [3/3] rf...
+
+============================================================
+  EXP6 RESULT
+============================================================
+  Architecture   : Stacking (LR + CatBoost + RF)
+  Rating system  : Glicko-2 domain (std + KO + Sub + Decision)
+  Features       : 132
+  Test acc       : 72.0833%
+  Log-loss       : 0.560054
+  Brier          : 0.189387
+  vs baseline    : -0.4167pp
+  ✗ Does not beat baseline
+  Meta coefs     : {'lr': np.float64(1.833), 'cat': np.float64(2.327), 'rf': np.float64(0.74)}
+============================================================
+
+========================================================================
+  FINAL RANKED TABLE — ALL EXPERIMENTS
+========================================================================
+  Rk   Experiment                                            N  Rating                Acc%   LogLoss    Brier
+  ───  ────────────────────────────────────────────────  ─────  ────────────────  ────────  ────────  ───────
+  1    EXP5: Stacking (LR+CatBoost+RF)                      60  Elo K=48          72.6042%  0.562019  0.190219 ◄ BEST
+  2    BASELINE (LR70+XGB30, Elo, 129 feats)               129  Elo K=48          72.5000%  0.555988  0.188584 ◄ BASE
+  3    EXP1B: Glicko-2 + Domain                            132  G2 std+domain     72.1875%  0.558145  0.189579
+  4    EXP6: Stacking + G2-Domain                          132  G2 std+domain     72.0833%  0.560054  0.189387
+  5    EXP4: SVM RBF (C=1, scale)                           60  Elo K=48          71.8750%  0.572838  0.194059
+  6    EXP2 LR-Top60                                        60  Elo K=48          71.7708%  0.562580  0.191046
+  7    EXP2 LR-Top25                                        25  Elo K=48          71.5625%  0.573714  0.195741
+  8    EXP1A: Glicko-2 Standard                            129  G2 tau=0.5        71.4583%  0.558450  0.189734
+  9    EXP2 LR-Top40                                        40  Elo K=48          71.3542%  0.566880  0.192875
+  10   EXP3: LR-Only C=10.0, Top60                          60  Elo K=48          71.2500%  0.556988  0.189882
+  11   EXP4: CatBoost Optuna                                60  Elo K=48          70.9375%  0.573000  0.196000
+  12   EXP4: Random Forest Optuna                           60  Elo K=48          70.5208%  0.586490  0.200133
+  13   EXP4: Random Forest Default                          60  Elo K=48          70.3125%  0.594632  0.203449
+  14   EXP2 XGB-Top40                                       40  Elo K=48          70.2083%  0.594175  0.202177
+  15   EXP4: CatBoost Default                               60  Elo K=48          70.0000%  0.574177  0.195380
+  16   EXP2 XGB-Top60                                       60  Elo K=48          69.8958%  0.584033  0.199772
+  17   EXP4: LightGBM Optuna                                60  Elo K=48          69.3750%  0.569000  0.195832
+  18   EXP4: LightGBM Default                               60  Elo K=48          68.7500%  0.585927  0.200396
+  19   EXP2 XGB-Top25                                       25  Elo K=48          66.5625%  0.596045  0.205296
+
+  Baseline : 72.5000%  (LR70+XGB30, Elo, 129 feats)
+  Best     : EXP5: Stacking (LR+CatBoost+RF)
+           : 72.6042%  Δ=+0.1042pp
+
+  Key findings:
+  • All individual alternatives (LR, XGB, LGB, CatBoost, RF, SVM) FAIL to beat baseline
+  • Stacking (LR + CatBoost + RF) is the only architecture that beats it (+0.10pp)
+  • Glicko-2 domain features alone do NOT improve on standard Elo (Exp1B: -0.31pp)
+  • LR (and SVM) both closely match the blended baseline — XGBoost is the drag
+  • Reducing to Top60 SHAP features loses <0.5pp with LR; XGBoost degrades sharply
+  • EXP6 result: G2-domain + Stacking = 72.0833%  (-0.4167pp vs baseline)
+  • EXP6 does NOT beat baseline — Elo + stacking (Exp5) remains the best result
+────────────────────────────────────────────────────────────────────────
+
+  Saved → experiments/research/architecture_sprint_results_v3.json
+[15:57:19] EXP6 complete.

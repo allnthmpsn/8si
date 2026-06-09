@@ -1,0 +1,139 @@
+Loaded feature_columns_best.pkl: 114 features
+Base (non-Elo) features: 108
+========================================================================
+UFC EXPERIMENT 11  —  2026-04-21T14:05:43.089397
+Experiments: A (joint retune) + B (dynamic K Elo) + C (peak features)
+Baseline: 0.7314 temporal (K=48, all-career, 114 features)
+========================================================================
+
+========================================================================
+STEP 1 — Feature engineering
+========================================================================
+  career_fights_updated: 49,953 rows
+  ufc_stats_fights:      8,763 rows
+  Feature engineering done in 1.4s
+  UFC dates lookup: 940 fighters
+
+========================================================================
+STEP 2 — Load K=48 all-career Elo
+========================================================================
+  elo_ratings_history: 81,842 rows
+  master_elo rows — train: 2275 | test: 1020
+  Elo load done in 0.6s
+
+========================================================================
+EXPERIMENT A1 — LR Retune (100 Optuna trials, 114 features)
+========================================================================
+  Train: 4550 (aug) | Test: 1020
+  Best LR temporal: 0.7284
+  Params: penalty=l2, C=0.00711, l1_ratio=N/A, scaler=robust, solver=liblinear
+  A1 done in 21s
+
+========================================================================
+EXPERIMENT A2 — XGB Retune (75 Optuna trials, 114 features)
+========================================================================
+  Best XGB temporal: 0.7167
+  Params: n_est=708, lr=0.0236, depth=4, sub=0.696, col=0.620, mcw=13, gamma=1.150, reg_alpha=2.929, reg_lambda=1.514
+  A2 done in 65s
+
+========================================================================
+EXPERIMENT A3 — Blend ratios (jointly tuned LR + XGB)
+========================================================================
+  A3 — LR100 (solo, jointly tuned)                         t=0.7284  r=0.6995  feats=114  1s
+  A3 — LR95+XGB5 (jointly tuned)                           t=0.7284  r=0.7026  feats=114  1s
+  A3 — LR90+XGB10 (jointly tuned)                          t=0.7324  r=0.7056  feats=114  1s  *** NEW BEST ***
+  A3 — LR85+XGB15 (jointly tuned)                          t=0.7324  r=0.7071  feats=114  1s
+  A3 — LR80+XGB20 (jointly tuned)                          t=0.7324  r=0.7102  feats=114  1s
+  Best blend: LR90/XGB10 = 0.7324
+  A3 done in 1s
+
+========================================================================
+EXPERIMENT B — Dynamic-K Elo (opponent UFC experience)
+========================================================================
+  Computing dynamic-K Elo from all career fights...
+  Dynamic Elo history: 81,842 rows
+  elo_dif corr (dynamic K): 0.2220  vs K=48 fixed: 0.1982
+  B — Dynamic-K Elo (opp UFC exp, 114 feats)               t=0.7196  r=0.7056  feats=114  3s
+  elo_dif coefficient: +0.1449  (K=48 baseline: +0.2265)
+  B done in 3s
+
+========================================================================
+EXPERIMENT C — Elo peak features (6 new, 120 total)
+========================================================================
+  Rows (120 feats) — train: 2275 | test: 1020
+  C — Elo peak features (120 feats)                        t=0.7304  r=0.7041  feats=120  2s
+  C done in 2s
+
+========================================================================
+SAVING BEST MODEL
+========================================================================
+  [save] Saved → model/ufc_model_best.pkl + metadata
+
+========================================
+EXPERIMENT 11 — JOINT RETUNE + ELO VARIANTS
+========================================
+Baseline: 73.14% temporal
+
+EXPERIMENT A — JOINT RETUNE (114 features, K=48):
+  Best LR params: penalty=l2, C=0.00711, l1_ratio=0.500, scaler=robust
+  Best XGB params: n_estimators=708, lr=0.0236, depth=4, gamma=1.150, reg_alpha=2.929
+
+  Blend ratios:
+      100% LR:                    72.84%
+      95% LR + 5% XGB:            72.84%
+      90% LR + 10% XGB:           73.24% (current production)
+      85% LR + 15% XGB:           73.24%
+      80% LR + 20% XGB:           73.24%
+
+  Best blend: 90% LR + 10% XGB = 73.24% temporal
+
+EXPERIMENT B — DYNAMIC K ELO:
+  Temporal: 71.96% | vs baseline: -1.18%
+  elo_dif coefficient: +0.1449 (vs +0.2265 at K=48)
+
+EXPERIMENT C — ELO PEAK FEATURES (120 feats):
+  Temporal: 73.04% | vs baseline: -0.10%
+  New feature coefficients:
+    elo_peak_dif:     +0.1295
+    elo_vs_peak_dif:  +0.0134
+
+BEST RESULT: 73.24% (config: A3 — LR90+XGB10 (jointly tuned))
+vs baseline: +0.10%
+
+Saved: ✓ models  ✗ elo  ✓ metadata
+========================================
+
+
+========================================
+EXPERIMENT 11 — JOINT RETUNE + ELO VARIANTS
+========================================
+Baseline: 73.14% temporal
+
+EXPERIMENT A — JOINT RETUNE (114 features, K=48):
+  Best LR params: penalty=l2, C=0.00711, l1_ratio=0.500, scaler=robust
+  Best XGB params: n_estimators=708, lr=0.0236, depth=4, gamma=1.150, reg_alpha=2.929
+
+  Blend ratios:
+      100% LR:                    72.84%
+      95% LR + 5% XGB:            72.84%
+      90% LR + 10% XGB:           73.24% (current production)
+      85% LR + 15% XGB:           73.24%
+      80% LR + 20% XGB:           73.24%
+
+  Best blend: 90% LR + 10% XGB = 73.24% temporal
+
+EXPERIMENT B — DYNAMIC K ELO:
+  Temporal: 71.96% | vs baseline: -1.18%
+  elo_dif coefficient: +0.1449 (vs +0.2265 at K=48)
+
+EXPERIMENT C — ELO PEAK FEATURES (120 feats):
+  Temporal: 73.04% | vs baseline: -0.10%
+  New feature coefficients:
+    elo_peak_dif:     +0.1295
+    elo_vs_peak_dif:  +0.0134
+
+BEST RESULT: 73.24% (config: A3 — LR90+XGB10 (jointly tuned))
+vs baseline: +0.10%
+
+Saved: ✓ models  ✗ elo  ✓ metadata
+========================================

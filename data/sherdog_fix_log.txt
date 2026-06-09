@@ -1,0 +1,1025 @@
+Loading source data...
+  sherdog_records: 2231 fighters
+  ufc_fighters_final: 4455 fighters
+
+============================================================
+STEP 1: Detecting bad Sherdog matches
+============================================================
+Flagged 193 fighters — saved to data/bad_sherdog_matches.csv
+
+                   name  ufc_wins  ufc_losses  sherdog_wins  sherdog_losses                                                 reasons
+          AJ Cunningham        11           5             4               3                                 sh_wins(4)<ufc_wins(11)
+           Alatengheili        17          10            13               2                                sh_wins(13)<ufc_wins(17)
+      Aleksei Kunchenko        20           2            13               2                                sh_wins(13)<ufc_wins(20)
+        Aleksei Oleinik        60          17            13               2                                sh_wins(13)<ufc_wins(60)
+          Alex Da Silva        21           4             3               2                                 sh_wins(3)<ufc_wins(21)
+        Alexander Munoz         7           2             6               5                                  sh_wins(6)<ufc_wins(7)
+       Alexandr Romanov        18           3            13               2                                sh_wins(13)<ufc_wins(18)
+           Alibi Idiris        12           1            10               1                                sh_wins(10)<ufc_wins(12)
+          Amanda Cooper         3           5            13               2                                    wr_dif(0.81 vs 0.38)
+           Amanda Ribas        13           7            12               7                                sh_wins(12)<ufc_wins(13)
+    Anderson Dos Santos        21           9             1               1 sh_wins(1)<ufc_wins(21); sh_total(2)<3 with ufc_wins=21
+             Andre Lima        11           0             5               4           sh_wins(5)<ufc_wins(11); wr_dif(0.50 vs 1.00)
+             Aoriqileng        26          12            13               2                                sh_wins(13)<ufc_wins(26)
+          Askar Askarov        14           1             0               1 sh_wins(0)<ufc_wins(14); sh_total(1)<3 with ufc_wins=14
+         Austin Hubbard        17          10            16              11                                sh_wins(16)<ufc_wins(17)
+                BJ Penn        16          14            13               2                                sh_wins(13)<ufc_wins(16)
+     Benoit Saint Denis        17           3            13               2                                sh_wins(13)<ufc_wins(17)
+          Blood Diamond         3           3            13               2                                    wr_dif(0.81 vs 0.50)
+            Brad Katona        16           5            14               5                                sh_wins(14)<ufc_wins(16)
+         Brady Hiestand         9           2             8               2                                  sh_wins(8)<ufc_wins(9)
+          Brogan Walker         8           5             7               5                                  sh_wins(7)<ufc_wins(8)
+            Bruno Silva        23          13             0               2 sh_wins(0)<ufc_wins(23); sh_total(2)<3 with ufc_wins=23
+            Bruno Souza        10           3             7               7           sh_wins(7)<ufc_wins(10); wr_dif(0.47 vs 0.77)
+           Bryan Battle        13           2            12               3                                sh_wins(12)<ufc_wins(13)
+            CB Dollaway        17           9            13               2                                sh_wins(13)<ufc_wins(17)
+          Carla Esparza        20           8            19               8                                sh_wins(19)<ufc_wins(20)
+         Chepe Mariscal        18           7            13               2                                sh_wins(13)<ufc_wins(18)
+             Chris Beal        10           5             3               0                                 sh_wins(3)<ufc_wins(10)
+    Christian Rodriguez        12           4             0               1 sh_wins(0)<ufc_wins(12); sh_total(1)<3 with ufc_wins=12
+        Claudio Puelles        13           5            12               5                                sh_wins(12)<ufc_wins(13)
+            Cody Gibson        22          12            21              12                                sh_wins(21)<ufc_wins(22)
+            Cole Miller        21          11             0               1 sh_wins(0)<ufc_wins(21); sh_total(1)<3 with ufc_wins=21
+            Court McGee        23          14            22              14                                sh_wins(22)<ufc_wins(23)
+          Daniel Santos        14           2             5               2                                 sh_wins(5)<ufc_wins(14)
+       Daniil Donchenko        14           2            13               2                                sh_wins(13)<ufc_wins(14)
+     Demetrious Johnson        27           3            25               4                                sh_wins(25)<ufc_wins(27)
+            Dhiego Lima        17           9            15               9                                sh_wins(15)<ufc_wins(17)
+            Diego Rivas        10           2             7               2                                 sh_wins(7)<ufc_wins(10)
+          Diego Sanchez        31          13            30              14                                sh_wins(30)<ufc_wins(31)
+             Dooho Choi        16           4            13               2                                sh_wins(13)<ufc_wins(16)
+              Ed Herman        27          16            26              16                                sh_wins(26)<ufc_wins(27)
+            Erick Silva        19           9             0               1 sh_wins(0)<ufc_wins(19); sh_total(1)<3 with ufc_wins=19
+             Erik Silva         9           4             0               1   sh_wins(0)<ufc_wins(9); sh_total(1)<3 with ufc_wins=9
+           Felipe Silva         8           2             0               1   sh_wins(0)<ufc_wins(8); sh_total(1)<3 with ufc_wins=8
+      Felipe dos Santos         8           3             0               1   sh_wins(0)<ufc_wins(8); sh_total(1)<3 with ufc_wins=8
+         Fernando Bruno        15           4             1               2                                 sh_wins(1)<ufc_wins(15)
+          Frankie Saenz        13           7            12               7                                sh_wins(12)<ufc_wins(13)
+         Gabriel Santos        12           2             0               1 sh_wins(0)<ufc_wins(12); sh_total(1)<3 with ufc_wins=12
+          Gabriel Silva         8           2             5               4                                  sh_wins(5)<ufc_wins(8)
+      Henrique da Silva        14           5             0              15           sh_wins(0)<ufc_wins(14); wr_dif(0.00 vs 0.74)
+          Henry Briones        16           8            13               2                                sh_wins(13)<ufc_wins(16)
+      Ian Machado Garry        17           1            13               2                                sh_wins(13)<ufc_wins(17)
+              Ibo Aslan        14           4             0               1 sh_wins(0)<ufc_wins(14); sh_total(1)<3 with ufc_wins=14
+         Ike Villanueva        18          14             0               1 sh_wins(0)<ufc_wins(18); sh_total(1)<3 with ufc_wins=18
+            Ilir Latifi        17           9            16               9                                sh_wins(16)<ufc_wins(17)
+            JC Cottrell        17           5            13               2                                sh_wins(13)<ufc_wins(17)
+             JJ Aldrich        14           7            13               2                                sh_wins(13)<ufc_wins(14)
+           Jacare Souza        26          10            13               2                                sh_wins(13)<ufc_wins(26)
+           Jarjis Danho         7           1             6               1                                  sh_wins(6)<ufc_wins(7)
+              Joe Duffy        16           5             1               1 sh_wins(1)<ufc_wins(16); sh_total(2)<3 with ufc_wins=16
+             Joey Gomez         7           1             6               3                                  sh_wins(6)<ufc_wins(7)
+             John Allan        13           7             2               0 sh_wins(2)<ufc_wins(13); sh_total(2)<3 with ufc_wins=13
+          Johnny Walker        22           9             5               3                                 sh_wins(5)<ufc_wins(22)
+              Jon Jones        28           1             1               5           sh_wins(1)<ufc_wins(28); wr_dif(0.17 vs 0.97)
+        Jordan Williams         9           6             5               0            sh_wins(5)<ufc_wins(9); wr_dif(1.00 vs 0.60)
+          Jose Quinonez         9           5             0               2   sh_wins(0)<ufc_wins(9); sh_total(2)<3 with ufc_wins=9
+         Joseph Morales        15           2            14               2                                sh_wins(14)<ufc_wins(15)
+            Josh Samman        13           4            12               4                                sh_wins(12)<ufc_wins(13)
+            Juan Espino        11           2            10               2                                sh_wins(10)<ufc_wins(11)
+         Juliana Miller         5           4             4               4                                  sh_wins(4)<ufc_wins(5)
+          Julianna Pena        13           6            12               6                                sh_wins(12)<ufc_wins(13)
+           JunYong Park        19           7            13               2                                sh_wins(13)<ufc_wins(19)
+      Junior Dos Santos        21           9             1               0 sh_wins(1)<ufc_wins(21); sh_total(1)<3 with ufc_wins=21
+              Kaan Ofli        14           4            13               4                                sh_wins(13)<ufc_wins(14)
+       Katsunori Kikuno        24           8            20               7                                sh_wins(20)<ufc_wins(24)
+        Kelvin Gastelum        21          10            20              11                                sh_wins(20)<ufc_wins(21)
+              Kevin Lee        18           8             0               9           sh_wins(0)<ufc_wins(18); wr_dif(0.00 vs 0.69)
+    Khalil Rountree Jr.        15           7            13               2                                sh_wins(13)<ufc_wins(15)
+         Khaos Williams        15           5            13               2                                sh_wins(13)<ufc_wins(15)
+             King Green        34          17            13               2                                sh_wins(13)<ufc_wins(34)
+         Kurt Holobaugh        22          10            21              10                                sh_wins(21)<ufc_wins(22)
+          Leandro Silva        20           6             0               2 sh_wins(0)<ufc_wins(20); sh_total(2)<3 with ufc_wins=20
+          Loopy Godinez        14           5            13               2                                sh_wins(13)<ufc_wins(14)
+           Luana Santos        10           2             2               2                                 sh_wins(2)<ufc_wins(10)
+          Lucas Almeida        15           5             1               2                                 sh_wins(1)<ufc_wins(15)
+            Lucas Rocha        18           2             4               2                                 sh_wins(4)<ufc_wins(18)
+              Luis Pena         9           3             0               1   sh_wins(0)<ufc_wins(9); sh_total(1)<3 with ufc_wins=9
+          Macy Chiasson        11           6            10               6                                sh_wins(10)<ufc_wins(11)
+       Magomed Ankalaev        21           2            20               2                                sh_wins(20)<ufc_wins(21)
+          Mairon Santos        18           1            17               1                                sh_wins(17)<ufc_wins(18)
+          Manuel Torres        17           3             1               0 sh_wins(1)<ufc_wins(17); sh_total(1)<3 with ufc_wins=17
+       Manvel Gamburyan        15          10            13               2                                sh_wins(13)<ufc_wins(15)
+         Maria Oliveira        13           7             0               1 sh_wins(0)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+            Mario Pinto        11           0             0               1 sh_wins(0)<ufc_wins(11); sh_total(1)<3 with ufc_wins=11
+             Matt Brown        26          19             0               1 sh_wins(0)<ufc_wins(26); sh_total(1)<3 with ufc_wins=26
+         Megan Anderson        11           5            10               5                                sh_wins(10)<ufc_wins(11)
+        Michael Johnson        25          20            24              20                                sh_wins(24)<ufc_wins(25)
+        Michael Trizano        11           3            10               3                                sh_wins(10)<ufc_wins(11)
+       Miranda Maverick        17           6            15               6                                sh_wins(15)<ufc_wins(17)
+                 Mizuki        16           6             1               2                                 sh_wins(1)<ufc_wins(16)
+         Mohammed Usman        12           4            11               4                                sh_wins(11)<ufc_wins(12)
+              Nate Diaz        22          13            21              13                                sh_wins(21)<ufc_wins(22)
+            Nate Maness        16           3            13               2                                sh_wins(13)<ufc_wins(16)
+          Nicco Montano         5           3             4               3                                  sh_wins(4)<ufc_wins(5)
+     Ovince Saint Preux        27          18            13               2                                sh_wins(13)<ufc_wins(27)
+         Pannie Kianzad        17           9            16               9                                sh_wins(16)<ufc_wins(17)
+          Parker Porter        14           9            13               9                                sh_wins(13)<ufc_wins(14)
+             Patchy Mix        20           3            13               2                                sh_wins(13)<ufc_wins(20)
+            Paulo Costa        15           4             7               7                                 sh_wins(7)<ufc_wins(15)
+           Rafael Alves        20          12             0               2 sh_wins(0)<ufc_wins(20); sh_total(2)<3 with ufc_wins=20
+        Ramazan Temirov        19           3            13               2                                sh_wins(13)<ufc_wins(19)
+          Ray Rodriguez        16           8             0               1 sh_wins(0)<ufc_wins(16); sh_total(1)<3 with ufc_wins=16
+         Renato Moicano        20           7            13               2                                sh_wins(13)<ufc_wins(20)
+          Ricky Turcios        13           6            12               6                                sh_wins(12)<ufc_wins(13)
+        Robert Valentin        11           6            10               6                                sh_wins(10)<ufc_wins(11)
+       Robert Whittaker        27           9            26               9                                sh_wins(26)<ufc_wins(27)
+     Rodrigo Nascimento        11           3             0               1 sh_wins(0)<ufc_wins(11); sh_total(1)<3 with ufc_wins=11
+                Rongzhu        27           6            13               2                                sh_wins(13)<ufc_wins(27)
+             Rony Jason        14           7            13               2                                sh_wins(13)<ufc_wins(14)
+         Rose Namajunas        15           8            14               8                                sh_wins(14)<ufc_wins(15)
+             Roy Nelson        22          14             1               2                                 sh_wins(1)<ufc_wins(22)
+             Ryan Loder         8           3             7               3                                  sh_wins(7)<ufc_wins(8)
+   Santiago Ponzinibbio        31           9            30               9                                sh_wins(30)<ufc_wins(31)
+      Sergey Khandozhko        28           6            27               6                                sh_wins(27)<ufc_wins(28)
+            Shane Young        13           8             0               1 sh_wins(0)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+           Shannon Ross        13           9            12               9                                sh_wins(12)<ufc_wins(13)
+       Sheldon Westcott        10           3             9               3                                 sh_wins(9)<ufc_wins(10)
+          Shinsho Anzai        10           3             9               6                                 sh_wins(9)<ufc_wins(10)
+         Sijara Eubanks         8           7             7               7                                  sh_wins(7)<ufc_wins(8)
+          Stefan Struve        33          13            29              13                                sh_wins(29)<ufc_wins(33)
+           Steve Garcia        19           5             0               1 sh_wins(0)<ufc_wins(19); sh_total(1)<3 with ufc_wins=19
+             Stevie Ray        23           9             0               1 sh_wins(0)<ufc_wins(23); sh_total(1)<3 with ufc_wins=23
+            SuYoung You        16           3            13               2                                sh_wins(13)<ufc_wins(16)
+             Sumudaerji        19           7            13               2                                sh_wins(13)<ufc_wins(19)
+               TJ Brown        17          11            13               2                                sh_wins(13)<ufc_wins(17)
+           TJ Dillashaw        18           5            13               2                                sh_wins(13)<ufc_wins(18)
+            Tai Tuivasa        15           9            14               9                                sh_wins(14)<ufc_wins(15)
+             Te Edwards         6           3             1               2                                  sh_wins(1)<ufc_wins(6)
+          Thiago Santos        22          11             1               3                                 sh_wins(1)<ufc_wins(22)
+            Tim Elliott        22          13            21              13                                sh_wins(21)<ufc_wins(22)
+          Tony Ferguson        26          11            25              11                                sh_wins(25)<ufc_wins(26)
+             Uriah Hall        18          11            17              11                                sh_wins(17)<ufc_wins(18)
+            Victor Hugo        25           5             0               1 sh_wins(0)<ufc_wins(25); sh_total(1)<3 with ufc_wins=25
+       Victor Rodriguez         7           4             5               4                                  sh_wins(5)<ufc_wins(7)
+       Vinicius Moreira         9           5             0               4                                  sh_wins(0)<ufc_wins(9)
+      Vinicius Oliveira        23           4             1               0 sh_wins(1)<ufc_wins(23); sh_total(1)<3 with ufc_wins=23
+          Warlley Alves        15           8            14               8                                sh_wins(14)<ufc_wins(15)
+         Yair Rodriguez        21           6             0               1 sh_wins(0)<ufc_wins(21); sh_total(1)<3 with ufc_wins=21
+            Yana Santos        17           8             8               2                                 sh_wins(8)<ufc_wins(17)
+                  Yizha        26           6             0               1 sh_wins(0)<ufc_wins(26); sh_total(1)<3 with ufc_wins=26
+             Zach Reese        10           3             0               1 sh_wins(0)<ufc_wins(10); sh_total(1)<3 with ufc_wins=10
+            Alex Torres         5           4             1               1   sh_wins(1)<ufc_wins(5); sh_total(2)<3 with ufc_wins=5
+     Aliaskhab Khizriev        14           0            12               0                                sh_wins(12)<ufc_wins(14)
+           Allan Zuniga        13           1            13               8                                    wr_dif(0.62 vs 0.93)
+         Askar Mozharov        19          13            15              14                                sh_wins(15)<ufc_wins(19)
+           Bruno Santos        15           2             0               1 sh_wins(0)<ufc_wins(15); sh_total(1)<3 with ufc_wins=15
+   Carlos Eduardo Rocha         9           4             0               2   sh_wins(0)<ufc_wins(9); sh_total(2)<3 with ufc_wins=9
+           Daniel Spohn        15           6            13               2                                sh_wins(13)<ufc_wins(15)
+             Dean Barry         4           2             1               3                                  sh_wins(1)<ufc_wins(4)
+             Eric Nolan         8           4             1               2                                  sh_wins(1)<ufc_wins(8)
+          Felipe Franco         8           1             0               1   sh_wins(0)<ufc_wins(8); sh_total(1)<3 with ufc_wins=8
+      Georges St-Pierre        26           2            13               2                                sh_wins(13)<ufc_wins(26)
+               Jack May         9           3             0               1   sh_wins(0)<ufc_wins(9); sh_total(1)<3 with ufc_wins=9
+           Javier Reyes        23           5             1               0 sh_wins(1)<ufc_wins(23); sh_total(1)<3 with ufc_wins=23
+            John Albert         6           5             1               0   sh_wins(1)<ufc_wins(6); sh_total(1)<3 with ufc_wins=6
+      Jorge de Oliveira         9           2             2               1                                  sh_wins(2)<ufc_wins(9)
+             Jose Maria        37           7             1               2                                 sh_wins(1)<ufc_wins(37)
+     Khalid Murtazaliev        14           2            13               3                                sh_wins(13)<ufc_wins(14)
+             Luis Ramos        20          10             2               0 sh_wins(2)<ufc_wins(20); sh_total(2)<3 with ufc_wins=20
+             Luiz Dutra        13           6             1               0 sh_wins(1)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+           Manoel Sousa        13           1             1               0 sh_wins(1)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+       Manuel Rodriguez        11           5             0               2 sh_wins(0)<ufc_wins(11); sh_total(2)<3 with ufc_wins=11
+Marcio Alexandre Junior        17           4            13               2                                sh_wins(13)<ufc_wins(17)
+        Marcos Vinicius        23          11             1               1 sh_wins(1)<ufc_wins(23); sh_total(2)<3 with ufc_wins=23
+             Matt Lucas        15           3             2               2                                 sh_wins(2)<ufc_wins(15)
+             Mike Brown        26           9             1               1                                 sh_wins(1)<ufc_wins(26)
+            Mike Guymon        15           6            13               2                                sh_wins(13)<ufc_wins(15)
+          Milton Vieira        13           8             0               1 sh_wins(0)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+            Pablo Garza        12           4             4               0                                 sh_wins(4)<ufc_wins(12)
+             Paul Kelly        14           5             0               1 sh_wins(0)<ufc_wins(14); sh_total(1)<3 with ufc_wins=14
+            Rob Emerson        18          12             0               1 sh_wins(0)<ufc_wins(18); sh_total(1)<3 with ufc_wins=18
+         Robert Peralta        18           8             1               2                                 sh_wins(1)<ufc_wins(18)
+           Rodrigo Damm        13           9            12               9                                sh_wins(12)<ufc_wins(13)
+      Rodrigo Sezinando         9           2             8               2                                  sh_wins(8)<ufc_wins(9)
+        Rodrigo de Lima         8           3             1               2                                  sh_wins(1)<ufc_wins(8)
+       Ryan McGillivray        12           0            12               6                                    wr_dif(0.63 vs 1.00)
+               TJ Grant        21           5            13               2                                sh_wins(13)<ufc_wins(21)
+             TJ O'Brien        20           8            13               2                                sh_wins(13)<ufc_wins(20)
+          TJ Waldburger        16           9            13               2                                sh_wins(13)<ufc_wins(16)
+           Thiago Silva        19           6             2               3           sh_wins(2)<ufc_wins(19); wr_dif(0.40 vs 0.76)
+              Ty Miller         7           0             2               2                                  sh_wins(2)<ufc_wins(7)
+           Wagner Silva         6           3             8               0                                    wr_dif(1.00 vs 0.67)
+       Zviad Lazishvili        13           1             8               1                                 sh_wins(8)<ufc_wins(13)
+
+============================================================
+STEP 2: Re-scraping flagged fighters
+============================================================
+Resuming: 50 fighters already in data/sherdog_records_fixed.pkl
+
+[1/193] AJ Cunningham  (UFC wins=11)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for AJ Cunningham
+
+[2/193] Alatengheili  (UFC wins=17)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Alatengheili
+
+[3/193] Aleksei Kunchenko  (UFC wins=20)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Aleksei Kunchenko
+
+[4/193] Aleksei Oleinik  (UFC wins=60)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Aleksei Oleinik
+
+[5/193] Alex Da Silva  (UFC wins=21)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Alex Da Silva
+
+[6/193] Alexander Munoz  (UFC wins=7)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Alexander Munoz
+
+[7/193] Alexandr Romanov  (UFC wins=18)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Alexandr Romanov
+[8/193] SKIP (already fixed): Alibi Idiris
+
+[9/193] Amanda Cooper  (UFC wins=3)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Amanda Cooper
+[10/193] SKIP (already fixed): Amanda Ribas
+[11/193] SKIP (already fixed): Anderson Dos Santos
+[12/193] SKIP (already fixed): Andre Lima
+
+[13/193] Aoriqileng  (UFC wins=26)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Aoriqileng
+[14/193] SKIP (already fixed): Askar Askarov
+[15/193] SKIP (already fixed): Austin Hubbard
+
+[16/193] BJ Penn  (UFC wins=16)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for BJ Penn
+
+[17/193] Benoit Saint Denis  (UFC wins=17)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Benoit Saint Denis
+
+[18/193] Blood Diamond  (UFC wins=3)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Blood Diamond
+[19/193] SKIP (already fixed): Brad Katona
+[20/193] SKIP (already fixed): Brady Hiestand
+[21/193] SKIP (already fixed): Brogan Walker
+[22/193] SKIP (already fixed): Bruno Silva
+[23/193] SKIP (already fixed): Bruno Souza
+[24/193] SKIP (already fixed): Bryan Battle
+
+[25/193] CB Dollaway  (UFC wins=17)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for CB Dollaway
+[26/193] SKIP (already fixed): Carla Esparza
+
+[27/193] Chepe Mariscal  (UFC wins=18)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Chepe Mariscal
+
+[28/193] Chris Beal  (UFC wins=10)
+  Found 2 exact-name candidates
+    Chris-Beal-102355: sherdog 3-0, diff=7
+    Chris-Beal-178491: sherdog 5-12, diff=5
+  ✗ No valid candidate for Chris Beal
+[29/193] SKIP (already fixed): Christian Rodriguez
+[30/193] SKIP (already fixed): Claudio Puelles
+[31/193] SKIP (already fixed): Cody Gibson
+
+[32/193] Cole Miller  (UFC wins=21)
+  Found 1 exact-name candidates
+    Cole-Miller-494554: sherdog 0-1, diff=21
+  ✗ No valid candidate for Cole Miller
+[33/193] SKIP (already fixed): Court McGee
+[34/193] SKIP (already fixed): Daniel Santos
+[35/193] SKIP (already fixed): Daniil Donchenko
+[36/193] SKIP (already fixed): Demetrious Johnson
+[37/193] SKIP (already fixed): Dhiego Lima
+[38/193] SKIP (already fixed): Diego Rivas
+[39/193] SKIP (already fixed): Diego Sanchez
+
+[40/193] Dooho Choi  (UFC wins=16)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Dooho Choi
+  [Saved progress: 50 fixed so far]
+[41/193] SKIP (already fixed): Ed Herman
+[42/193] SKIP (already fixed): Erick Silva
+[43/193] SKIP (already fixed): Erik Silva
+[44/193] SKIP (already fixed): Felipe Silva
+[45/193] SKIP (already fixed): Felipe dos Santos
+[46/193] SKIP (already fixed): Fernando Bruno
+[47/193] SKIP (already fixed): Frankie Saenz
+[48/193] SKIP (already fixed): Gabriel Santos
+[49/193] SKIP (already fixed): Gabriel Silva
+
+[50/193] Henrique da Silva  (UFC wins=14)
+  Found 2 exact-name candidates
+    Henrique-da-Silva-175493: sherdog 20-11, diff=6
+    Henrique-da-Silva-215341: sherdog 5-4, diff=9
+  ✗ No valid candidate for Henrique da Silva
+
+[51/193] Henry Briones  (UFC wins=16)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Henry Briones
+
+[52/193] Ian Machado Garry  (UFC wins=17)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Ian Machado Garry
+[53/193] SKIP (already fixed): Ibo Aslan
+
+[54/193] Ike Villanueva  (UFC wins=18)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Ike Villanueva
+[55/193] SKIP (already fixed): Ilir Latifi
+
+[56/193] JC Cottrell  (UFC wins=17)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for JC Cottrell
+
+[57/193] JJ Aldrich  (UFC wins=14)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for JJ Aldrich
+
+[58/193] Jacare Souza  (UFC wins=26)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Jacare Souza
+[59/193] SKIP (already fixed): Jarjis Danho
+
+[60/193] Joe Duffy  (UFC wins=16)
+  Found 1 exact-name candidates
+    Joe-Duffy-53693: sherdog 1-1, diff=15
+  ✗ No valid candidate for Joe Duffy
+  [Saved progress: 50 fixed so far]
+[61/193] SKIP (already fixed): Joey Gomez
+
+[62/193] John Allan  (UFC wins=13)
+  Found 1 exact-name candidates
+    John-Allan-114875: sherdog 18-10, diff=5
+  ✗ No valid candidate for John Allan
+[63/193] SKIP (already fixed): Johnny Walker
+[64/193] SKIP (already fixed): Jon Jones
+[65/193] SKIP (already fixed): Jordan Williams
+[66/193] SKIP (already fixed): Jose Quinonez
+[67/193] SKIP (already fixed): Joseph Morales
+[68/193] SKIP (already fixed): Josh Samman
+[69/193] SKIP (already fixed): Juan Espino
+[70/193] SKIP (already fixed): Juliana Miller
+[71/193] SKIP (already fixed): Julianna Pena
+
+[72/193] JunYong Park  (UFC wins=19)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for JunYong Park
+[73/193] SKIP (already fixed): Junior Dos Santos
+[74/193] SKIP (already fixed): Kaan Ofli
+[75/193] SKIP (already fixed): Katsunori Kikuno
+[76/193] SKIP (already fixed): Kelvin Gastelum
+[77/193] SKIP (already fixed): Kevin Lee
+
+[78/193] Khalil Rountree Jr.  (UFC wins=15)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Khalil Rountree Jr.
+
+[79/193] Khaos Williams  (UFC wins=15)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Khaos Williams
+
+[80/193] King Green  (UFC wins=34)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for King Green
+  [Saved progress: 50 fixed so far]
+
+[81/193] Kurt Holobaugh  (UFC wins=22)
+  Found 1 exact-name candidates
+    Kurt-Holobaugh-68751: sherdog 21-10, diff=1
+  ✓ Fixed Kurt Holobaugh: 21-10
+
+[82/193] Leandro Silva  (UFC wins=20)
+  Found 5 exact-name candidates
+    Leandro-Silva-86382: sherdog 30-12, diff=10
+    Leandro-Silva-293153: sherdog 4-2, diff=16
+    Leandro-Silva-297153: sherdog 0-0, diff=20
+    Leandro-Silva-350203: sherdog 1-0, diff=19
+    Leandro-Silva-379424: sherdog 1-0, diff=19
+  ✗ No valid candidate for Leandro Silva
+
+[83/193] Loopy Godinez  (UFC wins=14)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Loopy Godinez
+
+[84/193] Luana Santos  (UFC wins=10)
+  Found 1 exact-name candidates
+    Luana-Santos-327683: sherdog 10-2, diff=0
+  ✓ Fixed Luana Santos: 10-2
+
+[85/193] Lucas Almeida  (UFC wins=15)
+  Found 1 exact-name candidates
+    Lucas-Almeida-191243: sherdog 15-5, diff=0
+  ✓ Fixed Lucas Almeida: 15-5
+
+[86/193] Lucas Rocha  (UFC wins=18)
+  Found 1 exact-name candidates
+    Lucas-Rocha-255729: sherdog 18-2, diff=0
+  ✓ Fixed Lucas Rocha: 18-2
+
+[87/193] Luis Pena  (UFC wins=9)
+  Found 3 exact-name candidates
+    Luis-Pena-174693: sherdog 13-8, diff=4
+    Luis-Pena-342037: sherdog 1-0, diff=8
+    Luis-Pena-471376: sherdog 1-1, diff=8
+  ✓ Fixed Luis Pena: 13-8
+
+[88/193] Macy Chiasson  (UFC wins=11)
+  Found 1 exact-name candidates
+    Macy-Chiasson-190279: sherdog 10-6, diff=1
+  ✓ Fixed Macy Chiasson: 10-6
+
+[89/193] Magomed Ankalaev  (UFC wins=21)
+  Found 1 exact-name candidates
+    Magomed-Ankalaev-170785: sherdog 20-2, diff=1
+  ✓ Fixed Magomed Ankalaev: 20-2
+
+[90/193] Mairon Santos  (UFC wins=18)
+  Found 1 exact-name candidates
+    Mairon-Santos-297155: sherdog 17-1, diff=1
+  ✓ Fixed Mairon Santos: 17-1
+
+[91/193] Manuel Torres  (UFC wins=17)
+  Found 1 exact-name candidates
+    Manuel-Torres-297203: sherdog 17-3, diff=0
+  ✓ Fixed Manuel Torres: 17-3
+
+[92/193] Manvel Gamburyan  (UFC wins=15)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Manvel Gamburyan
+
+[93/193] Maria Oliveira  (UFC wins=13)
+  Found 1 exact-name candidates
+    Maria-Oliveira-207835: sherdog 13-7, diff=0
+  ✓ Fixed Maria Oliveira: 13-7
+
+[94/193] Mario Pinto  (UFC wins=11)
+  Found 1 exact-name candidates
+    Mario-Pinto-310173: sherdog 12-0, diff=1
+  ✓ Fixed Mario Pinto: 12-0
+
+[95/193] Matt Brown  (UFC wins=26)
+  Found 3 exact-name candidates
+    Matt-Brown-14310: sherdog 24-19, diff=2
+    Matt-Brown-378796: sherdog 0-3, diff=26
+    Matt-Brown-485851: sherdog 1-0, diff=25
+  ✓ Fixed Matt Brown: 24-19
+
+[96/193] Megan Anderson  (UFC wins=11)
+  Found 1 exact-name candidates
+    Megan-Anderson-149769: sherdog 10-5, diff=1
+  ✓ Fixed Megan Anderson: 10-5
+
+[97/193] Michael Johnson  (UFC wins=25)
+  Found 1 exact-name candidates
+    Michael-Johnson-68788: sherdog 24-20, diff=1
+  ✓ Fixed Michael Johnson: 24-20
+
+[98/193] Michael Trizano  (UFC wins=11)
+  Found 1 exact-name candidates
+    Michael-Trizano-163551: sherdog 10-3, diff=1
+  ✓ Fixed Michael Trizano: 10-3
+
+[99/193] Miranda Maverick  (UFC wins=17)
+  Found 1 exact-name candidates
+    Miranda-Maverick-230031: sherdog 15-6, diff=2
+  ✓ Fixed Miranda Maverick: 15-6
+
+[100/193] Mizuki  (UFC wins=16)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Mizuki
+  [Saved progress: 66 fixed so far]
+
+[101/193] Mohammed Usman  (UFC wins=12)
+  Found 1 exact-name candidates
+    Mohammed-Usman-253535: sherdog 11-4, diff=1
+  ✓ Fixed Mohammed Usman: 11-4
+
+[102/193] Nate Diaz  (UFC wins=22)
+  Found 1 exact-name candidates
+    Nate-Diaz-11451: sherdog 21-13, diff=1
+  ✓ Fixed Nate Diaz: 21-13
+
+[103/193] Nate Maness  (UFC wins=16)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Nate Maness
+
+[104/193] Nicco Montano  (UFC wins=5)
+  Found 1 exact-name candidates
+    Nicco-Montano-138319: sherdog 4-3, diff=1
+  ✓ Fixed Nicco Montano: 4-3
+
+[105/193] Ovince Saint Preux  (UFC wins=27)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Ovince Saint Preux
+
+[106/193] Pannie Kianzad  (UFC wins=17)
+  Found 1 exact-name candidates
+    Pannie-Kianzad-99523: sherdog 16-9, diff=1
+  ✓ Fixed Pannie Kianzad: 16-9
+
+[107/193] Parker Porter  (UFC wins=14)
+  Found 1 exact-name candidates
+    Parker-Porter-24916: sherdog 13-9, diff=1
+  ✓ Fixed Parker Porter: 13-9
+
+[108/193] Patchy Mix  (UFC wins=20)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Patchy Mix
+
+[109/193] Paulo Costa  (UFC wins=15)
+  Found 1 exact-name candidates
+    Paulo-Costa-147165: sherdog 16-4, diff=1
+  ✓ Fixed Paulo Costa: 16-4
+
+[110/193] Rafael Alves  (UFC wins=20)
+  Found 4 exact-name candidates
+    Rafael-Alves-37841: sherdog 0-2, diff=20
+    Rafael-Alves-96651: sherdog 21-12, diff=1
+    Rafael-Alves-110771: sherdog 1-1, diff=19
+    Rafael-Alves-284149: sherdog 1-2, diff=19
+  ✓ Fixed Rafael Alves: 21-12
+
+[111/193] Ramazan Temirov  (UFC wins=19)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Ramazan Temirov
+
+[112/193] Ray Rodriguez  (UFC wins=16)
+  Found 1 exact-name candidates
+    Ray-Rodriguez-78078: sherdog 16-8, diff=0
+  ✓ Fixed Ray Rodriguez: 16-8
+
+[113/193] Renato Moicano  (UFC wins=20)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Renato Moicano
+
+[114/193] Ricky Turcios  (UFC wins=13)
+  Found 1 exact-name candidates
+    Ricky-Turcios-80671: sherdog 12-6, diff=1
+  ✓ Fixed Ricky Turcios: 12-6
+
+[115/193] Robert Valentin  (UFC wins=11)
+  Found 1 exact-name candidates
+    Robert-Valentin-241133: sherdog 11-6, diff=0
+  ✓ Fixed Robert Valentin: 11-6
+
+[116/193] Robert Whittaker  (UFC wins=27)
+  Found 1 exact-name candidates
+    Robert-Whittaker-45132: sherdog 26-9, diff=1
+  ✓ Fixed Robert Whittaker: 26-9
+
+[117/193] Rodrigo Nascimento  (UFC wins=11)
+  Found 1 exact-name candidates
+    Rodrigo-Nascimento-97975: sherdog 12-5, diff=1
+  ✓ Fixed Rodrigo Nascimento: 12-5
+
+[118/193] Rongzhu  (UFC wins=27)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Rongzhu
+
+[119/193] Rony Jason  (UFC wins=14)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Rony Jason
+
+[120/193] Rose Namajunas  (UFC wins=15)
+  Found 1 exact-name candidates
+    Rose-Namajunas-69083: sherdog 14-8, diff=1
+  ✓ Fixed Rose Namajunas: 14-8
+  [Saved progress: 79 fixed so far]
+
+[121/193] Roy Nelson  (UFC wins=22)
+  Found 1 exact-name candidates
+    Roy-Nelson-10249: sherdog 24-20, diff=2
+  ✓ Fixed Roy Nelson: 24-20
+
+[122/193] Ryan Loder  (UFC wins=8)
+  Found 1 exact-name candidates
+    Ryan-Loder-385318: sherdog 7-3, diff=1
+  ✓ Fixed Ryan Loder: 7-3
+
+[123/193] Santiago Ponzinibbio  (UFC wins=31)
+  Found 1 exact-name candidates
+    Santiago-Ponzinibbio-64593: sherdog 30-9, diff=1
+  ✓ Fixed Santiago Ponzinibbio: 30-9
+
+[124/193] Sergey Khandozhko  (UFC wins=28)
+  Found 1 exact-name candidates
+    Sergey-Khandozhko-91889: sherdog 27-6, diff=1
+  ✓ Fixed Sergey Khandozhko: 27-6
+
+[125/193] Shane Young  (UFC wins=13)
+  Found 1 exact-name candidates
+    Shane-Young-84215: sherdog 13-8, diff=0
+  ✓ Fixed Shane Young: 13-8
+
+[126/193] Shannon Ross  (UFC wins=13)
+  Found 1 exact-name candidates
+    Shannon-Ross-65792: sherdog 12-9, diff=1
+  ✓ Fixed Shannon Ross: 12-9
+
+[127/193] Sheldon Westcott  (UFC wins=10)
+  Found 1 exact-name candidates
+    Sheldon-Westcott-23648: sherdog 9-3, diff=1
+  ✓ Fixed Sheldon Westcott: 9-3
+
+[128/193] Shinsho Anzai  (UFC wins=10)
+  Found 1 exact-name candidates
+    Shinsho-Anzai-47183: sherdog 9-6, diff=1
+  ✓ Fixed Shinsho Anzai: 9-6
+
+[129/193] Sijara Eubanks  (UFC wins=8)
+  Found 1 exact-name candidates
+    Sijara-Eubanks-193533: sherdog 7-7, diff=1
+  ✓ Fixed Sijara Eubanks: 7-7
+
+[130/193] Stefan Struve  (UFC wins=33)
+  Found 1 exact-name candidates
+    Stefan-Struve-15063: sherdog 29-13, diff=4
+  ✓ Fixed Stefan Struve: 29-13
+
+[131/193] Steve Garcia  (UFC wins=19)
+  Found 1 exact-name candidates
+    Steve-Garcia-50916: sherdog 19-5, diff=0
+  ✓ Fixed Steve Garcia: 19-5
+
+[132/193] Stevie Ray  (UFC wins=23)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Stevie Ray
+
+[133/193] SuYoung You  (UFC wins=16)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for SuYoung You
+
+[134/193] Sumudaerji  (UFC wins=19)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Sumudaerji
+
+[135/193] TJ Brown  (UFC wins=17)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for TJ Brown
+
+[136/193] TJ Dillashaw  (UFC wins=18)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for TJ Dillashaw
+
+[137/193] Tai Tuivasa  (UFC wins=15)
+  Found 1 exact-name candidates
+    Tai-Tuivasa-133745: sherdog 14-9, diff=1
+  ✓ Fixed Tai Tuivasa: 14-9
+
+[138/193] Te Edwards  (UFC wins=6)
+  Found 1 exact-name candidates
+    Te-Edwards-156303: sherdog 6-3, diff=0
+  ✓ Fixed Te Edwards: 6-3
+
+[139/193] Thiago Santos  (UFC wins=22)
+  Found 1 exact-name candidates
+    Thiago-Santos-90021: sherdog 23-13, diff=1
+  ✓ Fixed Thiago Santos: 23-13
+
+[140/193] Tim Elliott  (UFC wins=22)
+  Found 1 exact-name candidates
+    Tim-Elliott-49213: sherdog 21-13, diff=1
+  ✓ Fixed Tim Elliott: 21-13
+  [Saved progress: 94 fixed so far]
+
+[141/193] Tony Ferguson  (UFC wins=26)
+  Found 1 exact-name candidates
+    Tony-Ferguson-31239: sherdog 25-11, diff=1
+  ✓ Fixed Tony Ferguson: 25-11
+
+[142/193] Uriah Hall  (UFC wins=18)
+  Found 1 exact-name candidates
+    Uriah-Hall-14210: sherdog 17-11, diff=1
+  ✓ Fixed Uriah Hall: 17-11
+
+[143/193] Victor Hugo  (UFC wins=25)
+  Found 5 exact-name candidates
+    Victor-Hugo-88057: sherdog 0-1, diff=25
+    Victor-Hugo-123631: sherdog 25-7, diff=0
+    Victor-Hugo-381183: sherdog 2-1, diff=23
+    Victor-Hugo-403218: sherdog 0-2, diff=25
+    Victor-Hugo-414499: sherdog 0-1, diff=25
+  ✓ Fixed Victor Hugo: 25-7
+
+[144/193] Victor Rodriguez  (UFC wins=7)
+  Found 5 exact-name candidates
+    Victor-Rodriguez-177975: sherdog 5-4, diff=2
+    Victor-Rodriguez-217757: sherdog 1-3, diff=6
+    Victor-Rodriguez-294615: sherdog 0-2, diff=7
+    Victor-Rodriguez-347201: sherdog 1-0, diff=6
+    Victor-Rodriguez-430819: sherdog 3-1, diff=4
+  ✓ Fixed Victor Rodriguez: 5-4
+
+[145/193] Vinicius Moreira  (UFC wins=9)
+  Found 1 exact-name candidates
+    Vinicius-Moreira-207291: sherdog 16-9, diff=7
+  ✗ No valid candidate for Vinicius Moreira
+
+[146/193] Vinicius Oliveira  (UFC wins=23)
+  Found 1 exact-name candidates
+    Vinicius-Oliveira-139517: sherdog 23-4, diff=0
+  ✓ Fixed Vinicius Oliveira: 23-4
+
+[147/193] Warlley Alves  (UFC wins=15)
+  Found 1 exact-name candidates
+    Warlley-Alves-70750: sherdog 14-8, diff=1
+  ✓ Fixed Warlley Alves: 14-8
+
+[148/193] Yair Rodriguez  (UFC wins=21)
+  Found 1 exact-name candidates
+    Yair-Rodriguez-106305: sherdog 20-5, diff=1
+  ✓ Fixed Yair Rodriguez: 20-5
+
+[149/193] Yana Santos  (UFC wins=17)
+  Found 1 exact-name candidates
+    Yana-Santos-49412: sherdog 17-8, diff=0
+  ✓ Fixed Yana Santos: 17-8
+
+[150/193] Yizha  (UFC wins=26)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Yizha
+
+[151/193] Zach Reese  (UFC wins=10)
+  Found 1 exact-name candidates
+    Zach-Reese-263285: sherdog 0-1, diff=10
+  ✗ No valid candidate for Zach Reese
+
+[152/193] Alex Torres  (UFC wins=5)
+  Found 5 exact-name candidates
+    Alex-Torres-102739: sherdog 1-1, diff=4
+    Alex-Torres-172645: sherdog 9-7, diff=4
+    Alex-Torres-211039: sherdog 1-1, diff=4
+    Alex-Torres-422741: sherdog 1-0, diff=4
+    Alex-Torres-482916: sherdog 0-2, diff=5
+  ✓ Fixed Alex Torres: 1-1
+
+[153/193] Aliaskhab Khizriev  (UFC wins=14)
+  Found 1 exact-name candidates
+    Aliaskhab-Khizriev-209647: sherdog 12-0, diff=2
+  ✓ Fixed Aliaskhab Khizriev: 12-0
+
+[154/193] Allan Zuniga  (UFC wins=13)
+  Found 1 exact-name candidates
+    Allan-Zuniga-57253: sherdog 13-8, diff=0
+  ✓ Fixed Allan Zuniga: 13-8
+
+[155/193] Askar Mozharov  (UFC wins=19)
+  Found 1 exact-name candidates
+    Askar-Mozharov-191565: sherdog 15-14, diff=4
+  ✓ Fixed Askar Mozharov: 15-14
+
+[156/193] Bruno Santos  (UFC wins=15)
+  Found 2 exact-name candidates
+    Bruno-Santos-48052: sherdog 19-5, diff=4
+    Bruno-Santos-207023: sherdog 14-6, diff=1
+  ✓ Fixed Bruno Santos: 14-6
+
+[157/193] Carlos Eduardo Rocha  (UFC wins=9)
+  Found 1 exact-name candidates
+    Carlos-Eduardo-Rocha-35142: sherdog 9-4, diff=0
+  ✓ Fixed Carlos Eduardo Rocha: 9-4
+
+[158/193] Daniel Spohn  (UFC wins=15)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Daniel Spohn
+
+[159/193] Dean Barry  (UFC wins=4)
+  Found 2 exact-name candidates
+    Dean-Barry-68273: sherdog 1-3, diff=3
+    Dean-Barry-264071: sherdog 4-2, diff=0
+  ✓ Fixed Dean Barry: 4-2
+
+[160/193] Eric Nolan  (UFC wins=8)
+  Found 2 exact-name candidates
+    Eric-Nolan-220553: sherdog 1-2, diff=7
+    Eric-Nolan-346419: sherdog 8-4, diff=0
+  ✓ Fixed Eric Nolan: 8-4
+  [Saved progress: 110 fixed so far]
+
+[161/193] Felipe Franco  (UFC wins=8)
+  Found 1 exact-name candidates
+    Felipe-Franco-415770: sherdog 10-2, diff=2
+  ✓ Fixed Felipe Franco: 10-2
+
+[162/193] Georges St-Pierre  (UFC wins=26)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Georges St-Pierre
+
+[163/193] Jack May  (UFC wins=9)
+  Found 1 exact-name candidates
+    Jack-May-83949: sherdog 11-8, diff=2
+  ✓ Fixed Jack May: 11-8
+
+[164/193] Javier Reyes  (UFC wins=23)
+  Found 1 exact-name candidates
+    Javier-Reyes-182691: sherdog 23-5, diff=0
+  ✓ Fixed Javier Reyes: 23-5
+
+[165/193] John Albert  (UFC wins=6)
+  Found 1 exact-name candidates
+    John-Albert-43796: sherdog 6-5, diff=0
+  ✓ Fixed John Albert: 6-5
+
+[166/193] Jorge de Oliveira  (UFC wins=9)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Jorge de Oliveira
+
+[167/193] Jose Maria  (UFC wins=37)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Jose Maria
+
+[168/193] Khalid Murtazaliev  (UFC wins=14)
+  Found 1 exact-name candidates
+    Khalid-Murtazaliev-186791: sherdog 13-3, diff=1
+  ✓ Fixed Khalid Murtazaliev: 13-3
+
+[169/193] Luis Ramos  (UFC wins=20)
+  Found 5 exact-name candidates
+    Luis-Ramos-3217: sherdog 20-10, diff=0
+    Luis-Ramos-242087: sherdog 3-2, diff=17
+    Luis-Ramos-443238: sherdog 1-0, diff=19
+    Luis-Ramos-456168: sherdog 0-1, diff=20
+    Luis-Ramos-464619: sherdog 5-2, diff=15
+  ✓ Fixed Luis Ramos: 20-10
+
+[170/193] Luiz Dutra  (UFC wins=13)
+  Found 1 exact-name candidates
+    Luiz-Dutra-455171: sherdog 1-0, diff=12
+  ✗ No valid candidate for Luiz Dutra
+
+[171/193] Manoel Sousa  (UFC wins=13)
+  Found 1 exact-name candidates
+    Manoel-Sousa-319559: sherdog 14-1, diff=1
+  ✓ Fixed Manoel Sousa: 14-1
+
+[172/193] Manuel Rodriguez  (UFC wins=11)
+  Found 5 exact-name candidates
+    Manuel-Rodriguez-46484: sherdog 11-5, diff=0
+    Manuel-Rodriguez-72724: sherdog 0-1, diff=11
+    Manuel-Rodriguez-224245: sherdog 1-3, diff=10
+    Manuel-Rodriguez-256251: sherdog 0-1, diff=11
+    Manuel-Rodriguez-265289: sherdog 4-3, diff=7
+  ✓ Fixed Manuel Rodriguez: 11-5
+
+[173/193] Marcio Alexandre Junior  (UFC wins=17)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Marcio Alexandre Junior
+
+[174/193] Marcos Vinicius  (UFC wins=23)
+  Found 5 exact-name candidates
+    Marcos-Vinicius-149045: sherdog 1-1, diff=22
+    Marcos-Vinicius-164091: sherdog 1-0, diff=22
+    Marcos-Vinicius-170427: sherdog 0-1, diff=23
+    https://www.sherdog.com/fighter/Marcos-Vinicius-173159 → fetch failed
+    Marcos-Vinicius-198931: sherdog 15-7, diff=8
+  ✗ No valid candidate for Marcos Vinicius
+
+[175/193] Matt Lucas  (UFC wins=15)
+  Found 1 exact-name candidates
+    Matt-Lucas-18915: sherdog 15-3, diff=0
+  ✓ Fixed Matt Lucas: 15-3
+
+[176/193] Mike Brown  (UFC wins=26)
+  Found 4 exact-name candidates
+    Mike-Brown-23187: sherdog 1-1, diff=25
+    Mike-Brown-52289: sherdog 0-1, diff=26
+    Mike-Brown-133313: sherdog 0-1, diff=26
+    Mike-Brown-422843: sherdog 0-1, diff=26
+  ✗ No valid candidate for Mike Brown
+
+[177/193] Mike Guymon  (UFC wins=15)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Mike Guymon
+
+[178/193] Milton Vieira  (UFC wins=13)
+  Found 1 exact-name candidates
+    Milton-Vieira-4481: sherdog 13-8, diff=0
+  ✓ Fixed Milton Vieira: 13-8
+
+[179/193] Pablo Garza  (UFC wins=12)
+  Found 1 exact-name candidates
+    Pablo-Garza-35448: sherdog 12-4, diff=0
+  ✓ Fixed Pablo Garza: 12-4
+
+[180/193] Paul Kelly  (UFC wins=14)
+  Found 2 exact-name candidates
+    Paul-Kelly-14028: sherdog 15-5, diff=1
+    Paul-Kelly-161289: sherdog 1-1, diff=13
+  ✓ Fixed Paul Kelly: 15-5
+  [Saved progress: 122 fixed so far]
+
+[181/193] Rob Emerson  (UFC wins=18)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Rob Emerson
+
+[182/193] Robert Peralta  (UFC wins=18)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Robert Peralta
+
+[183/193] Rodrigo Damm  (UFC wins=13)
+  Found 1 exact-name candidates
+    Rodrigo-Damm-11507: sherdog 12-9, diff=1
+  ✓ Fixed Rodrigo Damm: 12-9
+
+[184/193] Rodrigo Sezinando  (UFC wins=9)
+  Found 1 exact-name candidates
+    Rodrigo-Sezinando-376658: sherdog 8-2, diff=1
+  ✓ Fixed Rodrigo Sezinando: 8-2
+
+[185/193] Rodrigo de Lima  (UFC wins=8)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Rodrigo de Lima
+
+[186/193] Ryan McGillivray  (UFC wins=12)
+  Found 1 exact-name candidates
+    Ryan-McGillivray-18533: sherdog 12-6, diff=0
+  ✓ Fixed Ryan McGillivray: 12-6
+
+[187/193] TJ Grant  (UFC wins=21)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for TJ Grant
+
+[188/193] TJ O'Brien  (UFC wins=20)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for TJ O'Brien
+
+[189/193] TJ Waldburger  (UFC wins=16)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for TJ Waldburger
+
+[190/193] Thiago Silva  (UFC wins=19)
+  Found 4 exact-name candidates
+    Thiago-Silva-14396: sherdog 21-9, diff=2
+    Thiago-Silva-138749: sherdog 27-18, diff=8
+    Thiago-Silva-231775: sherdog 1-3, diff=18
+    Thiago-Silva-474781: sherdog 0-1, diff=19
+  ✓ Fixed Thiago Silva: 21-9
+
+[191/193] Ty Miller  (UFC wins=7)
+  Found 0 exact-name candidates
+  ✗ No valid candidate for Ty Miller
+
+[192/193] Wagner Silva  (UFC wins=6)
+  Found 1 exact-name candidates
+    Wagner-Silva-115911: sherdog 10-8, diff=4
+  ✓ Fixed Wagner Silva: 10-8
+
+[193/193] Zviad Lazishvili  (UFC wins=13)
+  Found 1 exact-name candidates
+    Zviad-Lazishvili-341317: sherdog 8-1, diff=5
+  ✗ No valid candidate for Zviad Lazishvili
+
+Step 2 complete:
+  Fixed:          127
+  Still unfixed:  66 → data/still_unfixed.csv
+
+============================================================
+STEP 3: Rebuilding career_fights.csv
+============================================================
+  Total fighters in merged pkl: 2231
+  Saved 49,233 rows to data/career_fights.csv
+
+============================================================
+STEP 4: Verification
+============================================================
+  Jon Jones: 28-2 (30 total fights, last: 2024-11-16)  [expected ~28-1]
+      date       opponent result                                         method
+2019-03-02  Anthony Smith    win                 Decision (Unanimous) Herb Dean
+2019-07-06  Thiago Santos    win                     Decision (Split) Herb Dean
+2020-02-08 Dominick Reyes    win           Decision (Unanimous) Dan Miragliotta
+2023-03-04     Ciryl Gane    win     Submission (Guillotine Choke) Marc Goddard
+2024-11-16   Stipe Miocic    win TKO (Spinning Back Kick and Punches) Herb Dean
+  Youssef Zalal: 18-6 (24 total fights, last: 2025-10-04)  [expected ~19-4]
+      date          opponent result                                     method
+2024-03-23 Billy Quarantillo    win     Submission (Rear-Naked Choke)Herb Dean
+2024-08-10      Jarno Errens    win  Submission (Rear-Naked Choke)Mike Beltran
+2024-11-02        Jack Shore    win Submission (Arm-Triangle Choke)Luke Boutin
+2025-02-15     Calvin Kattar    win        Decision (Unanimous)Dan Miragliotta
+2025-10-04       Josh Emmett    win            Submission (Armbar)Jason Herzog
+  Conor McGregor: 22-6 (28 total fights, last: 2021-07-10)  [expected ~22-6]
+      date            opponent result                               method
+2016-11-12       Eddie Alvarez    win           TKO (Punches)John McCarthy
+2018-10-06 Khabib Nurmagomedov   loss     Submission (Neck Crank)Herb Dean
+2020-01-18      Donald Cerrone    win TKO (Head Kick and Punches)Herb Dean
+2021-01-23      Dustin Poirier   loss                KO (Punches)Herb Dean
+2021-07-10      Dustin Poirier   loss            TKO (Leg Injury)Herb Dean
+  Islam Makhachev: 28-1 (29 total fights, last: 2025-11-15)  [expected ~27-1]
+      date              opponent result                                 method
+2023-02-11 Alexander Volkanovski    win       Decision (Unanimous)Marc Goddard
+2023-10-21 Alexander Volkanovski    win KO (Head Kick and Punches)Marc Goddard
+2024-06-01        Dustin Poirier    win Submission (Brabo Choke)Keith Peterson
+2025-01-18       Renato Carneiro    win      Submission (Brabo Choke)Herb Dean
+2025-11-15  Jack Della Maddalena    win          Decision (Unanimous)Herb Dean
+  Alex Pereira: 13-3 (16 total fights, last: 2025-10-04)  [expected ~12-2 MMA]
+      date         opponent result                               method
+2024-04-13     Jamahal Hill    win                KO (Punches)Herb Dean
+2024-06-29   Jiri Prochazka    win TKO (Head Kick and Punches)Herb Dean
+2024-10-05  Khalil Rountree    win            TKO (Punches)Marc Goddard
+2025-03-08 Magomed Ankalaev   loss     Decision (Unanimous)Marc Goddard
+2025-10-04 Magomed Ankalaev    win    TKO (Punches and Elbows)Herb Dean
+
+All done.

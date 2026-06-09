@@ -1,0 +1,192 @@
+========================================================================
+UFC EXPERIMENT 9  —  2026-04-20T22:54:24.448859
+Experiments: A (Elo) + B (Weight-class aware)
+Primary target: temporal accuracy > 0.7206
+========================================================================
+
+========================================================================
+STEP 1 — Feature engineering (108 base features)
+========================================================================
+  career_fights_updated: 49,953 rows
+  ufc-master:            7,177 rows
+  career_fights columns: ['fighter', 'opponent', 'date', 'result', 'method', 'won', 'got_finish', 'last5_won', 'last5_finish_rate']
+  Feature engineering done in 1.3s
+  Rows — train: 2275 | test: 1020 | total: 3295
+
+========================================================================
+STEP 2 — Elo ratings: A1 (build) + A2 (K sweep)
+========================================================================
+  K sweep (correlation between elo_dif and Winner_bin on test set):
+    K= 16: corr=0.1311
+    K= 24: corr=0.1533
+    K= 32: corr=0.1713
+    K= 48: corr=0.1982
+  Best K: 48 (corr=0.1982)
+  Saved data/elo_ratings_history.csv (81,842 rows) and data/elo_current.csv (19,022 rows)
+  Elo step done in 6.8s
+
+========================================================================
+STEP 3 — A3: +6 global Elo features (114 total), baseline retrain
+========================================================================
+  Rows after NaN drop (114 feats) — train: 2275 | test: 1020
+  A3 — LR baseline, 114 feats                                   t=0.7176  r=0.6935  feats=114  0s
+  A3 — LR85+XGB15 blend, 114 feats                              t=0.7255  r=0.0000  feats=114  1s  *** NEW BEST ***
+
+========================================================================
+STEP 4 — A4: Optuna 50 LR + 30 XGB on 114 features
+========================================================================
+  Best LR (114 feats) temporal: 0.7275
+  Params: {'penalty': 'l2', 'C': 0.0072928052637109214, 'scaler': 'robust', 'solver': 'saga'}
+  A4 — LR tuned 50 trials, 114 feats                            t=0.7275  r=0.6980  feats=114  83s  *** NEW BEST ***
+  Best XGB (114 feats) temporal: 0.7137
+  Params: {'n_estimators': 997, 'learning_rate': 0.025379535466447785, 'max_depth': 5, 'subsample': 0.6656653569178241, 'colsample_bytree': 0.6062041527976909, 'min_child_weight': 7, 'gamma': 1.7572214894334521, 'reg_alpha': 1.1350785671509593}
+  A4 — LR85+XGB15 blend, 114 feats                              t=0.7284  r=0.0000  feats=114  116s  *** NEW BEST ***
+  A4 — LR90+XGB9 blend, 114 feats                               t=0.7314  r=0.0000  feats=114  116s  *** NEW BEST ***
+  A4 — LR80+XGB19 blend, 114 feats                              t=0.7294  r=0.0000  feats=114  116s
+  A4 best blend: LR=90% temporal=0.7314
+
+========================================================================
+STEP 5 — A5: Division-specific Elo (117 features)
+========================================================================
+  Rows (117 feats) — train: 2275 | test: 1020
+  A5 — LR85+XGB15 blend, 117 feats (div elo)                    t=0.7225  r=0.6753  feats=117  1s
+
+========================================================================
+STEP 6 — B1: Division difficulty features (112 features)
+========================================================================
+  B1 — div difficulty features (112)                            t=0.7186  r=0.6737  feats=112  0s
+
+========================================================================
+STEP 7 — B2: Division embedding (one-hot vs lighter/heavier binary)
+========================================================================
+  B2 — one-hot encoding (119 feats)                             t=0.7186  r=0.6737  feats=119  0s
+  B2 — lighter/heavier binary (108 feats)                       t=0.7186  r=0.6737  feats=108  0s
+
+========================================================================
+STEP 8 — B3: Division-stratified CV (stratified random split)
+========================================================================
+  B3 — stratified random split (108 feats)                      t=0.7186  r=0.6571  feats=108  0s
+
+========================================================================
+STEP 9 — B4: Per-division-group models (high/medium/low)
+========================================================================
+  high    : 0.6957 (567 train, 253 test)
+  medium  : 0.6876 (978 train, 461 test)
+  low     : 0.6732 (730 train, 306 test)
+  Weighted avg temporal: 0.6853
+  B4 — per-division-group LR models                             t=0.6853  r=0.0000  feats=108  0s
+
+========================================================================
+STEP 10 — Combined: best Elo (114) + div difficulty (B1) features
+========================================================================
+  Combined (118 feats) — train: 2275 | test: 1020
+  Combined — LR85+XGB15 (Elo+divdiff, 118 feats)                t=0.7255  r=0.6935  feats=118  1s
+
+========================================================================
+SAVING BEST MODEL
+========================================================================
+  [save] Saved → model/ufc_model_best.pkl + model/model_metadata.json
+
+========================================================================
+ALL RESULTS (ranked by temporal accuracy):
+========================================================================
+  Config                                                        Temporal    Random  Feats
+  ------------------------------------------------------------------------------------------
+  A4 — LR90+XGB9 blend, 114 feats                               0.7314    0.0000    114
+  A4 — LR80+XGB19 blend, 114 feats                              0.7294    0.0000    114
+  A4 — LR85+XGB15 blend, 114 feats                              0.7284    0.0000    114
+  A4 — LR tuned 50 trials, 114 feats                            0.7275    0.6980    114
+  A3 — LR85+XGB15 blend, 114 feats                              0.7255    0.0000    114
+  Combined — LR85+XGB15 (Elo+divdiff, 118 feats)                0.7255    0.6935    118
+  A5 — LR85+XGB15 blend, 117 feats (div elo)                    0.7225    0.6753    117
+  B1 — div difficulty features (112)                            0.7186    0.6737    112
+  B2 — one-hot encoding (119 feats)                             0.7186    0.6737    119
+  B2 — lighter/heavier binary (108 feats)                       0.7186    0.6737    108
+  B3 — stratified random split (108 feats)                      0.7186    0.6571    108
+  A3 — LR baseline, 114 feats                                   0.7176    0.6935    114
+  B4 — per-division-group LR models                             0.6853    0.0000    108
+
+========================================
+EXPERIMENT 9 — ELO + WEIGHT CLASS
+========================================
+Baseline (no changes): 72.06% temporal
+
+ELO RESULTS:
+  Best K value: K=48 (correlation: 0.1982)
+
+  Config                          Temporal     Random   Features
+  ------------------------------  --------   --------   --------
+  A3 — +6 global elo features       72.55%      0.00%        114
+  A4 — tuned on 114 features        73.14%     69.80%        114
+  A5 — +div elo (117 feats)         72.25%     67.53%        117
+
+  Elo feature importances (LR coef, tuned A4 model):
+    elo_dif             : +0.2265
+    R_elo_trend         : +0.0154
+    B_elo_trend         : -0.0154
+    elo_trend_dif       : +0.0280
+
+WEIGHT CLASS RESULTS:
+  Config                          Temporal     Random
+  ------------------------------  --------   --------
+  B1 — div difficulty features      71.86%     67.37%
+  B2 — one-hot encoding             71.86%     67.37%
+  B2 — lighter/heavier binary       71.86%     67.37%
+  B3 — stratified random split      71.86%     65.71%
+  B4 — per-group models             68.53%        N/A
+
+COMBINED (best Elo + div difficulty):
+  Temporal: 72.55% | Random: 69.35% | Features: 118
+
+BEST RESULT: 73.14% (config: A4 — LR90+XGB9 blend, 114 feats)
+vs baseline: +1.08%
+
+Files saved:
+  ✓ model/ufc_model_best.pkl
+  ✓ model/ufc_model_xgb.pkl
+  ✓ data/elo_ratings_history.csv
+  ✓ data/elo_current.csv
+========================================
+
+
+========================================
+EXPERIMENT 9 — ELO + WEIGHT CLASS
+========================================
+Baseline (no changes): 72.06% temporal
+
+ELO RESULTS:
+  Best K value: K=48 (correlation: 0.1982)
+
+  Config                          Temporal     Random   Features
+  ------------------------------  --------   --------   --------
+  A3 — +6 global elo features       72.55%      0.00%        114
+  A4 — tuned on 114 features        73.14%     69.80%        114
+  A5 — +div elo (117 feats)         72.25%     67.53%        117
+
+  Elo feature importances (LR coef, tuned A4 model):
+    elo_dif             : +0.2265
+    R_elo_trend         : +0.0154
+    B_elo_trend         : -0.0154
+    elo_trend_dif       : +0.0280
+
+WEIGHT CLASS RESULTS:
+  Config                          Temporal     Random
+  ------------------------------  --------   --------
+  B1 — div difficulty features      71.86%     67.37%
+  B2 — one-hot encoding             71.86%     67.37%
+  B2 — lighter/heavier binary       71.86%     67.37%
+  B3 — stratified random split      71.86%     65.71%
+  B4 — per-group models             68.53%        N/A
+
+COMBINED (best Elo + div difficulty):
+  Temporal: 72.55% | Random: 69.35% | Features: 118
+
+BEST RESULT: 73.14% (config: A4 — LR90+XGB9 blend, 114 feats)
+vs baseline: +1.08%
+
+Files saved:
+  ✓ model/ufc_model_best.pkl
+  ✓ model/ufc_model_xgb.pkl
+  ✓ data/elo_ratings_history.csv
+  ✓ data/elo_current.csv
+========================================

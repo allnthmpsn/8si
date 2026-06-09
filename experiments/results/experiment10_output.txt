@@ -1,0 +1,150 @@
+Loaded feature_columns_best.pkl: 114 features
+Base (non-Elo) features: 108
+========================================================================
+UFC EXPERIMENT 10  —  2026-04-21T13:48:13.709477
+Experiments: A (K sweep) + B (Elo source comparison)
+Baseline: 0.7314 temporal (K=48, all-career, 114 features)
+========================================================================
+
+========================================================================
+STEP 1 — Feature engineering (108 base features)
+========================================================================
+  career_fights_updated: 49,953 rows
+  ufc_stats_fights:      8,763 rows
+  Feature engineering done in 1.4s
+  Base rows — train: 2275 | test: 1020
+  UFC fight keys: 7,177
+
+========================================================================
+EXPERIMENT A — K VALUE SWEEP (all-career Elo)
+========================================================================
+  A — K= 48, all-career Elo                                t=0.7235  r=0.6920  feats=114  2s
+  A — K= 56, all-career Elo                                t=0.7245  r=0.6965  feats=114  2s
+  A — K= 64, all-career Elo                                t=0.7255  r=0.6950  feats=114  2s
+  A — K= 72, all-career Elo                                t=0.7235  r=0.6950  feats=114  2s
+  A — K= 80, all-career Elo                                t=0.7255  r=0.6995  feats=114  3s
+  A — K= 96, all-career Elo                                t=0.7235  r=0.6980  feats=114  2s
+  A — K=128, all-career Elo                                t=0.7225  r=0.6995  feats=114  2s
+  Best K from sweep: K=64 (temporal=0.7255)
+
+========================================================================
+EXPERIMENT B — ELO SOURCE COMPARISON (K=64)
+========================================================================
+
+  B1 — UFC-only Elo
+    elo_dif corr on test set: 0.1863
+  B1 — UFC-only Elo (114 feats)                            t=0.7047  r=0.6761  feats=114  1s
+
+  B2 — Hybrid Elo (regional K*0.5, UFC K*1.5)
+    elo_dif corr on test set: 0.1982
+  B2 — Hybrid Elo (114 feats)                              t=0.7235  r=0.7117  feats=114  2s
+
+  B3 — Both career + UFC Elo (120 features)
+    Rows (120 feats) — train: 1196 | test: 745
+  B3 — Both Elo sources (120 feats)                        t=0.7128  r=0.6607  feats=120  1s
+
+  B4 — Retune LR on best B config: hybrid (0.7235)
+  Running 50 Optuna trials on LR (C range: 0.05–5.0)
+  Best LR temporal: 0.7235
+  Params: {'penalty': 'l2', 'C': 4.353010439152423, 'scaler': 'robust', 'solver': 'liblinear'}
+  B4 — LR85+XGB15 tuned, hybrid                            t=0.7235  r=0.7086  feats=114  52s
+  B4 — LR90+XGB10 tuned, hybrid                            t=0.7245  r=0.7086  feats=114  53s
+  B4 — LR95+XGB5 tuned, hybrid                             t=0.7245  r=0.7086  feats=114  53s
+
+========================================================================
+SAVING BEST MODEL
+========================================================================
+  [save] No improvement — original files unchanged
+
+========================================
+EXPERIMENT 10 — K SWEEP + ELO TYPE
+========================================
+Baseline: 73.14% temporal (K=48, all-career Elo, 114 features)
+
+EXPERIMENT A — K VALUE SWEEP (all-career Elo):
+      K  Temporal    Random    elo_dif corr
+    ---  --------    ------  --------------------
+     48    72.35%    69.20%          0.1863 (baseline)
+     56    72.45%    69.65%          0.1958
+     64    72.55%    69.50%          0.2038
+     72    72.35%    69.50%          0.2104
+     80    72.55%    69.95%          0.2160
+     96    72.35%    69.80%          0.2247
+    128    72.25%    69.95%          0.2355
+
+  Best K: 64 (temporal: 72.55%)
+
+EXPERIMENT B — ELO TYPE (K=64):
+  Config                        Temporal    Random  Features
+  ----------------------------  --------    ------  --------
+  B1 — UFC-only Elo               70.47%    67.61%       114
+  B2 — Hybrid Elo                 72.35%    71.17%       114
+  B3 — Both (12 Elo feats)        71.28%    66.07%       120
+  B4 — Retuned LR, best Elo       72.45%        --       114
+
+  B3 Elo feature coefficients:
+    R_elo_career                  : +0.0767
+    B_elo_career                  : -0.0767
+    elo_career_dif                : +0.1982
+    R_elo_trend_career            : +0.0412
+    B_elo_trend_career            : -0.0412
+    elo_trend_career_dif          : +0.0736
+    R_elo_ufc                     : +0.1391
+    B_elo_ufc                     : -0.1391
+    elo_ufc_dif                   : +0.2928
+    R_elo_trend_ufc               : -0.1598
+    B_elo_trend_ufc               : +0.1598
+    elo_trend_ufc_dif             : -0.2722
+
+BEST RESULT: 72.55% (config: A — K= 64, all-career Elo, K=64)
+vs baseline: -0.59%
+
+Saved: ✗ models, ✓ elo files, ✓ metadata
+========================================
+
+
+========================================
+EXPERIMENT 10 — K SWEEP + ELO TYPE
+========================================
+Baseline: 73.14% temporal (K=48, all-career Elo, 114 features)
+
+EXPERIMENT A — K VALUE SWEEP (all-career Elo):
+      K  Temporal    Random    elo_dif corr
+    ---  --------    ------  --------------------
+     48    72.35%    69.20%          0.1863 (baseline)
+     56    72.45%    69.65%          0.1958
+     64    72.55%    69.50%          0.2038
+     72    72.35%    69.50%          0.2104
+     80    72.55%    69.95%          0.2160
+     96    72.35%    69.80%          0.2247
+    128    72.25%    69.95%          0.2355
+
+  Best K: 64 (temporal: 72.55%)
+
+EXPERIMENT B — ELO TYPE (K=64):
+  Config                        Temporal    Random  Features
+  ----------------------------  --------    ------  --------
+  B1 — UFC-only Elo               70.47%    67.61%       114
+  B2 — Hybrid Elo                 72.35%    71.17%       114
+  B3 — Both (12 Elo feats)        71.28%    66.07%       120
+  B4 — Retuned LR, best Elo       72.45%        --       114
+
+  B3 Elo feature coefficients:
+    R_elo_career                  : +0.0767
+    B_elo_career                  : -0.0767
+    elo_career_dif                : +0.1982
+    R_elo_trend_career            : +0.0412
+    B_elo_trend_career            : -0.0412
+    elo_trend_career_dif          : +0.0736
+    R_elo_ufc                     : +0.1391
+    B_elo_ufc                     : -0.1391
+    elo_ufc_dif                   : +0.2928
+    R_elo_trend_ufc               : -0.1598
+    B_elo_trend_ufc               : +0.1598
+    elo_trend_ufc_dif             : -0.2722
+
+BEST RESULT: 72.55% (config: A — K= 64, all-career Elo, K=64)
+vs baseline: -0.59%
+
+Saved: ✗ models, ✓ elo files, ✓ metadata
+========================================

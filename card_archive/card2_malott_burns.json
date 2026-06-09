@@ -1,0 +1,115 @@
+{
+  "event": "UFC Fight Night: Malott vs Burns",
+  "date": "April 2026",
+  "venue": "Las Vegas, Nevada",
+  "fights": [
+    {
+      "f1": "Mike Malott", "f1Flag": "🇨🇦",
+      "f2": "Gilbert Burns", "f2Flag": "🇧🇷",
+      "weightClass": "Welterweight", "rounds": 5, "label": "MAIN EVENT",
+      "f1_odds": -255, "f2_odds": 210,
+      "f1_ko_odds": -110, "f2_ko_odds": 700,
+      "f1_sub_odds": 750, "f2_sub_odds": 650,
+      "f1_dec_odds": 600, "f2_dec_odds": 700
+    },
+    {
+      "f1": "Charles Jourdain", "f1Flag": "🇨🇦",
+      "f2": "Kyler Phillips", "f2Flag": "🇺🇸",
+      "weightClass": "Featherweight", "rounds": 3, "label": "CO-MAIN",
+      "f1_odds": -154, "f2_odds": 120,
+      "f1_ko_odds": 500, "f2_ko_odds": 600,
+      "f1_sub_odds": 500, "f2_sub_odds": 1200,
+      "f1_dec_odds": 200, "f2_dec_odds": 260
+    },
+    {
+      "f1": "Mandel Nallo", "f1Flag": "🇺🇸",
+      "f2": "Jai Herbert", "f2Flag": "🇬🇧",
+      "weightClass": "Light Heavyweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -168, "f2_odds": 142,
+      "f1_ko_odds": 200, "f2_ko_odds": 430,
+      "f1_sub_odds": 430, "f2_sub_odds": 2200,
+      "f1_dec_odds": 490, "f2_dec_odds": 350
+    },
+    {
+      "f1": "Jasmine Jasudavicius", "f1Flag": "🇨🇦",
+      "f2": "Karine Silva", "f2Flag": "🇧🇷",
+      "weightClass": "Women's Flyweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -320, "f2_odds": 260,
+      "f1_ko_odds": 850,  "f2_ko_odds": 1200,
+      "f1_sub_odds": 550, "f2_sub_odds": 700,
+      "f1_dec_odds": -130, "f2_dec_odds": 650
+    },
+    {
+      "f1": "Gauge Young", "f1Flag": "🇺🇸",
+      "f2": "Thiago Moises", "f2Flag": "🇧🇷",
+      "weightClass": "Lightweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -162, "f2_odds": 136,
+      "f1_ko_odds": 260,  "f2_ko_odds": 1700,
+      "f1_sub_odds": 2200, "f2_sub_odds": 550,
+      "f1_dec_odds": 185, "f2_dec_odds": 280
+    },
+    {
+      "f1": "Marcio Barbosa", "f1Flag": "🇧🇷",
+      "f2": "Dennis Buzukja", "f2Flag": "🇦🇱",
+      "weightClass": "Featherweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -390, "f2_odds": 310,
+      "f1_ko_odds": -195, "f2_ko_odds": 700,
+      "f1_sub_odds": 950, "f2_sub_odds": 1900,
+      "f1_dec_odds": 900, "f2_dec_odds": 750
+    },
+    {
+      "f1": "Robert Valentin", "f1Flag": "🇺🇸",
+      "f2": "Julien Leblanc", "f2Flag": "🇨🇦",
+      "weightClass": "Lightweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -186, "f2_odds": 144,
+      "f1_ko_odds": 390, "f2_ko_odds": 750,
+      "f1_sub_odds": 200, "f2_sub_odds": 750,
+      "f1_dec_odds": 500, "f2_dec_odds": 350
+    },
+    {
+      "f1": "Gokhan Saricam", "f1Flag": "🇹🇷",
+      "f2": "Tanner Bosner", "f2Flag": "🇺🇸",
+      "weightClass": "Welterweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -156, "f2_odds": 122,
+      "f1_ko_odds": 260,  "f2_ko_odds": 450,
+      "f1_sub_odds": 1400, "f2_sub_odds": 3000,
+      "f1_dec_odds": 230, "f2_dec_odds": 270
+    },
+    {
+      "f1": "Melissa Croden", "f1Flag": "🇺🇸",
+      "f2": "Darya Zheleznyakova", "f2Flag": "🇷🇺",
+      "weightClass": "Women's Strawweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -142, "f2_odds": 120,
+      "f1_ko_odds": 550, "f2_ko_odds": 550,
+      "f1_sub_odds": 650, "f2_sub_odds": 2700,
+      "f1_dec_odds": 175, "f2_dec_odds": 220
+    },
+    {
+      "f1": "JJ Aldrich", "f1Flag": "🇺🇸",
+      "f2": "Jamey-Lyn Horth", "f2Flag": "🇨🇦",
+      "weightClass": "Women's Flyweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": 164, "f2_odds": -196,
+      "f1_ko_odds": 2200, "f2_ko_odds": 850,
+      "f1_sub_odds": 2200, "f2_sub_odds": 1200,
+      "f1_dec_odds": 185, "f2_dec_odds": -110
+    },
+    {
+      "f1": "John Castaneda", "f1Flag": "🇺🇸",
+      "f2": "Mark Vologdin", "f2Flag": "🇷🇺",
+      "weightClass": "Bantamweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -158, "f2_odds": 134,
+      "f1_ko_odds": 500, "f2_ko_odds": 460,
+      "f1_sub_odds": 550, "f2_sub_odds": 1800,
+      "f1_dec_odds": 185, "f2_dec_odds": 290
+    },
+    {
+      "f1": "Jamie Siraj", "f1Flag": "🇺🇸",
+      "f2": "John Yannis", "f2Flag": "🇺🇸",
+      "weightClass": "Lightweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -260, "f2_odds": 215,
+      "f1_ko_odds": 600,  "f2_ko_odds": 550,
+      "f1_sub_odds": 200, "f2_sub_odds": 2200,
+      "f1_dec_odds": 230, "f2_dec_odds": 490
+    }
+  ]
+}

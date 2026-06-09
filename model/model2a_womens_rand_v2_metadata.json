@@ -1,0 +1,61 @@
+{
+  "created": "2026-06-02T10:30:40.407105",
+  "description": "Women M2A \u2014 method odds + M1, corner-randomized (seed=42)",
+  "features": [
+    "m1_prob",
+    "r_ko_prob",
+    "b_ko_prob",
+    "r_sub_prob",
+    "b_sub_prob",
+    "r_dec_prob",
+    "b_dec_prob",
+    "ko_diff",
+    "sub_diff",
+    "dec_diff",
+    "gap",
+    "gap_signed",
+    "gap_zone",
+    "vegas_agree",
+    "tier_hist_win_rate"
+  ],
+  "n_features": 15,
+  "blend": "50% LR + 50% XGB",
+  "train_size": 448,
+  "test_size": 136,
+  "temporal_split": "2024-01-01",
+  "corner_randomized": true,
+  "rand_seed": 42,
+  "acc_lr": 0.7132352941176471,
+  "acc_xgb": 0.6911764705882353,
+  "acc_blend": 0.6985294117647058,
+  "brier_blend": 0.21077130834172633,
+  "auc_blend": 0.7729437229437229,
+  "cal_mae_blend": 0.2385423558593041,
+  "w_m1_acc_filtered": 0.7132352941176471,
+  "w_m1_acc_full": 0.743,
+  "biased_run_acc": 0.6838,
+  "beats_w_m1": false,
+  "lr_params": {
+    "C": 0.0575377379411719,
+    "penalty": "l1",
+    "scaler": "robust",
+    "class_weight": "balanced"
+  },
+  "xgb_params": {
+    "n_estimators": 229,
+    "learning_rate": 0.06227706893489267,
+    "max_depth": 5,
+    "subsample": 0.6074400273436087,
+    "colsample_bytree": 0.6979435315858737,
+    "gamma": 2.7867591373592573,
+    "reg_alpha": 1.9834731875925005
+  },
+  "top5_features_xgb": [
+    "m1_prob",
+    "r_dec_prob",
+    "b_dec_prob",
+    "b_ko_prob",
+    "sub_diff"
+  ],
+  "save_status": "experimental_rand_v2"
+}

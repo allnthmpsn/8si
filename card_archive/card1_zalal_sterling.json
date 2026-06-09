@@ -1,0 +1,124 @@
+{
+  "event": "UFC Fight Night: Zalal vs Sterling",
+  "date": "April 2026",
+  "venue": "Las Vegas, Nevada",
+  "fights": [
+    {
+      "f1": "Youssef Zalal", "f1Flag": "🇲🇦",
+      "f2": "Aljamain Sterling", "f2Flag": "🇺🇸",
+      "weightClass": "Lightweight", "rounds": 5, "label": "MAIN EVENT",
+      "f1_odds": -130, "f2_odds": 108,
+      "f1_ko_odds": 480,  "f2_ko_odds": 1700,
+      "f1_sub_odds": 1100, "f2_sub_odds": 460,
+      "f1_dec_odds": 180,  "f2_dec_odds": 240
+    },
+    {
+      "f1": "Norma Dumont", "f1Flag": "🇧🇷",
+      "f2": "Joselyne Edwards", "f2Flag": "🇨🇦",
+      "weightClass": "Women's Featherweight", "rounds": 3, "label": "CO-MAIN",
+      "f1_odds": -205, "f2_odds": 172,
+      "f1_ko_odds": 1300, "f2_ko_odds": 1300,
+      "f1_sub_odds": 1200, "f2_sub_odds": 1100,
+      "f1_dec_odds": -135, "f2_dec_odds": 280
+    },
+    {
+      "f1": "Rafa Garcia", "f1Flag": "🇲🇽",
+      "f2": "Alexander Hernandez", "f2Flag": "🇺🇸",
+      "weightClass": "Lightweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": 100, "f2_odds": -118,
+      "f1_ko_odds": 1000, "f2_ko_odds": 400,
+      "f1_sub_odds": 650, "f2_sub_odds": 3000,
+      "f1_dec_odds": 195, "f2_dec_odds": 190
+    },
+    {
+      "f1": "Adrian Luna Martinetti", "f1Flag": "🇮🇹",
+      "f2": "Davey Grant", "f2Flag": "🇬🇧",
+      "weightClass": "Bantamweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -104, "f2_odds": -121,
+      "f1_ko_odds": 850, "f2_ko_odds": 325,
+      "f1_sub_odds": 575, "f2_sub_odds": 1400,
+      "f1_dec_odds": 225, "f2_dec_odds": 230
+    },
+    {
+      "f1": "Montel Jackson", "f1Flag": "🇺🇸",
+      "f2": "Raoni Barcelos", "f2Flag": "🇧🇷",
+      "weightClass": "Bantamweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -225, "f2_odds": 174,
+      "f1_ko_odds": 220,  "f2_ko_odds": 1700,
+      "f1_sub_odds": 1200, "f2_sub_odds": 1100,
+      "f1_dec_odds": 185, "f2_dec_odds": 270
+    },
+    {
+      "f1": "Ryan Spann", "f1Flag": "🇺🇸",
+      "f2": "Marcus Buchecha", "f2Flag": "🇧🇷",
+      "weightClass": "Light Heavyweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": 136, "f2_odds": -162,
+      "f1_ko_odds": 240, "f2_ko_odds": 500,
+      "f1_sub_odds": 850, "f2_sub_odds": 165,
+      "f1_dec_odds": 1200, "f2_dec_odds": 600
+    },
+    {
+      "f1": "Rodolfo Vieira", "f1Flag": "🇧🇷",
+      "f2": "Eric McConico", "f2Flag": "🇺🇸",
+      "weightClass": "Middleweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -390, "f2_odds": 310,
+      "f1_ko_odds": 500, "f2_ko_odds": 800,
+      "f1_sub_odds": 170, "f2_sub_odds": 3500,
+      "f1_dec_odds": 200, "f2_dec_odds": 550
+    },
+    {
+      "f1": "Jackson McVey", "f1Flag": "🇺🇸",
+      "f2": "Sedriques Dumas", "f2Flag": "🇺🇸",
+      "weightClass": "Middleweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -180, "f2_odds": 152,
+      "f1_ko_odds": 240, "f2_ko_odds": 500,
+      "f1_sub_odds": 250, "f2_sub_odds": 550,
+      "f1_dec_odds": 700, "f2_dec_odds": 650
+    },
+    {
+      "f1": "Mayra Bueno Silva", "f1Flag": "🇧🇷",
+      "f2": "Michelle Montague", "f2Flag": "🇬🇧",
+      "weightClass": "Women's Flyweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": 340, "f2_odds": -430,
+      "f1_ko_odds": 3000, "f2_ko_odds": 480,
+      "f1_sub_odds": 1100, "f2_sub_odds": 340,
+      "f1_dec_odds": 500, "f2_dec_odds": 115
+    },
+    {
+      "f1": "Jafel Filho", "f1Flag": "🇧🇷",
+      "f2": "Cody Durden", "f2Flag": "🇺🇸",
+      "weightClass": "Flyweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -650, "f2_odds": 480,
+      "f1_ko_odds": 400, "f2_ko_odds": 1000,
+      "f1_sub_odds": -130, "f2_sub_odds": 1700,
+      "f1_dec_odds": 500, "f2_dec_odds": 1200
+    },
+    {
+      "f1": "Francis Marshall", "f1Flag": "🇺🇸",
+      "f2": "Lucas Brennan", "f2Flag": "🇮🇪",
+      "weightClass": "Middleweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -600, "f2_odds": 380,
+      "f1_ko_odds": 370, "f2_ko_odds": 2200,
+      "f1_sub_odds": 280, "f2_sub_odds": 900,
+      "f1_dec_odds": 135, "f2_dec_odds": 950
+    },
+    {
+      "f1": "Max Griffin", "f1Flag": "🇺🇸",
+      "f2": "Victor Valenzuela", "f2Flag": "🇺🇸",
+      "weightClass": "Welterweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": 114, "f2_odds": -134,
+      "f1_ko_odds": 450, "f2_ko_odds": 320,
+      "f1_sub_odds": 2200, "f2_sub_odds": 2200,
+      "f1_dec_odds": 230, "f2_dec_odds": 200
+    },
+    {
+      "f1": "Talita Alencar", "f1Flag": "🇧🇷",
+      "f2": "Julia Polastri", "f2Flag": "🇮🇹",
+      "weightClass": "Women's Flyweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": 190, "f2_odds": -230,
+      "f1_ko_odds": 2700, "f2_ko_odds": 350,
+      "f1_sub_odds": 900, "f2_sub_odds": 2500,
+      "f1_dec_odds": 290, "f2_dec_odds": 105
+    }
+  ]
+}

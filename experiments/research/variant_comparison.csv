@@ -1,0 +1,5 @@
+variant,accuracy,n_features,delta_pp
+Baseline,0.714662,114,0.0
+A_Trimmed,0.716418,109,0.18
+B_Augmented,0.710272,129,-0.44
+C_TrimPlusTraj,0.71115,124,-0.35

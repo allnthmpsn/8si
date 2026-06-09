@@ -1,0 +1,256 @@
+{
+  "version": "M2B_V3",
+  "date": "2026-05-14",
+  "best_ens": "ens_5050",
+  "n_features": 20,
+  "features": [
+    "gap_size",
+    "gap_zone",
+    "gap_direction",
+    "gap_signed",
+    "m1_prob",
+    "m2a_prob",
+    "m1_conviction",
+    "m2a_conviction",
+    "m1_m2a_agree",
+    "vegas_agree",
+    "triple_agree",
+    "conviction_product",
+    "conviction_gap",
+    "odds_tier",
+    "weight_class_ord",
+    "is_5round",
+    "vig",
+    "closing_odds",
+    "is_m1_signal",
+    "agreement_encoded"
+  ],
+  "split_floor": 0.45,
+  "promoted": false,
+  "save_path": "/Users/allenthompson/Desktop/ufc-predictor/experiments/research/model2b_v2/model2b_v3_candidate.pkl",
+  "criteria": {
+    "acc": true,
+    "brier": true,
+    "counter": false,
+    "split": false,
+    "gap_dir": true
+  },
+  "failed": [
+    "counter",
+    "split"
+  ],
+  "model_perf": {
+    "lr": {
+      "cv_acc": 0.767420814479638,
+      "cv_std": 0.025290839117614688,
+      "acc_raw": 0.7076537013801757,
+      "acc_floor": 0.7076537013801757,
+      "brier_raw": 0.19889419715937046,
+      "brier_floor": 0.19311823433810907,
+      "split_mae_raw": 0.19825333259676134,
+      "split_mae_floor": 0.056229106243548654,
+      "counter_mae": 0.06103006767996488
+    },
+    "rf": {
+      "cv_acc": 0.7624434389140271,
+      "cv_std": 0.02567649042373051,
+      "acc_raw": 0.7114178168130489,
+      "acc_floor": 0.7114178168130489,
+      "brier_raw": 0.19358803475742584,
+      "brier_floor": 0.19000919045874054,
+      "split_mae_raw": 0.17368092224874507,
+      "split_mae_floor": 0.04903962645757787,
+      "counter_mae": 0.01802963833772538
+    },
+    "xgb": {
+      "cv_acc": 0.7647058823529411,
+      "cv_std": 0.0270738014509531,
+      "acc_raw": 0.7013801756587202,
+      "acc_floor": 0.7013801756587202,
+      "brier_raw": 0.19558529221767076,
+      "brier_floor": 0.19203245762090443,
+      "split_mae_raw": 0.2552529352900748,
+      "split_mae_floor": 0.2682344931889983,
+      "counter_mae": 0.04597643786148927,
+      "best_params": {
+        "n_estimators": 385,
+        "learning_rate": 0.010942993824912034,
+        "max_depth": 3,
+        "min_child_weight": 5,
+        "subsample": 0.6709575519292573,
+        "colsample_bytree": 0.8056385565136418,
+        "reg_alpha": 0.9580055402844472,
+        "reg_lambda": 2.16452593559823,
+        "random_state": 42,
+        "n_jobs": 1,
+        "eval_metric": "logloss"
+      }
+    },
+    "ens_5050": {
+      "cv_acc": null,
+      "cv_std": null,
+      "acc_raw": 0.7089084065244667,
+      "acc_floor": 0.7089084065244667,
+      "brier_raw": 0.19626424001913864,
+      "brier_floor": 0.19209058319101793,
+      "split_mae_raw": 0.2049444380057449,
+      "split_mae_floor": 0.18061322858668505,
+      "counter_mae": 0.09323240300878936
+    },
+    "ens_333": {
+      "cv_acc": null,
+      "cv_std": null,
+      "acc_raw": 0.7076537013801757,
+      "acc_floor": 0.7076537013801757,
+      "brier_raw": 0.19508923889027377,
+      "brier_floor": 0.1912839458414247,
+      "split_mae_raw": 0.17198806066230188,
+      "split_mae_floor": 0.056820699422664656,
+      "counter_mae": 0.035101816096253735
+    }
+  },
+  "calibration_by_type": {
+    "CONFIRM": {
+      "n": 409,
+      "raw_mae": 0.13971279695559632,
+      "floor_mae": 0.13971279695559632
+    },
+    "COUNTER": {
+      "n": 246,
+      "raw_mae": 0.09323240300878936,
+      "floor_mae": 0.09323240300878936
+    },
+    "SPLIT": {
+      "n": 142,
+      "raw_mae": 0.2049444380057449,
+      "floor_mae": 0.18061322858668505
+    }
+  },
+  "xgb_top15": [
+    {
+      "feature": "m1_m2a_agree",
+      "importance": 0.21199239790439606,
+      "rank": 1
+    },
+    {
+      "feature": "conviction_product",
+      "importance": 0.17568673193454742,
+      "rank": 2
+    },
+    {
+      "feature": "agreement_encoded",
+      "importance": 0.09901055693626404,
+      "rank": 3
+    },
+    {
+      "feature": "m1_conviction",
+      "importance": 0.07181009650230408,
+      "rank": 4
+    },
+    {
+      "feature": "gap_signed",
+      "importance": 0.04170583188533783,
+      "rank": 5
+    },
+    {
+      "feature": "m2a_conviction",
+      "importance": 0.04069822281599045,
+      "rank": 6
+    },
+    {
+      "feature": "vegas_agree",
+      "importance": 0.03527762368321419,
+      "rank": 7
+    },
+    {
+      "feature": "closing_odds",
+      "importance": 0.03258681669831276,
+      "rank": 8
+    },
+    {
+      "feature": "m1_prob",
+      "importance": 0.0320044606924057,
+      "rank": 9
+    },
+    {
+      "feature": "gap_direction",
+      "importance": 0.030869677662849426,
+      "rank": 10
+    },
+    {
+      "feature": "conviction_gap",
+      "importance": 0.030234362930059433,
+      "rank": 11
+    },
+    {
+      "feature": "triple_agree",
+      "importance": 0.02962089516222477,
+      "rank": 12
+    },
+    {
+      "feature": "m2a_prob",
+      "importance": 0.02840436063706875,
+      "rank": 13
+    },
+    {
+      "feature": "gap_zone",
+      "importance": 0.02687930315732956,
+      "rank": 14
+    },
+    {
+      "feature": "gap_size",
+      "importance": 0.025708409026265144,
+      "rank": 15
+    }
+  ],
+  "new_feature_ranks": {
+    "is_m1_signal": 20,
+    "agreement_encoded": 3,
+    "gap_signed": 5,
+    "gap_size": 15
+  },
+  "xgb_best_params": {
+    "n_estimators": 385,
+    "learning_rate": 0.010942993824912034,
+    "max_depth": 3,
+    "min_child_weight": 5,
+    "subsample": 0.6709575519292573,
+    "colsample_bytree": 0.8056385565136418,
+    "reg_alpha": 0.9580055402844472,
+    "reg_lambda": 2.16452593559823,
+    "random_state": 42,
+    "n_jobs": 1,
+    "eval_metric": "logloss"
+  },
+  "corrected_selection_note": "Script bug: best_ens was selected by acc_floor only, choosing ens_5050 (70.89%). ens_5050 fails COUNTER (0.0932 > 0.0800) and SPLIT (0.1806 > 0.1239) criteria. Correct selection = best model among those passing ALL criteria.",
+  "models_passing_all_criteria": {
+    "lr": {
+      "acc_floor": 0.7077,
+      "brier_floor": 0.1931,
+      "split_mae_floor": 0.0562,
+      "counter_mae": 0.061
+    },
+    "rf": {
+      "acc_floor": 0.7114,
+      "brier_floor": 0.19,
+      "split_mae_floor": 0.049,
+      "counter_mae": 0.018
+    },
+    "ens_333": {
+      "acc_floor": 0.7077,
+      "brier_floor": 0.1913,
+      "split_mae_floor": 0.0568,
+      "counter_mae": 0.0351
+    }
+  },
+  "correct_best_model": "rf",
+  "correct_best_model_criteria": {
+    "acc": true,
+    "brier": true,
+    "counter": true,
+    "split": true,
+    "gap_dir": true
+  },
+  "correct_promotion_decision": "PROMOTE_PENDING_REVIEW",
+  "promotion_note": "RF (standalone) passes all 5 criteria. Not auto-promoted per user instruction 'do not overwrite production files until findings reviewed.'"
+}

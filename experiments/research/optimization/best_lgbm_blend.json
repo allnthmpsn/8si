@@ -1,0 +1,8 @@
+{
+  "label": "LR 80% + XGB 10% + LGBM 10%",
+  "lr_w": 0.8,
+  "xgb_w": 0.1,
+  "lgbm_w": 0.1,
+  "accuracy": 0.708516,
+  "delta_vs_baseline": -0.007904
+}

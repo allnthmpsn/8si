@@ -1,0 +1,251 @@
+{
+  "dataset": {
+    "source": "data/value_bet_log.csv",
+    "total_rows": 3007,
+    "date_range": "2018-01-14 to 2026-03-28"
+  },
+  "direction_stats": {
+    "pos_gap": {
+      "label": "pos_gap (gap >= +1%)",
+      "N": 1591,
+      "overall_wr": 81.3,
+      "agree_N": 1514,
+      "agree_wr": 83.2,
+      "disagree_N": 77,
+      "disagree_wr": 42.9,
+      "triple_agree_N": 1204,
+      "triple_agree_wr": 84.3,
+      "avg_gap_size_pct": 6.29,
+      "avg_closing_odds": -162.5,
+      "roi_pct": 33.18
+    },
+    "neg_gap": {
+      "label": "neg_gap (gap <= -1%)",
+      "N": 980,
+      "overall_wr": 58.5,
+      "agree_N": 570,
+      "agree_wr": 71.4,
+      "disagree_N": 410,
+      "disagree_wr": 40.5,
+      "triple_agree_N": 570,
+      "triple_agree_wr": 71.4,
+      "avg_gap_size_pct": 5.21,
+      "avg_closing_odds": -343.0,
+      "roi_pct": -19.8
+    },
+    "near_zero": {
+      "label": "near_zero (|gap| < 1%)",
+      "N": 436,
+      "overall_wr": 72.5,
+      "agree_N": 395,
+      "agree_wr": 74.4,
+      "disagree_N": 41,
+      "disagree_wr": 53.7,
+      "triple_agree_N": 391,
+      "triple_agree_wr": 74.2,
+      "avg_gap_size_pct": 0.51,
+      "avg_closing_odds": -278.3,
+      "roi_pct": 3.5
+    },
+    "all": {
+      "label": "all fights",
+      "N": 3007,
+      "overall_wr": 72.6,
+      "agree_N": 2479,
+      "agree_wr": 79.1,
+      "disagree_N": 528,
+      "disagree_wr": 41.9,
+      "triple_agree_N": 2165,
+      "triple_agree_wr": 79.1,
+      "avg_gap_size_pct": 5.1,
+      "avg_closing_odds": -238.1,
+      "roi_pct": 11.61
+    }
+  },
+  "neg_magnitude_stats": {
+    "0\u20133%": {
+      "label": "neg_0\u20133%",
+      "N": 336,
+      "overall_wr": 66.1,
+      "agree_N": 263,
+      "agree_wr": 68.8,
+      "disagree_N": 73,
+      "disagree_wr": 56.2,
+      "triple_agree_N": 263,
+      "triple_agree_wr": 68.8,
+      "avg_gap_size_pct": 1.98,
+      "avg_closing_odds": -298.3,
+      "roi_pct": -6.42
+    },
+    "3\u20135%": {
+      "label": "neg_3\u20135%",
+      "N": 238,
+      "overall_wr": 62.2,
+      "agree_N": 154,
+      "agree_wr": 72.1,
+      "disagree_N": 84,
+      "disagree_wr": 44.0,
+      "triple_agree_N": 154,
+      "triple_agree_wr": 72.1,
+      "avg_gap_size_pct": 3.97,
+      "avg_closing_odds": -345.2,
+      "roi_pct": -15.08
+    },
+    "5\u201310%": {
+      "label": "neg_5\u201310%",
+      "N": 299,
+      "overall_wr": 53.2,
+      "agree_N": 127,
+      "agree_wr": 77.2,
+      "disagree_N": 172,
+      "disagree_wr": 35.5,
+      "triple_agree_N": 127,
+      "triple_agree_wr": 77.2,
+      "avg_gap_size_pct": 6.94,
+      "avg_closing_odds": -368.3,
+      "roi_pct": -28.91
+    },
+    ">10%": {
+      "label": "neg_>10%",
+      "N": 107,
+      "overall_wr": 41.1,
+      "agree_N": 26,
+      "agree_wr": 65.4,
+      "disagree_N": 81,
+      "disagree_wr": 33.3,
+      "triple_agree_N": 26,
+      "triple_agree_wr": 65.4,
+      "avg_gap_size_pct": 13.29,
+      "avg_closing_odds": -407.6,
+      "roi_pct": -46.83
+    }
+  },
+  "cross_tab_direction_x_agreement": {
+    "pos_gap": {
+      "agree": {
+        "N": 1514,
+        "wr": 83.2,
+        "roi": 35.81
+      },
+      "disagree": {
+        "N": 77,
+        "wr": 42.9,
+        "roi": -18.46
+      }
+    },
+    "neg_gap": {
+      "agree": {
+        "N": 570,
+        "wr": 71.4,
+        "roi": -4.93
+      },
+      "disagree": {
+        "N": 410,
+        "wr": 40.5,
+        "roi": -40.46
+      }
+    },
+    "near_zero": {
+      "agree": {
+        "N": 395,
+        "wr": 74.4,
+        "roi": 5.61
+      },
+      "disagree": {
+        "N": 41,
+        "wr": 53.7,
+        "roi": -16.82
+      }
+    }
+  },
+  "neg_magnitude_x_agreement": {
+    "0\u20133%": {
+      "agree_wr": 68.8,
+      "agree_N": 263,
+      "disagree_wr": 56.2,
+      "disagree_N": 73,
+      "roi_agree": -4.51
+    },
+    "3\u20135%": {
+      "agree_wr": 72.1,
+      "agree_N": 154,
+      "disagree_wr": 44.0,
+      "disagree_N": 84,
+      "roi_agree": -4.9
+    },
+    "5\u201310%": {
+      "agree_wr": 77.2,
+      "agree_N": 127,
+      "disagree_wr": 35.5,
+      "disagree_N": 172,
+      "roi_agree": -2.71
+    },
+    ">10%": {
+      "agree_wr": 65.4,
+      "agree_N": 26,
+      "disagree_wr": 33.3,
+      "disagree_N": 81,
+      "roi_agree": -20.21
+    }
+  },
+  "key_questions": {
+    "Q1_neg_agree_vs_benchmark": {
+      "question": "For neg_gap + M1/M2A agree \u2014 is WR > 79.1% benchmark?",
+      "neg_agree_N": 570,
+      "neg_agree_wr": 71.4,
+      "beats_benchmark": false
+    },
+    "Q2_chimaev_style": {
+      "question": "Large neg_gap (>10%) + agree + heavy fav (<-300 odds) \u2014 WR? Hypothesis: 85%+",
+      "N": 17,
+      "wr": 76.5,
+      "roi": -12.66,
+      "hypothesis_confirmed": false,
+      "broad_N": 26,
+      "broad_wr": 65.4
+    },
+    "Q3_direction_within_agree": {
+      "question": "Does gap direction affect WR within agree group \u2014 warrant different UI treatment?",
+      "pos_agree_wr": 83.2,
+      "pos_agree_N": 1514,
+      "neg_agree_wr": 71.4,
+      "neg_agree_N": 570,
+      "near_zero_agree_wr": 74.4,
+      "near_zero_agree_N": 395,
+      "pos_agree_roi": 35.81,
+      "neg_agree_roi": -4.93
+    },
+    "Q4_neg_mag_x_agree": {
+      "table": {
+        "0\u20133%": {
+          "agree_wr": 68.8,
+          "agree_N": 263,
+          "disagree_wr": 56.2,
+          "disagree_N": 73,
+          "roi_agree": -4.51
+        },
+        "3\u20135%": {
+          "agree_wr": 72.1,
+          "agree_N": 154,
+          "disagree_wr": 44.0,
+          "disagree_N": 84,
+          "roi_agree": -4.9
+        },
+        "5\u201310%": {
+          "agree_wr": 77.2,
+          "agree_N": 127,
+          "disagree_wr": 35.5,
+          "disagree_N": 172,
+          "roi_agree": -2.71
+        },
+        ">10%": {
+          "agree_wr": 65.4,
+          "agree_N": 26,
+          "disagree_wr": 33.3,
+          "disagree_N": 81,
+          "roi_agree": -20.21
+        }
+      }
+    }
+  }
+}

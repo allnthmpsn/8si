@@ -1,0 +1,85 @@
+{
+  "baseline_acc": 0.6927083333333334,
+  "step1": {
+    "best_hl": 730,
+    "best_acc": 0.715625,
+    "all_results": {
+      "730": 0.715625,
+      "1095": 0.703125,
+      "1460": 0.7041666666666667
+    }
+  },
+  "step4": {
+    "expand": true,
+    "date_from": "2015-01-01",
+    "max_delta": 10.611392967330215,
+    "exp_acc": 0.715625
+  },
+  "step5": {
+    "V1": {
+      "acc": 0.715625,
+      "n_features": 109,
+      "top15": [
+        "win_streak_dif",
+        "career_win_rate_dif",
+        "SLpM_dif",
+        "SApM_dif",
+        "R_Str_Acc",
+        "B_Str_Acc",
+        "B_layoff_lt90",
+        "TD_Def_dif",
+        "R_age",
+        "B_avg_SIG_STR_pct",
+        "last5_won_dif",
+        "R_avg_TD_pct",
+        "B_last3_win_rate",
+        "R_avg_SIG_STR_pct",
+        "B_Sub_Avg"
+      ]
+    },
+    "V2": {
+      "acc": 0.7145833333333333,
+      "n_features": 129,
+      "top15": [
+        "career_win_rate_dif",
+        "win_streak_dif",
+        "SApM_dif",
+        "SLpM_dif",
+        "R_Str_Acc",
+        "R_last3_win_rate",
+        "south_clash",
+        "qa_win_rate_dif",
+        "B_total_title_bouts",
+        "B_Str_Acc",
+        "Str_Def_dif",
+        "B_TD_Acc",
+        "R_age",
+        "height_dif",
+        "TD_Def_dif"
+      ]
+    },
+    "V3": {
+      "acc": 0.715625,
+      "n_features": 109,
+      "top15": [
+        "SApM_dif",
+        "SLpM_dif",
+        "career_win_rate_dif",
+        "win_streak_dif",
+        "B_Str_Acc",
+        "B_TD_Acc",
+        "R_Str_Acc",
+        "last3_win_rate_dif",
+        "R_Sub_Avg",
+        "R_age",
+        "B_age",
+        "TD_Def_dif",
+        "B_longest_win_streak",
+        "age_x_exp_dif",
+        "B_avg_SUB_ATT"
+      ]
+    }
+  },
+  "best_variant": "V1",
+  "best_acc": 0.715625
+}

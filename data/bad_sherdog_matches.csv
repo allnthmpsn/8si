@@ -1,0 +1,194 @@
+name,ufc_wins,ufc_losses,sherdog_wins,sherdog_losses,sherdog_total,reasons
+AJ Cunningham,11,5,4,3,7,sh_wins(4)<ufc_wins(11)
+Alatengheili,17,10,13,2,16,sh_wins(13)<ufc_wins(17)
+Aleksei Kunchenko,20,2,13,2,16,sh_wins(13)<ufc_wins(20)
+Aleksei Oleinik,60,17,13,2,16,sh_wins(13)<ufc_wins(60)
+Alex Da Silva,21,4,3,2,5,sh_wins(3)<ufc_wins(21)
+Alexander Munoz,7,2,6,5,11,sh_wins(6)<ufc_wins(7)
+Alexandr Romanov,18,3,13,2,16,sh_wins(13)<ufc_wins(18)
+Alibi Idiris,12,1,10,1,12,sh_wins(10)<ufc_wins(12)
+Amanda Cooper,3,5,13,2,16,wr_dif(0.81 vs 0.38)
+Amanda Ribas,13,7,12,7,19,sh_wins(12)<ufc_wins(13)
+Anderson Dos Santos,21,9,1,1,2,sh_wins(1)<ufc_wins(21); sh_total(2)<3 with ufc_wins=21
+Andre Lima,11,0,5,4,10,sh_wins(5)<ufc_wins(11); wr_dif(0.50 vs 1.00)
+Aoriqileng,26,12,13,2,16,sh_wins(13)<ufc_wins(26)
+Askar Askarov,14,1,0,1,1,sh_wins(0)<ufc_wins(14); sh_total(1)<3 with ufc_wins=14
+Austin Hubbard,17,10,16,11,27,sh_wins(16)<ufc_wins(17)
+BJ Penn,16,14,13,2,16,sh_wins(13)<ufc_wins(16)
+Benoit Saint Denis,17,3,13,2,16,sh_wins(13)<ufc_wins(17)
+Blood Diamond,3,3,13,2,16,wr_dif(0.81 vs 0.50)
+Brad Katona,16,5,14,5,19,sh_wins(14)<ufc_wins(16)
+Brady Hiestand,9,2,8,2,10,sh_wins(8)<ufc_wins(9)
+Brogan Walker,8,5,7,5,12,sh_wins(7)<ufc_wins(8)
+Bruno Silva,23,13,0,2,2,sh_wins(0)<ufc_wins(23); sh_total(2)<3 with ufc_wins=23
+Bruno Souza,10,3,7,7,15,sh_wins(7)<ufc_wins(10); wr_dif(0.47 vs 0.77)
+Bryan Battle,13,2,12,3,16,sh_wins(12)<ufc_wins(13)
+CB Dollaway,17,9,13,2,16,sh_wins(13)<ufc_wins(17)
+Carla Esparza,20,8,19,8,27,sh_wins(19)<ufc_wins(20)
+Chepe Mariscal,18,7,13,2,16,sh_wins(13)<ufc_wins(18)
+Chris Beal,10,5,3,0,3,sh_wins(3)<ufc_wins(10)
+Christian Rodriguez,12,4,0,1,1,sh_wins(0)<ufc_wins(12); sh_total(1)<3 with ufc_wins=12
+Claudio Puelles,13,5,12,5,17,sh_wins(12)<ufc_wins(13)
+Cody Gibson,22,12,21,12,33,sh_wins(21)<ufc_wins(22)
+Cole Miller,21,11,0,1,1,sh_wins(0)<ufc_wins(21); sh_total(1)<3 with ufc_wins=21
+Court McGee,23,14,22,14,36,sh_wins(22)<ufc_wins(23)
+Daniel Santos,14,2,5,2,7,sh_wins(5)<ufc_wins(14)
+Daniil Donchenko,14,2,13,2,15,sh_wins(13)<ufc_wins(14)
+Demetrious Johnson,27,3,25,4,30,sh_wins(25)<ufc_wins(27)
+Dhiego Lima,17,9,15,9,24,sh_wins(15)<ufc_wins(17)
+Diego Rivas,10,2,7,2,9,sh_wins(7)<ufc_wins(10)
+Diego Sanchez,31,13,30,14,44,sh_wins(30)<ufc_wins(31)
+Dooho Choi,16,4,13,2,16,sh_wins(13)<ufc_wins(16)
+Ed Herman,27,16,26,16,43,sh_wins(26)<ufc_wins(27)
+Erick Silva,19,9,0,1,1,sh_wins(0)<ufc_wins(19); sh_total(1)<3 with ufc_wins=19
+Erik Silva,9,4,0,1,1,sh_wins(0)<ufc_wins(9); sh_total(1)<3 with ufc_wins=9
+Felipe Silva,8,2,0,1,1,sh_wins(0)<ufc_wins(8); sh_total(1)<3 with ufc_wins=8
+Felipe dos Santos,8,3,0,1,1,sh_wins(0)<ufc_wins(8); sh_total(1)<3 with ufc_wins=8
+Fernando Bruno,15,4,1,2,3,sh_wins(1)<ufc_wins(15)
+Frankie Saenz,13,7,12,7,19,sh_wins(12)<ufc_wins(13)
+Gabriel Santos,12,2,0,1,1,sh_wins(0)<ufc_wins(12); sh_total(1)<3 with ufc_wins=12
+Gabriel Silva,8,2,5,4,9,sh_wins(5)<ufc_wins(8)
+Henrique da Silva,14,5,0,15,15,sh_wins(0)<ufc_wins(14); wr_dif(0.00 vs 0.74)
+Henry Briones,16,8,13,2,16,sh_wins(13)<ufc_wins(16)
+Ian Machado Garry,17,1,13,2,16,sh_wins(13)<ufc_wins(17)
+Ibo Aslan,14,4,0,1,1,sh_wins(0)<ufc_wins(14); sh_total(1)<3 with ufc_wins=14
+Ike Villanueva,18,14,0,1,1,sh_wins(0)<ufc_wins(18); sh_total(1)<3 with ufc_wins=18
+Ilir Latifi,17,9,16,9,26,sh_wins(16)<ufc_wins(17)
+JC Cottrell,17,5,13,2,16,sh_wins(13)<ufc_wins(17)
+JJ Aldrich,14,7,13,2,16,sh_wins(13)<ufc_wins(14)
+Jacare Souza,26,10,13,2,16,sh_wins(13)<ufc_wins(26)
+Jarjis Danho,7,1,6,1,9,sh_wins(6)<ufc_wins(7)
+Joe Duffy,16,5,1,1,2,sh_wins(1)<ufc_wins(16); sh_total(2)<3 with ufc_wins=16
+Joey Gomez,7,1,6,3,9,sh_wins(6)<ufc_wins(7)
+John Allan,13,7,2,0,2,sh_wins(2)<ufc_wins(13); sh_total(2)<3 with ufc_wins=13
+Johnny Walker,22,9,5,3,8,sh_wins(5)<ufc_wins(22)
+Jon Jones,28,1,1,5,6,sh_wins(1)<ufc_wins(28); wr_dif(0.17 vs 0.97)
+Jordan Williams,9,6,5,0,5,sh_wins(5)<ufc_wins(9); wr_dif(1.00 vs 0.60)
+Jose Quinonez,9,5,0,2,2,sh_wins(0)<ufc_wins(9); sh_total(2)<3 with ufc_wins=9
+Joseph Morales,15,2,14,2,16,sh_wins(14)<ufc_wins(15)
+Josh Samman,13,4,12,4,16,sh_wins(12)<ufc_wins(13)
+Juan Espino,11,2,10,2,12,sh_wins(10)<ufc_wins(11)
+Juliana Miller,5,4,4,4,8,sh_wins(4)<ufc_wins(5)
+Julianna Pena,13,6,12,6,18,sh_wins(12)<ufc_wins(13)
+JunYong Park,19,7,13,2,16,sh_wins(13)<ufc_wins(19)
+Junior Dos Santos,21,9,1,0,1,sh_wins(1)<ufc_wins(21); sh_total(1)<3 with ufc_wins=21
+Kaan Ofli,14,4,13,4,18,sh_wins(13)<ufc_wins(14)
+Katsunori Kikuno,24,8,20,7,27,sh_wins(20)<ufc_wins(24)
+Kelvin Gastelum,21,10,20,11,32,sh_wins(20)<ufc_wins(21)
+Kevin Lee,18,8,0,9,9,sh_wins(0)<ufc_wins(18); wr_dif(0.00 vs 0.69)
+Khalil Rountree Jr.,15,7,13,2,16,sh_wins(13)<ufc_wins(15)
+Khaos Williams,15,5,13,2,16,sh_wins(13)<ufc_wins(15)
+King Green,34,17,13,2,16,sh_wins(13)<ufc_wins(34)
+Kurt Holobaugh,22,10,21,10,32,sh_wins(21)<ufc_wins(22)
+Leandro Silva,20,6,0,2,2,sh_wins(0)<ufc_wins(20); sh_total(2)<3 with ufc_wins=20
+Loopy Godinez,14,5,13,2,16,sh_wins(13)<ufc_wins(14)
+Luana Santos,10,2,2,2,4,sh_wins(2)<ufc_wins(10)
+Lucas Almeida,15,5,1,2,3,sh_wins(1)<ufc_wins(15)
+Lucas Rocha,18,2,4,2,6,sh_wins(4)<ufc_wins(18)
+Luis Pena,9,3,0,1,1,sh_wins(0)<ufc_wins(9); sh_total(1)<3 with ufc_wins=9
+Macy Chiasson,11,6,10,6,16,sh_wins(10)<ufc_wins(11)
+Magomed Ankalaev,21,2,20,2,24,sh_wins(20)<ufc_wins(21)
+Mairon Santos,18,1,17,1,18,sh_wins(17)<ufc_wins(18)
+Manuel Torres,17,3,1,0,1,sh_wins(1)<ufc_wins(17); sh_total(1)<3 with ufc_wins=17
+Manvel Gamburyan,15,10,13,2,16,sh_wins(13)<ufc_wins(15)
+Maria Oliveira,13,7,0,1,1,sh_wins(0)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+Mario Pinto,11,0,0,1,1,sh_wins(0)<ufc_wins(11); sh_total(1)<3 with ufc_wins=11
+Matt Brown,26,19,0,1,1,sh_wins(0)<ufc_wins(26); sh_total(1)<3 with ufc_wins=26
+Megan Anderson,11,5,10,5,15,sh_wins(10)<ufc_wins(11)
+Michael Johnson,25,20,24,20,44,sh_wins(24)<ufc_wins(25)
+Michael Trizano,11,3,10,3,13,sh_wins(10)<ufc_wins(11)
+Miranda Maverick,17,6,15,6,21,sh_wins(15)<ufc_wins(17)
+Mizuki,16,6,1,2,4,sh_wins(1)<ufc_wins(16)
+Mohammed Usman,12,4,11,4,15,sh_wins(11)<ufc_wins(12)
+Nate Diaz,22,13,21,13,34,sh_wins(21)<ufc_wins(22)
+Nate Maness,16,3,13,2,16,sh_wins(13)<ufc_wins(16)
+Nicco Montano,5,3,4,3,7,sh_wins(4)<ufc_wins(5)
+Ovince Saint Preux,27,18,13,2,16,sh_wins(13)<ufc_wins(27)
+Pannie Kianzad,17,9,16,9,25,sh_wins(16)<ufc_wins(17)
+Parker Porter,14,9,13,9,22,sh_wins(13)<ufc_wins(14)
+Patchy Mix,20,3,13,2,16,sh_wins(13)<ufc_wins(20)
+Paulo Costa,15,4,7,7,14,sh_wins(7)<ufc_wins(15)
+Rafael Alves,20,12,0,2,2,sh_wins(0)<ufc_wins(20); sh_total(2)<3 with ufc_wins=20
+Ramazan Temirov,19,3,13,2,16,sh_wins(13)<ufc_wins(19)
+Ray Rodriguez,16,8,0,1,1,sh_wins(0)<ufc_wins(16); sh_total(1)<3 with ufc_wins=16
+Renato Moicano,20,7,13,2,16,sh_wins(13)<ufc_wins(20)
+Ricky Turcios,13,6,12,6,18,sh_wins(12)<ufc_wins(13)
+Robert Valentin,11,6,10,6,17,sh_wins(10)<ufc_wins(11)
+Robert Whittaker,27,9,26,9,35,sh_wins(26)<ufc_wins(27)
+Rodrigo Nascimento,11,3,0,1,1,sh_wins(0)<ufc_wins(11); sh_total(1)<3 with ufc_wins=11
+Rongzhu,27,6,13,2,16,sh_wins(13)<ufc_wins(27)
+Rony Jason,14,7,13,2,16,sh_wins(13)<ufc_wins(14)
+Rose Namajunas,15,8,14,8,22,sh_wins(14)<ufc_wins(15)
+Roy Nelson,22,14,1,2,3,sh_wins(1)<ufc_wins(22)
+Ryan Loder,8,3,7,3,10,sh_wins(7)<ufc_wins(8)
+Santiago Ponzinibbio,31,9,30,9,39,sh_wins(30)<ufc_wins(31)
+Sergey Khandozhko,28,6,27,6,34,sh_wins(27)<ufc_wins(28)
+Shane Young,13,8,0,1,1,sh_wins(0)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+Shannon Ross,13,9,12,9,21,sh_wins(12)<ufc_wins(13)
+Sheldon Westcott,10,3,9,3,13,sh_wins(9)<ufc_wins(10)
+Shinsho Anzai,10,3,9,6,15,sh_wins(9)<ufc_wins(10)
+Sijara Eubanks,8,7,7,7,14,sh_wins(7)<ufc_wins(8)
+Stefan Struve,33,13,29,13,42,sh_wins(29)<ufc_wins(33)
+Steve Garcia,19,5,0,1,1,sh_wins(0)<ufc_wins(19); sh_total(1)<3 with ufc_wins=19
+Stevie Ray,23,9,0,1,1,sh_wins(0)<ufc_wins(23); sh_total(1)<3 with ufc_wins=23
+SuYoung You,16,3,13,2,16,sh_wins(13)<ufc_wins(16)
+Sumudaerji,19,7,13,2,16,sh_wins(13)<ufc_wins(19)
+TJ Brown,17,11,13,2,16,sh_wins(13)<ufc_wins(17)
+TJ Dillashaw,18,5,13,2,16,sh_wins(13)<ufc_wins(18)
+Tai Tuivasa,15,9,14,9,23,sh_wins(14)<ufc_wins(15)
+Te Edwards,6,3,1,2,3,sh_wins(1)<ufc_wins(6)
+Thiago Santos,22,11,1,3,4,sh_wins(1)<ufc_wins(22)
+Tim Elliott,22,13,21,13,35,sh_wins(21)<ufc_wins(22)
+Tony Ferguson,26,11,25,11,36,sh_wins(25)<ufc_wins(26)
+Uriah Hall,18,11,17,11,28,sh_wins(17)<ufc_wins(18)
+Victor Hugo,25,5,0,1,1,sh_wins(0)<ufc_wins(25); sh_total(1)<3 with ufc_wins=25
+Victor Rodriguez,7,4,5,4,9,sh_wins(5)<ufc_wins(7)
+Vinicius Moreira,9,5,0,4,4,sh_wins(0)<ufc_wins(9)
+Vinicius Oliveira,23,4,1,0,1,sh_wins(1)<ufc_wins(23); sh_total(1)<3 with ufc_wins=23
+Warlley Alves,15,8,14,8,22,sh_wins(14)<ufc_wins(15)
+Yair Rodriguez,21,6,0,1,1,sh_wins(0)<ufc_wins(21); sh_total(1)<3 with ufc_wins=21
+Yana Santos,17,8,8,2,10,sh_wins(8)<ufc_wins(17)
+Yizha,26,6,0,1,1,sh_wins(0)<ufc_wins(26); sh_total(1)<3 with ufc_wins=26
+Zach Reese,10,3,0,1,1,sh_wins(0)<ufc_wins(10); sh_total(1)<3 with ufc_wins=10
+Alex Torres,5,4,1,1,2,sh_wins(1)<ufc_wins(5); sh_total(2)<3 with ufc_wins=5
+Aliaskhab Khizriev,14,0,12,0,13,sh_wins(12)<ufc_wins(14)
+Allan Zuniga,13,1,13,8,21,wr_dif(0.62 vs 0.93)
+Askar Mozharov,19,13,15,14,29,sh_wins(15)<ufc_wins(19)
+Bruno Santos,15,2,0,1,1,sh_wins(0)<ufc_wins(15); sh_total(1)<3 with ufc_wins=15
+Carlos Eduardo Rocha,9,4,0,2,2,sh_wins(0)<ufc_wins(9); sh_total(2)<3 with ufc_wins=9
+Daniel Spohn,15,6,13,2,16,sh_wins(13)<ufc_wins(15)
+Dean Barry,4,2,1,3,4,sh_wins(1)<ufc_wins(4)
+Eric Nolan,8,4,1,2,3,sh_wins(1)<ufc_wins(8)
+Felipe Franco,8,1,0,1,1,sh_wins(0)<ufc_wins(8); sh_total(1)<3 with ufc_wins=8
+Georges St-Pierre,26,2,13,2,16,sh_wins(13)<ufc_wins(26)
+Jack May,9,3,0,1,1,sh_wins(0)<ufc_wins(9); sh_total(1)<3 with ufc_wins=9
+Javier Reyes,23,5,1,0,1,sh_wins(1)<ufc_wins(23); sh_total(1)<3 with ufc_wins=23
+John Albert,6,5,1,0,1,sh_wins(1)<ufc_wins(6); sh_total(1)<3 with ufc_wins=6
+Jorge de Oliveira,9,2,2,1,3,sh_wins(2)<ufc_wins(9)
+Jose Maria,37,7,1,2,3,sh_wins(1)<ufc_wins(37)
+Khalid Murtazaliev,14,2,13,3,16,sh_wins(13)<ufc_wins(14)
+Luis Ramos,20,10,2,0,2,sh_wins(2)<ufc_wins(20); sh_total(2)<3 with ufc_wins=20
+Luiz Dutra,13,6,1,0,1,sh_wins(1)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+Manoel Sousa,13,1,1,0,1,sh_wins(1)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+Manuel Rodriguez,11,5,0,2,2,sh_wins(0)<ufc_wins(11); sh_total(2)<3 with ufc_wins=11
+Marcio Alexandre Junior,17,4,13,2,16,sh_wins(13)<ufc_wins(17)
+Marcos Vinicius,23,11,1,1,2,sh_wins(1)<ufc_wins(23); sh_total(2)<3 with ufc_wins=23
+Matt Lucas,15,3,2,2,4,sh_wins(2)<ufc_wins(15)
+Mike Brown,26,9,1,1,3,sh_wins(1)<ufc_wins(26)
+Mike Guymon,15,6,13,2,16,sh_wins(13)<ufc_wins(15)
+Milton Vieira,13,8,0,1,1,sh_wins(0)<ufc_wins(13); sh_total(1)<3 with ufc_wins=13
+Pablo Garza,12,4,4,0,4,sh_wins(4)<ufc_wins(12)
+Paul Kelly,14,5,0,1,1,sh_wins(0)<ufc_wins(14); sh_total(1)<3 with ufc_wins=14
+Rob Emerson,18,12,0,1,1,sh_wins(0)<ufc_wins(18); sh_total(1)<3 with ufc_wins=18
+Robert Peralta,18,8,1,2,4,sh_wins(1)<ufc_wins(18)
+Rodrigo Damm,13,9,12,9,21,sh_wins(12)<ufc_wins(13)
+Rodrigo Sezinando,9,2,8,2,10,sh_wins(8)<ufc_wins(9)
+Rodrigo de Lima,8,3,1,2,3,sh_wins(1)<ufc_wins(8)
+Ryan McGillivray,12,0,12,6,19,wr_dif(0.63 vs 1.00)
+TJ Grant,21,5,13,2,16,sh_wins(13)<ufc_wins(21)
+TJ O'Brien,20,8,13,2,16,sh_wins(13)<ufc_wins(20)
+TJ Waldburger,16,9,13,2,16,sh_wins(13)<ufc_wins(16)
+Thiago Silva,19,6,2,3,5,sh_wins(2)<ufc_wins(19); wr_dif(0.40 vs 0.76)
+Ty Miller,7,0,2,2,4,sh_wins(2)<ufc_wins(7)
+Wagner Silva,6,3,8,0,8,wr_dif(1.00 vs 0.67)
+Zviad Lazishvili,13,1,8,1,9,sh_wins(8)<ufc_wins(13)

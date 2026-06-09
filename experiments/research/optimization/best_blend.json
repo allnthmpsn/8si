@@ -1,0 +1,6 @@
+{
+  "lr_pct": 70,
+  "xgb_pct": 30,
+  "accuracy": 0.720808,
+  "delta_vs_baseline": 0.004388
+}

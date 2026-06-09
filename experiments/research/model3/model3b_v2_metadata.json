@@ -1,0 +1,230 @@
+{
+  "model": "Model 3B v2 \u2014 Winner + Method, with M1 winner probability as feature",
+  "classes": [
+    "R KO/TKO",
+    "R Sub",
+    "R Dec",
+    "B KO/TKO",
+    "B Sub",
+    "B Dec"
+  ],
+  "label_map": {
+    "0": [
+      "Red",
+      "KO/TKO"
+    ],
+    "1": [
+      "Red",
+      "SUB"
+    ],
+    "2": [
+      "Red",
+      "DEC"
+    ],
+    "3": [
+      "Blue",
+      "KO/TKO"
+    ],
+    "4": [
+      "Blue",
+      "SUB"
+    ],
+    "5": [
+      "Blue",
+      "DEC"
+    ]
+  },
+  "train_cutoff": "2024-01-01",
+  "m1_inference": {
+    "lr_weight": 0.7,
+    "xgb_weight": 0.3,
+    "description": "70% LR Pipeline + 30% XGB, production Model 1 (read-only)",
+    "m1_direction_acc_test_window": 0.7187
+  },
+  "n_train_raw": 5038,
+  "n_train_aug": 10076,
+  "n_test": 1817,
+  "n_features": 102,
+  "n_base_features": 99,
+  "m1_new_features": [
+    "m1_red_win_prob",
+    "m1_red_win_prob_sq",
+    "m1_confidence"
+  ],
+  "class_balance_test": {
+    "R KO/TKO": 320,
+    "R Sub": 175,
+    "R Dec": 543,
+    "B KO/TKO": 230,
+    "B Sub": 107,
+    "B Dec": 442
+  },
+  "naive_baseline_test": 0.2988,
+  "model_accuracy": {
+    "lr_test": 0.4095,
+    "rf_test": 0.4579,
+    "xgb_test": 0.4474,
+    "best_blend": 0.4656,
+    "best_blend_label": "40% RF + 60% XGB",
+    "vs_naive_pp": 16.68
+  },
+  "blend_weights": {
+    "lr": 0.0,
+    "rf": 0.4,
+    "xgb": 0.6
+  },
+  "six_class_accuracy": 0.4656,
+  "direction_accuracy": 0.7067,
+  "direction_accuracy_prev_3b": 0.6764,
+  "direction_accuracy_m1_ref": 0.7281,
+  "direction_accuracy_improved_vs_3b": true,
+  "direction_accuracy_gap_vs_m1": -0.0214,
+  "method_accuracy": 0.6098,
+  "per_class": [
+    {
+      "class": 0,
+      "name": "R KO/TKO",
+      "n": 320,
+      "per_class_recall": 0.4688
+    },
+    {
+      "class": 1,
+      "name": "R Sub",
+      "n": 175,
+      "per_class_recall": 0.3486
+    },
+    {
+      "class": 2,
+      "name": "R Dec",
+      "n": 543,
+      "per_class_recall": 0.5783
+    },
+    {
+      "class": 3,
+      "name": "B KO/TKO",
+      "n": 230,
+      "per_class_recall": 0.413
+    },
+    {
+      "class": 4,
+      "name": "B Sub",
+      "n": 107,
+      "per_class_recall": 0.1215
+    },
+    {
+      "class": 5,
+      "name": "B Dec",
+      "n": 442,
+      "per_class_recall": 0.4819
+    }
+  ],
+  "by_weight_class": [
+    {
+      "weight_class": "Bantamweight",
+      "n": 191,
+      "six_class_acc": 0.534,
+      "direction_acc": 0.7277,
+      "naive": 0.3717
+    },
+    {
+      "weight_class": "Catch Weight",
+      "n": 26,
+      "six_class_acc": 0.6154,
+      "direction_acc": 0.8846,
+      "naive": 0.4615
+    },
+    {
+      "weight_class": "Featherweight",
+      "n": 244,
+      "six_class_acc": 0.4795,
+      "direction_acc": 0.709,
+      "naive": 0.2869
+    },
+    {
+      "weight_class": "Flyweight",
+      "n": 142,
+      "six_class_acc": 0.3803,
+      "direction_acc": 0.7113,
+      "naive": 0.338
+    },
+    {
+      "weight_class": "Heavyweight",
+      "n": 112,
+      "six_class_acc": 0.4018,
+      "direction_acc": 0.7679,
+      "naive": 0.3125
+    },
+    {
+      "weight_class": "Light Heavyweight",
+      "n": 126,
+      "six_class_acc": 0.4444,
+      "direction_acc": 0.6667,
+      "naive": 0.381
+    },
+    {
+      "weight_class": "Lightweight",
+      "n": 232,
+      "six_class_acc": 0.4741,
+      "direction_acc": 0.7155,
+      "naive": 0.3017
+    },
+    {
+      "weight_class": "Middleweight",
+      "n": 230,
+      "six_class_acc": 0.4609,
+      "direction_acc": 0.7391,
+      "naive": 0.2696
+    },
+    {
+      "weight_class": "Welterweight",
+      "n": 198,
+      "six_class_acc": 0.4343,
+      "direction_acc": 0.7172,
+      "naive": 0.2576
+    },
+    {
+      "weight_class": "Women's Bantamweight",
+      "n": 63,
+      "six_class_acc": 0.3651,
+      "direction_acc": 0.7619,
+      "naive": 0.3016
+    },
+    {
+      "weight_class": "Women's Flyweight",
+      "n": 99,
+      "six_class_acc": 0.6465,
+      "direction_acc": 0.7071,
+      "naive": 0.4242
+    },
+    {
+      "weight_class": "Women's Strawweight",
+      "n": 153,
+      "six_class_acc": 0.4379,
+      "direction_acc": 0.5359,
+      "naive": 0.451
+    }
+  ],
+  "xgb_top20_features": {
+    "B_Sub_Avg": 0.036400001496076584,
+    "m1_red_win_prob_sq": 0.035599999129772186,
+    "m1_red_win_prob": 0.0348999984562397,
+    "R_Sub_Avg": 0.032999999821186066,
+    "combined_is_ko": 0.021400000900030136,
+    "Sub_Avg_dif": 0.016899999231100082,
+    "m1_confidence": 0.013700000010430813,
+    "is_womens": 0.012799999676644802,
+    "is_5rnd": 0.01140000019222498,
+    "R_career_is_ko": 0.010999999940395355,
+    "combined_is_decision": 0.010999999940395355,
+    "R_career_finish_received": 0.010700000450015068,
+    "combined_Sub_Avg": 0.010499999858438969,
+    "combined_is_finish": 0.010400000028312206,
+    "R_career_is_finish": 0.010400000028312206,
+    "B_career_finish_received": 0.010400000028312206,
+    "B_career_is_ko": 0.010400000028312206,
+    "weight_class_ord": 0.010400000028312206,
+    "career_win_rate_dif": 0.010300000198185444,
+    "B_career_is_decision": 0.010300000198185444
+  },
+  "production_ready": false
+}

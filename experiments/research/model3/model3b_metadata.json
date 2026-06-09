@@ -1,0 +1,309 @@
+{
+  "model": "Model 3B \u2014 Winner + Method Six-Class",
+  "classes": [
+    "R KO/TKO",
+    "R Sub",
+    "R Dec",
+    "B KO/TKO",
+    "B Sub",
+    "B Dec"
+  ],
+  "label_map": {
+    "0": [
+      "Red",
+      "KO/TKO"
+    ],
+    "1": [
+      "Red",
+      "SUB"
+    ],
+    "2": [
+      "Red",
+      "DEC"
+    ],
+    "3": [
+      "Blue",
+      "KO/TKO"
+    ],
+    "4": [
+      "Blue",
+      "SUB"
+    ],
+    "5": [
+      "Blue",
+      "DEC"
+    ]
+  },
+  "train_cutoff": "2024-01-01",
+  "n_train_raw": 5038,
+  "n_train_aug": 10076,
+  "n_test": 1817,
+  "n_features": 99,
+  "features": [
+    "weight_class_ord",
+    "is_5rnd",
+    "is_title",
+    "is_womens",
+    "R_elo",
+    "B_elo",
+    "elo_dif",
+    "R_elo_trend",
+    "B_elo_trend",
+    "elo_trend_dif",
+    "R_career_win_rate",
+    "B_career_win_rate",
+    "career_win_rate_dif",
+    "R_ko_win_rate",
+    "B_ko_win_rate",
+    "ko_win_rate_dif",
+    "R_sub_win_rate",
+    "B_sub_win_rate",
+    "sub_win_rate_dif",
+    "R_dec_win_rate",
+    "B_dec_win_rate",
+    "dec_win_rate_dif",
+    "R_career_is_finish",
+    "R_career_is_decision",
+    "R_career_is_ko",
+    "R_career_is_sub",
+    "R_career_finish_delivered",
+    "R_career_finish_received",
+    "R_career_dec_delivered",
+    "R_career_dec_received",
+    "R_career_n_fights",
+    "B_career_is_finish",
+    "B_career_is_decision",
+    "B_career_is_ko",
+    "B_career_is_sub",
+    "B_career_finish_delivered",
+    "B_career_finish_received",
+    "B_career_dec_delivered",
+    "B_career_dec_received",
+    "B_career_n_fights",
+    "combined_is_finish",
+    "combined_is_decision",
+    "combined_is_ko",
+    "combined_is_sub",
+    "combined_finish_delivered",
+    "combined_finish_received",
+    "combined_dec_delivered",
+    "combined_dec_received",
+    "R_SLpM",
+    "R_SApM",
+    "R_Str_Def",
+    "R_TD_Avg",
+    "R_TD_Def",
+    "R_Sub_Avg",
+    "B_SLpM",
+    "B_SApM",
+    "B_Str_Def",
+    "B_TD_Avg",
+    "B_TD_Def",
+    "B_Sub_Avg",
+    "combined_SLpM",
+    "combined_SApM",
+    "combined_Str_Def",
+    "combined_TD_Avg",
+    "combined_TD_Def",
+    "combined_Sub_Avg",
+    "SLpM_dif",
+    "SApM_dif",
+    "Str_Def_dif",
+    "TD_Avg_dif",
+    "Sub_Avg_dif",
+    "R_avg_SIG_STR_landed",
+    "B_avg_SIG_STR_landed",
+    "combined_sig_str_landed",
+    "R_avg_SIG_STR_pct",
+    "B_avg_SIG_STR_pct",
+    "sig_str_pct_dif",
+    "R_avg_TD_landed",
+    "B_avg_TD_landed",
+    "combined_td_landed",
+    "R_avg_TD_pct",
+    "B_avg_TD_pct",
+    "td_pct_dif",
+    "R_avg_SUB_ATT",
+    "B_avg_SUB_ATT",
+    "combined_sub_att",
+    "reach_dif",
+    "age_dif",
+    "sig_str_dif",
+    "avg_sub_att_dif",
+    "ko_dif",
+    "sub_dif",
+    "win_streak_dif",
+    "lose_streak_dif",
+    "win_dif",
+    "loss_dif",
+    "avg_td_dif",
+    "total_round_dif",
+    "total_title_bout_dif"
+  ],
+  "class_balance_test": {
+    "R KO/TKO": 320,
+    "R Sub": 175,
+    "R Dec": 543,
+    "B KO/TKO": 230,
+    "B Sub": 107,
+    "B Dec": 442
+  },
+  "naive_baseline_test": 0.2988,
+  "model_accuracy": {
+    "lr_test": 0.4331,
+    "rf_test": 0.4496,
+    "xgb_test": 0.4216,
+    "best_blend": 0.4496,
+    "best_blend_calibrated": 0.2433,
+    "best_blend_label": "RF only",
+    "vs_naive_pp": 15.08
+  },
+  "blend_weights": {
+    "lr": 0.0,
+    "rf": 1.0,
+    "xgb": 0.0
+  },
+  "direction_accuracy": 0.6764,
+  "method_accuracy": 0.6065,
+  "per_class": [
+    {
+      "class": 0,
+      "name": "R KO/TKO",
+      "n": 320,
+      "per_class_acc": 0.3906
+    },
+    {
+      "class": 1,
+      "name": "R Sub",
+      "n": 175,
+      "per_class_acc": 0.16
+    },
+    {
+      "class": 2,
+      "name": "R Dec",
+      "n": 543,
+      "per_class_acc": 0.6538
+    },
+    {
+      "class": 3,
+      "name": "B KO/TKO",
+      "n": 230,
+      "per_class_acc": 0.2043
+    },
+    {
+      "class": 4,
+      "name": "B Sub",
+      "n": 107,
+      "per_class_acc": 0.0841
+    },
+    {
+      "class": 5,
+      "name": "B Dec",
+      "n": 442,
+      "per_class_acc": 0.5724
+    }
+  ],
+  "by_weight_class": [
+    {
+      "weight_class": "Bantamweight",
+      "n": 191,
+      "six_class_acc": 0.5079,
+      "direction_acc": 0.6702,
+      "naive": 0.3717
+    },
+    {
+      "weight_class": "Catch Weight",
+      "n": 26,
+      "six_class_acc": 0.4231,
+      "direction_acc": 0.6538,
+      "naive": 0.4615
+    },
+    {
+      "weight_class": "Featherweight",
+      "n": 244,
+      "six_class_acc": 0.4385,
+      "direction_acc": 0.6639,
+      "naive": 0.2869
+    },
+    {
+      "weight_class": "Flyweight",
+      "n": 142,
+      "six_class_acc": 0.3592,
+      "direction_acc": 0.662,
+      "naive": 0.338
+    },
+    {
+      "weight_class": "Heavyweight",
+      "n": 112,
+      "six_class_acc": 0.4464,
+      "direction_acc": 0.7321,
+      "naive": 0.3125
+    },
+    {
+      "weight_class": "Light Heavyweight",
+      "n": 126,
+      "six_class_acc": 0.4524,
+      "direction_acc": 0.6825,
+      "naive": 0.381
+    },
+    {
+      "weight_class": "Lightweight",
+      "n": 232,
+      "six_class_acc": 0.4741,
+      "direction_acc": 0.694,
+      "naive": 0.3017
+    },
+    {
+      "weight_class": "Middleweight",
+      "n": 230,
+      "six_class_acc": 0.4478,
+      "direction_acc": 0.6739,
+      "naive": 0.2696
+    },
+    {
+      "weight_class": "Welterweight",
+      "n": 198,
+      "six_class_acc": 0.4091,
+      "direction_acc": 0.6515,
+      "naive": 0.2576
+    },
+    {
+      "weight_class": "Women's Bantamweight",
+      "n": 63,
+      "six_class_acc": 0.4444,
+      "direction_acc": 0.8571,
+      "naive": 0.3016
+    },
+    {
+      "weight_class": "Women's Flyweight",
+      "n": 99,
+      "six_class_acc": 0.5051,
+      "direction_acc": 0.7273,
+      "naive": 0.4242
+    },
+    {
+      "weight_class": "Women's Strawweight",
+      "n": 153,
+      "six_class_acc": 0.4706,
+      "direction_acc": 0.5817,
+      "naive": 0.451
+    }
+  ],
+  "xgb_top15_features": {
+    "R_Sub_Avg": 0.03269999846816063,
+    "B_Sub_Avg": 0.03180000185966492,
+    "combined_is_ko": 0.01850000023841858,
+    "Sub_Avg_dif": 0.016499999910593033,
+    "SLpM_dif": 0.01590000092983246,
+    "R_career_is_ko": 0.014600000344216824,
+    "R_Str_Def": 0.014600000344216824,
+    "B_career_is_ko": 0.014499999582767487,
+    "B_Str_Def": 0.014299999922513962,
+    "R_career_finish_received": 0.012900000438094139,
+    "SApM_dif": 0.012900000438094139,
+    "career_win_rate_dif": 0.01269999984651804,
+    "B_career_finish_received": 0.01209999993443489,
+    "combined_Sub_Avg": 0.011900000274181366,
+    "TD_Avg_dif": 0.011800000444054604
+  }
+}

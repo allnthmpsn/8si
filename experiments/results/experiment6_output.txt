@@ -1,0 +1,208 @@
+======================================================================
+UFC EXPERIMENT 6  —  2026-04-20T16:16:15.855507
+Target: beat 0.6994  (XGBoost, random 80/20, clean data)
+======================================================================
+
+[FE] Loading data and engineering features...
+  master after FE: (7177, 202)
+  BASE_108 = 108 features
+
+======================================================================
+EXPERIMENT A — Temporal train/test split (train <2024, test ≥2024)
+======================================================================
+  Train: 5144 (aug'd from 2572), Test (2024+): 984,  Features: 108
+  A_XGBoost_temporal_2024+_test                                      acc=0.6606  feats=108  1s
+  A_LR_temporal_2024+_test                                           acc=0.7022  feats=108  0s
+
+  Temporal split summary: XGB=0.6606  LR=0.7022
+  (Random split baseline: 0.6994 — temporal gap = -0.0388)
+
+  Experiment A done in 1s
+
+======================================================================
+EXPERIMENT C — Refined XGBoost Optuna (100 trials, ±narrow range)
+======================================================================
+  Dataset: train=5688, test=712, features=108
+  Search around: {'n_estimators': 992, 'learning_rate': 0.057338447379760536, 'max_depth': 5, 'subsample': 0.7577905622611881, 'colsample_bytree': 0.674191396199946, 'min_child_weight': 8}
+  Best params: {'n_estimators': 1161, 'learning_rate': 0.04923008174328196, 'max_depth': 5, 'subsample': 0.7723583130801059, 'colsample_bytree': 0.7646633972324445, 'min_child_weight': 4, 'gamma': 0.7458497935545471, 'reg_alpha': 1.1286735251127924}
+  C_XGBoost_refined_Optuna_100trials                                 acc=0.7037  feats=108  119s  *** NEW BEST ***
+  *** Saved new best → model/ufc_model_best.pkl
+
+  Top 15 features:
+              feature  importance
+             SApM_dif    0.018685
+  career_win_rate_dif    0.018168
+             SLpM_dif    0.017749
+                R_age    0.014456
+                B_age    0.013707
+       B_layoff_gt365    0.013679
+       R_layoff_gt365    0.013401
+          sig_str_dif    0.012678
+            B_Str_Acc    0.012394
+            R_Str_Acc    0.012242
+last5_finish_rate_dif    0.011493
+      lose_streak_dif    0.011404
+ total_title_bout_dif    0.011404
+    B_avg_SIG_STR_pct    0.011056
+       win_streak_dif    0.010874
+
+  Experiment C done in 119s
+
+======================================================================
+EXPERIMENT B — Weight class stratification
+======================================================================
+
+  B1: Weight class encoding comparison
+  B1_XGBoost_wc_ordinal_108feat                                      acc=0.6994  feats=108  1s
+  B1_XGBoost_wc_one_hot_120feat                                      acc=0.6798  feats=120  1s
+  B1_XGBoost_wc_both_121feat                                         acc=0.6756  feats=121  1s
+
+  B2: Division upset rate feature
+  B2_XGBoost_division_upset_rate                                     acc=0.6812  feats=109  1s
+
+  B3: Per-division models (XGBoost, divisions with 200+ fights)
+  Eligible divisions: ['Lightweight', 'Welterweight', 'Featherweight', 'Middleweight', 'Bantamweight', 'Heavyweight', 'Light Heavyweight', "Women's Strawweight", 'Flyweight', "Women's Flyweight"]
+
+  Per-division accuracy:
+    Welterweight                    acc=0.7188  n_test=96
+    Bantamweight                    acc=0.6500  n_test=80
+    Featherweight                   acc=0.6471  n_test=85
+    Flyweight                       acc=0.6429  n_test=42
+    Middleweight                    acc=0.6163  n_test=86
+    Lightweight                     acc=0.6042  n_test=96
+    Heavyweight                     acc=0.5926  n_test=54
+    Light Heavyweight               acc=0.5818  n_test=55
+    Women's Flyweight               acc=0.5750  n_test=40
+    Women's Strawweight             acc=0.5455  n_test=44
+  Weighted avg per-division: 0.6268
+  B3_per_division_weighted_avg                                       acc=0.6268  feats=108  7s
+
+  Experiment B done in 7s
+
+======================================================================
+EXPERIMENT D — Fight recency weighting (sample_weight)
+======================================================================
+  D_XGBoost_unweighted_baseline                                      acc=0.6994  feats=108  1s
+  D_XGBoost_linear_recency_weight                                    acc=0.6896  feats=108  1s
+  D_XGBoost_exp_recency_weight                                       acc=0.6840  feats=108  1s
+
+  Experiment D done in 4s
+
+======================================================================
+EXPERIMENT E — Two-stage prediction (finish/decision → winner)
+======================================================================
+  Dataset: train=2816, test=705
+  Train finish rate: 0.502  Test finish rate: 0.478
+
+  Stage 1: finish vs decision
+  Stage 1 finish-vs-decision accuracy: 0.5858
+  Stage 2a: winner | finish
+    Training samples (finish): 2830
+  Stage 2b: winner | decision
+    Training samples (decision): 2802
+
+  Single-model XGBoost on same subset: 0.6326
+  Two-stage XGBoost:                   0.6397
+  Two-stage delta vs single:           +0.0071
+  E_XGBoost_single_model_full_data                                   acc=0.6326  feats=108  3s
+  E_XGBoost_two_stage_finish_decision                                acc=0.6397  feats=108  3s
+
+  Experiment E done in 3s
+
+======================================================================
+FINAL RESULTS — ALL EXPERIMENTS
+======================================================================
+                             config      acc  n_feats       secs    split
+ C_XGBoost_refined_Optuna_100trials 0.703652      108 118.651201   random
+      B1_XGBoost_wc_ordinal_108feat 0.699438      108   1.118853   random
+      D_XGBoost_unweighted_baseline 0.699438      108   1.117175   random
+    D_XGBoost_linear_recency_weight 0.689607      108   1.192140   random
+       D_XGBoost_exp_recency_weight 0.683989      108   1.203725   random
+     B2_XGBoost_division_upset_rate 0.681180      109   1.116161   random
+      B1_XGBoost_wc_one_hot_120feat 0.679775      120   1.187273   random
+         B1_XGBoost_wc_both_121feat 0.675562      121   1.182968   random
+E_XGBoost_two_stage_finish_decision 0.639716      108   2.566237   random
+   E_XGBoost_single_model_full_data 0.632624      108   2.566237   random
+       B3_per_division_weighted_avg 0.626844      108   6.692713   random
+           A_LR_temporal_2024+_test 0.702236      108   0.038359 temporal
+      A_XGBoost_temporal_2024+_test 0.660569      108   0.999461 temporal
+
+── Random-split results (directly comparable to baseline) ──
+                             config      acc  n_feats
+ C_XGBoost_refined_Optuna_100trials 0.703652      108
+      B1_XGBoost_wc_ordinal_108feat 0.699438      108
+      D_XGBoost_unweighted_baseline 0.699438      108
+    D_XGBoost_linear_recency_weight 0.689607      108
+       D_XGBoost_exp_recency_weight 0.683989      108
+     B2_XGBoost_division_upset_rate 0.681180      109
+      B1_XGBoost_wc_one_hot_120feat 0.679775      120
+         B1_XGBoost_wc_both_121feat 0.675562      121
+E_XGBoost_two_stage_finish_decision 0.639716      108
+   E_XGBoost_single_model_full_data 0.632624      108
+       B3_per_division_weighted_avg 0.626844      108
+
+── Temporal-split results (2024+ test) ──
+                       config      acc  n_feats
+     A_LR_temporal_2024+_test 0.702236      108
+A_XGBoost_temporal_2024+_test 0.660569      108
+
+Baseline (exp5 XGBoost):  0.6994
+New best (random split):  0.7037  (delta: +0.0043)
+
+✓ IMPROVEMENT — saved to model/ufc_model_best.pkl
+  Model type: XGBClassifier
+
+  Winner top 20 feature importances:
+              feature  importance
+             SApM_dif    0.018685
+  career_win_rate_dif    0.018168
+             SLpM_dif    0.017749
+                R_age    0.014456
+                B_age    0.013707
+       B_layoff_gt365    0.013679
+       R_layoff_gt365    0.013401
+          sig_str_dif    0.012678
+            B_Str_Acc    0.012394
+            R_Str_Acc    0.012242
+last5_finish_rate_dif    0.011493
+      lose_streak_dif    0.011404
+ total_title_bout_dif    0.011404
+    B_avg_SIG_STR_pct    0.011056
+       win_streak_dif    0.010874
+    R_avg_SIG_STR_pct    0.010792
+           TD_Def_dif    0.010721
+            B_Sub_Avg    0.010632
+           avg_td_dif    0.010571
+          Sub_Avg_dif    0.010479
+
+  Best hyperparameters:
+  {'colsample_bytree': 0.7646633972324445, 'gamma': 0.7458497935545471, 'learning_rate': 0.04923008174328196, 'max_depth': 5, 'min_child_weight': 4, 'n_estimators': 1161, 'reg_alpha': 1.1286735251127924, 'subsample': 0.7723583130801059}
+
+[DONE]  2026-04-20T16:18:30.858198
+20 feature importances:
+              feature  importance
+             SApM_dif    0.018685
+  career_win_rate_dif    0.018168
+             SLpM_dif    0.017749
+                R_age    0.014456
+                B_age    0.013707
+       B_layoff_gt365    0.013679
+       R_layoff_gt365    0.013401
+          sig_str_dif    0.012678
+            B_Str_Acc    0.012394
+            R_Str_Acc    0.012242
+last5_finish_rate_dif    0.011493
+      lose_streak_dif    0.011404
+ total_title_bout_dif    0.011404
+    B_avg_SIG_STR_pct    0.011056
+       win_streak_dif    0.010874
+    R_avg_SIG_STR_pct    0.010792
+           TD_Def_dif    0.010721
+            B_Sub_Avg    0.010632
+           avg_td_dif    0.010571
+          Sub_Avg_dif    0.010479
+
+  Best hyperparameters:
+  {'colsample_bytree': 0.7646633972324445, 'gamma': 0.7458497935545471, 'learning_rate': 0.04923008174328196, 'max_depth': 5, 'min_child_weight': 4, 'n_estimators': 1161, 'reg_alpha': 1.1286735251127924, 'subsample': 0.7723583130801059}
+
+[DONE]  2026-04-20T16:18:30.858198

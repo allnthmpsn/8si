@@ -1,0 +1,116 @@
+{
+  "event": "UFC Fight Night: Della Maddalena vs Prates",
+  "date": "May 2, 2026",
+  "venue": "RAC Arena, Perth, Western Australia",
+  "fights": [
+    {
+      "f1": "Jack Della Maddalena", "f1Flag": "🇦🇺",
+      "f2": "Carlos Prates", "f2Flag": "🇧🇷",
+      "weightClass": "Welterweight", "rounds": 5, "label": "MAIN EVENT",
+      "f1_odds": -102, "f2_odds": -118,
+      "f1_ko_odds": 275, "f2_ko_odds": 165,
+      "f1_sub_odds": 1600, "f2_sub_odds": 2000,
+      "f1_dec_odds": 300, "f2_dec_odds": 450
+    },
+    {
+      "f1": "Quillan Salkilld", "f1Flag": "🇦🇺",
+      "f2": "Beneil Dariush", "f2Flag": "🇺🇸",
+      "weightClass": "Lightweight", "rounds": 3, "label": "CO-MAIN",
+      "f1_odds": -455, "f2_odds": 350,
+      "f1_ko_odds": -185, "f2_ko_odds": 900,
+      "f1_sub_odds": 550, "f2_sub_odds": 1400,
+      "f1_dec_odds": 600, "f2_dec_odds": 900
+    },
+    {
+      "f1": "Steve Erceg", "f1Flag": "🇦🇺",
+      "f2": "Tim Elliott", "f2Flag": "🇺🇸",
+      "weightClass": "Flyweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -238, "f2_odds": 195,
+      "f1_ko_odds": 900,  "f2_ko_odds": 1100,
+      "f1_sub_odds": 450, "f2_sub_odds": 800,
+      "f1_dec_odds": -110, "f2_dec_odds": 400
+    },
+    {
+      "f1": "Shamil Gaziev", "f1Flag": "🇷🇺",
+      "f2": "Brando Pericic", "f2Flag": "🇦🇺",
+      "weightClass": "Heavyweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": 120, "f2_odds": -142,
+      "f1_ko_odds": 275, "f2_ko_odds": -120,
+      "f1_sub_odds": 500, "f2_sub_odds": 2000,
+      "f1_dec_odds": 850, "f2_dec_odds": 1400
+    },
+    {
+      "f1": "Tai Tuivasa", "f1Flag": "🇦🇺",
+      "f2": "Louie Sutherland", "f2Flag": "🇬🇧",
+      "weightClass": "Heavyweight", "rounds": 3, "label": "MAIN CARD",
+      "f1_odds": -218, "f2_odds": 180,
+      "f1_ko_odds": -125, "f2_ko_odds": 450,
+      "f1_sub_odds": 2500, "f2_sub_odds": 1400,
+      "f1_dec_odds": 550, "f2_dec_odds": 500
+    },
+    {
+      "f1": "Cam Rowston", "f1Flag": "🇦🇺",
+      "f2": "Robert Bryczek", "f2Flag": "🇵🇱",
+      "weightClass": "Middleweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -175, "f2_odds": 145,
+      "f1_ko_odds": 450, "f2_ko_odds": 275,
+      "f1_sub_odds": 200, "f2_sub_odds": 2500,
+      "f1_dec_odds": 330, "f2_dec_odds": 600
+    },
+    {
+      "f1": "Junior Tafa", "f1Flag": "🇦🇺",
+      "f2": "Kevin Christian", "f2Flag": "🇺🇸",
+      "weightClass": "Light Heavyweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -218, "f2_odds": 180,
+      "f1_ko_odds": -140, "f2_ko_odds": 550,
+      "f1_sub_odds": 2500, "f2_sub_odds": 400,
+      "f1_dec_odds": 700, "f2_dec_odds": 1100
+    },
+    {
+      "f1": "Jacob Malkoun", "f1Flag": "🇦🇺",
+      "f2": "Gerald Meerschaert", "f2Flag": "🇺🇸",
+      "weightClass": "Middleweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -1100, "f2_odds": 700,
+      "f1_ko_odds": 110, "f2_ko_odds": 3000,
+      "f1_sub_odds": 275, "f2_sub_odds": 2000,
+      "f1_dec_odds": 225, "f2_dec_odds": 1400
+    },
+    {
+      "f1": "Colby Thicknesse", "f1Flag": "🇦🇺",
+      "f2": "Vince Morales", "f2Flag": "🇺🇸",
+      "weightClass": "Bantamweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -125, "f2_odds": 105,
+      "f1_ko_odds": 1200, "f2_ko_odds": 650,
+      "f1_sub_odds": 800, "f2_sub_odds": 650,
+      "f1_dec_odds": 120, "f2_dec_odds": 225
+    },
+    {
+      "f1": "Wes Schultz", "f1Flag": "🇺🇸",
+      "f2": "Ben Johnston", "f2Flag": "🇦🇺",
+      "weightClass": "Middleweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": 120, "f2_odds": -142,
+      "f1_ko_odds": 550, "f2_ko_odds": 380,
+      "f1_sub_odds": 240, "f2_sub_odds": 185,
+      "f1_dec_odds": 1200, "f2_dec_odds": 650,
+      "f2_is_debut": true
+    },
+    {
+      "f1": "Jonathan Micallef", "f1Flag": "🇦🇺",
+      "f2": "Themba Gorimbo", "f2Flag": "🇿🇼",
+      "weightClass": "Welterweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -245, "f2_odds": 200,
+      "f1_ko_odds": 450, "f2_ko_odds": 850,
+      "f1_sub_odds": 225, "f2_sub_odds": 700,
+      "f1_dec_odds": 225, "f2_dec_odds": 550
+    },
+    {
+      "f1": "Kody Steele", "f1Flag": "🇦🇺",
+      "f2": "Dom Mar Fan", "f2Flag": "🇦🇺",
+      "weightClass": "Lightweight", "rounds": 3, "label": "PRELIM",
+      "f1_odds": -185, "f2_odds": 154,
+      "f1_ko_odds": 300, "f2_ko_odds": 1200,
+      "f1_sub_odds": 750, "f2_sub_odds": 1000,
+      "f1_dec_odds": 165, "f2_dec_odds": 250
+    }
+  ]
+}

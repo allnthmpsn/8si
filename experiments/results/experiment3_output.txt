@@ -1,0 +1,340 @@
+======================================================================
+UFC EXPERIMENT 3  —  started 2026-04-20T11:04:30.429005
+======================================================================
+
+[1] Loading raw data...
+  ufc-master: (7177, 118)
+  career_fights: (48144, 9)
+  ufc_fighters_final: (4455, 18)
+
+[2] Engineering career rolling features...
+  career rolling features done
+[3] Computing opponent quality...
+  opponent quality done
+[4] Building master feature table...
+  after career join: (7177, 149)
+  after style join: (7177, 165)
+  after diff/interaction features: (7177, 192)
+  candidate features: 108
+
+======================================================================
+RUNNING MODEL GRID
+======================================================================
+
+────────────────────────────────────────────────────────────
+Config: date≥2016, min_ufc_fights≥2
+────────────────────────────────────────────────────────────
+  Computing feature importance (108 features, 5916 train rows)...
+  Top-5: ['career_win_rate_dif', 'SApM_dif', 'SLpM_dif', 'TD_Def_dif', 'B_Str_Acc']
+
+  === CatBoost ===
+
+  >> CatBoost|date≥2016|mf2|all  (108 features, train=5916, test=740)
+     acc=0.6757  (303.6s)
+
+  >> CatBoost|date≥2016|mf2|top30  (30 features, train=6762, test=846)
+     acc=0.6525  (294.4s)
+
+  >> CatBoost|date≥2016|mf2|top15  (15 features, train=6842, test=856)
+     acc=0.6554  (205.9s)
+
+  === XGBoost ===
+
+  >> XGBoost|date≥2016|mf2|all  (108 features, train=5916, test=740)
+     acc=0.6784  (56.0s)
+
+  >> XGBoost|date≥2016|mf2|top30  (30 features, train=6762, test=846)
+     acc=0.6537  (26.0s)
+
+  >> XGBoost|date≥2016|mf2|top15  (15 features, train=6842, test=856)
+     acc=0.6565  (10.8s)
+
+  === LightGBM ===
+
+  >> LightGBM|date≥2016|mf2|all  (108 features, train=5916, test=740)
+     acc=0.6770  (60.7s)
+
+  >> LightGBM|date≥2016|mf2|top30  (30 features, train=6762, test=846)
+     acc=0.6489  (25.4s)
+
+  >> LightGBM|date≥2016|mf2|top15  (15 features, train=6842, test=856)
+     acc=0.6507  (21.5s)
+
+  === MLP ===
+
+  >> MLP|date≥2016|mf2|all  (108 features, train=5916, test=740)
+     acc=0.6270  (276.0s)
+
+  >> MLP|date≥2016|mf2|top30  (30 features, train=6762, test=846)
+     acc=0.6277  (308.9s)
+
+  >> MLP|date≥2016|mf2|top15  (15 features, train=6842, test=856)
+     acc=0.6577  (306.9s)
+
+  === LogReg ===
+
+  >> LogReg|date≥2016|mf2|all  (108 features, train=5916, test=740)
+     acc=0.6527  (10.7s)
+
+  >> LogReg|date≥2016|mf2|top30  (30 features, train=6762, test=846)
+     acc=0.6525  (0.9s)
+
+  >> LogReg|date≥2016|mf2|top15  (15 features, train=6842, test=856)
+     acc=0.6449  (0.1s)
+
+  === Voting Ensemble ===
+     Voting acc=0.6649
+
+  === Stacking Ensemble ===
+     Stacking acc=0.6635
+
+────────────────────────────────────────────────────────────
+Config: date≥2015, min_ufc_fights≥1
+────────────────────────────────────────────────────────────
+  Computing feature importance (108 features, 6412 train rows)...
+  Top-5: ['career_win_rate_dif', 'SLpM_dif', 'SApM_dif', 'TD_Def_dif', 'B_age']
+
+  === CatBoost ===
+
+  >> CatBoost|date≥2015|mf1|all  (108 features, train=6412, test=802)
+     acc=0.6671  (353.4s)
+
+  >> CatBoost|date≥2015|mf1|top30  (30 features, train=7378, test=923)
+     acc=0.6782  (170.2s)
+
+  >> CatBoost|date≥2015|mf1|top15  (15 features, train=8002, test=1001)
+     acc=0.6533  (114.1s)
+
+  === XGBoost ===
+
+  >> XGBoost|date≥2015|mf1|all  (108 features, train=6412, test=802)
+     acc=0.6758  (75.0s)
+
+  >> XGBoost|date≥2015|mf1|top30  (30 features, train=7378, test=923)
+     acc=0.6761  (14.1s)
+
+  >> XGBoost|date≥2015|mf1|top15  (15 features, train=8002, test=1001)
+     acc=0.6513  (26.5s)
+
+  === LightGBM ===
+
+  >> LightGBM|date≥2015|mf1|all  (108 features, train=6412, test=802)
+     acc=0.6758  (70.1s)
+
+  >> LightGBM|date≥2015|mf1|top30  (30 features, train=7378, test=923)
+     acc=0.6782  (28.2s)
+
+  >> LightGBM|date≥2015|mf1|top15  (15 features, train=8002, test=1001)
+     acc=0.6573  (22.2s)
+
+  === MLP ===
+
+  >> MLP|date≥2015|mf1|all  (108 features, train=6412, test=802)
+     acc=0.6372  (296.0s)
+
+  >> MLP|date≥2015|mf1|top30  (30 features, train=7378, test=923)
+     acc=0.6566  (308.3s)
+
+  >> MLP|date≥2015|mf1|top15  (15 features, train=8002, test=1001)
+     acc=0.6474  (235.0s)
+
+  === LogReg ===
+
+  >> LogReg|date≥2015|mf1|all  (108 features, train=6412, test=802)
+     acc=0.6559  (11.0s)
+
+  >> LogReg|date≥2015|mf1|top30  (30 features, train=7378, test=923)
+     acc=0.6641  (1.4s)
+
+  >> LogReg|date≥2015|mf1|top15  (15 features, train=8002, test=1001)
+     acc=0.6434  (0.1s)
+
+  === Voting Ensemble ===
+     Voting acc=0.6509
+
+  === Stacking Ensemble ===
+     Stacking acc=0.6658
+
+────────────────────────────────────────────────────────────
+Config: date≥2017, min_ufc_fights≥3
+────────────────────────────────────────────────────────────
+  Computing feature importance (108 features, 5386 train rows)...
+  Top-5: ['career_win_rate_dif', 'SLpM_dif', 'SApM_dif', 'B_age', 'R_Str_Acc']
+
+  === CatBoost ===
+
+  >> CatBoost|date≥2017|mf3|all  (108 features, train=5386, test=674)
+     acc=0.6869  (338.0s)
+
+  >> CatBoost|date≥2017|mf3|top30  (30 features, train=6078, test=760)
+     acc=0.6776  (306.1s)
+
+  >> CatBoost|date≥2017|mf3|top15  (15 features, train=6280, test=786)
+     acc=0.6705  (176.6s)
+
+  === XGBoost ===
+
+  >> XGBoost|date≥2017|mf3|all  (108 features, train=5386, test=674)
+     acc=0.6869  (51.9s)
+
+  >> XGBoost|date≥2017|mf3|top30  (30 features, train=6078, test=760)
+     acc=0.6829  (29.7s)
+
+  >> XGBoost|date≥2017|mf3|top15  (15 features, train=6280, test=786)
+     acc=0.6756  (16.6s)
+
+  === LightGBM ===
+
+  >> LightGBM|date≥2017|mf3|all  (108 features, train=5386, test=674)
+     acc=0.6810  (63.7s)
+
+  >> LightGBM|date≥2017|mf3|top30  (30 features, train=6078, test=760)
+     acc=0.6829  (26.3s)
+
+  >> LightGBM|date≥2017|mf3|top15  (15 features, train=6280, test=786)
+     acc=0.6781  (11.8s)
+
+  === MLP ===
+
+  >> MLP|date≥2017|mf3|all  (108 features, train=5386, test=674)
+     acc=0.6677  (294.4s)
+
+  >> MLP|date≥2017|mf3|top30  (30 features, train=6078, test=760)
+     acc=0.6737  (290.5s)
+
+  >> MLP|date≥2017|mf3|top15  (15 features, train=6280, test=786)
+     acc=0.6501  (304.1s)
+
+  === LogReg ===
+
+  >> LogReg|date≥2017|mf3|all  (108 features, train=5386, test=674)
+     acc=0.7018  (8.1s)
+  *** NEW BEST: 0.7018  saved to model/ufc_model_best.pkl
+
+  >> LogReg|date≥2017|mf3|top30  (30 features, train=6078, test=760)
+     acc=0.6776  (0.1s)
+
+  >> LogReg|date≥2017|mf3|top15  (15 features, train=6280, test=786)
+     acc=0.6603  (0.1s)
+
+  === Voting Ensemble ===
+     Voting acc=0.6662
+
+  === Stacking Ensemble ===
+     Stacking acc=0.6736
+
+======================================================================
+FINAL RESULTS — RANKED
+======================================================================
+                      config      acc  features       secs
+    LogReg|date≥2017|mf3|all 0.701780       108   8.130611
+  CatBoost|date≥2017|mf3|all 0.686944       108 338.046532
+   XGBoost|date≥2017|mf3|all 0.686944       108  51.894766
+LightGBM|date≥2017|mf3|top30 0.682895        30  26.257481
+ XGBoost|date≥2017|mf3|top30 0.682895        30  29.725058
+  LightGBM|date≥2017|mf3|all 0.681009       108  63.663578
+   XGBoost|date≥2016|mf2|all 0.678378       108  56.006577
+LightGBM|date≥2015|mf1|top30 0.678223        30  28.185308
+CatBoost|date≥2015|mf1|top30 0.678223        30 170.155021
+LightGBM|date≥2017|mf3|top15 0.678117        15  11.838485
+CatBoost|date≥2017|mf3|top30 0.677632        30 306.139636
+  LogReg|date≥2017|mf3|top30 0.677632        30   0.121980
+  LightGBM|date≥2016|mf2|all 0.677027       108  60.727508
+ XGBoost|date≥2015|mf1|top30 0.676056        30  14.134234
+   XGBoost|date≥2015|mf1|all 0.675810       108  75.035396
+  LightGBM|date≥2015|mf1|all 0.675810       108  70.110521
+  CatBoost|date≥2016|mf2|all 0.675676       108 303.621634
+ XGBoost|date≥2017|mf3|top15 0.675573        15  16.587377
+     MLP|date≥2017|mf3|top30 0.673684        30 290.490526
+  Stacking|date≥2017|mf3|all 0.673591       108   0.000000
+CatBoost|date≥2017|mf3|top15 0.670483        15 176.631342
+       MLP|date≥2017|mf3|all 0.667656       108 294.388618
+  CatBoost|date≥2015|mf1|all 0.667082       108 353.371419
+    Voting|date≥2017|mf3|all 0.666172       108   0.000000
+  Stacking|date≥2015|mf1|all 0.665835       108   0.000000
+    Voting|date≥2016|mf2|all 0.664865       108   0.000000
+  LogReg|date≥2015|mf1|top30 0.664139        30   1.398936
+  Stacking|date≥2016|mf2|all 0.663514       108   0.000000
+  LogReg|date≥2017|mf3|top15 0.660305        15   0.085681
+     MLP|date≥2016|mf2|top15 0.657710        15 306.915662
+LightGBM|date≥2015|mf1|top15 0.657343        15  22.172572
+     MLP|date≥2015|mf1|top30 0.656555        30 308.252949
+ XGBoost|date≥2016|mf2|top15 0.656542        15  10.783381
+    LogReg|date≥2015|mf1|all 0.655860       108  10.953761
+CatBoost|date≥2016|mf2|top15 0.655374        15 205.946487
+ XGBoost|date≥2016|mf2|top30 0.653664        30  26.000549
+CatBoost|date≥2015|mf1|top15 0.653347        15 114.064755
+    LogReg|date≥2016|mf2|all 0.652703       108  10.711565
+CatBoost|date≥2016|mf2|top30 0.652482        30 294.439342
+  LogReg|date≥2016|mf2|top30 0.652482        30   0.885062
+ XGBoost|date≥2015|mf1|top15 0.651349        15  26.494843
+    Voting|date≥2015|mf1|all 0.650873       108   0.000000
+LightGBM|date≥2016|mf2|top15 0.650701        15  21.468240
+     MLP|date≥2017|mf3|top15 0.650127        15 304.100539
+LightGBM|date≥2016|mf2|top30 0.648936        30  25.425884
+     MLP|date≥2015|mf1|top15 0.647353        15 235.022066
+  LogReg|date≥2016|mf2|top15 0.644860        15   0.085119
+  LogReg|date≥2015|mf1|top15 0.643357        15   0.085576
+       MLP|date≥2015|mf1|all 0.637157       108 296.038543
+     MLP|date≥2016|mf2|top30 0.627660        30 308.881595
+       MLP|date≥2016|mf2|all 0.627027       108 275.975659
+
+Best overall: 0.7018
+Best config:  {'config': 'LogReg|date≥2017|mf3|all', 'acc': 0.701780415430267}
+IMPROVEMENT over baseline: +0.0124
+Saved to: model/ufc_model_best.pkl
+
+Best feature set (108 features):
+['R_wins', 'R_losses', 'R_Height_cms', 'R_age', 'R_avg_SIG_STR_landed', 'R_avg_TD_landed', 'R_current_win_streak', 'R_current_lose_streak', 'R_longest_win_streak', 'R_avg_SIG_STR_pct', 'R_avg_SUB_ATT', 'R_avg_TD_pct', 'R_Reach_cms', 'R_total_title_bouts', 'B_wins', 'B_losses', 'B_Height_cms', 'B_age', 'B_avg_SIG_STR_landed', 'B_avg_TD_landed', 'B_current_win_streak', 'B_current_lose_streak', 'B_longest_win_streak', 'B_avg_SIG_STR_pct', 'B_avg_SUB_ATT', 'B_avg_TD_pct', 'B_Reach_cms', 'B_total_title_bouts', 'win_dif', 'loss_dif']
+
+[DONE] 2026-04-20T12:38:15.696878
+ 30   0.121980
+  LightGBM|date≥2016|mf2|all 0.677027       108  60.727508
+ XGBoost|date≥2015|mf1|top30 0.676056        30  14.134234
+   XGBoost|date≥2015|mf1|all 0.675810       108  75.035396
+  LightGBM|date≥2015|mf1|all 0.675810       108  70.110521
+  CatBoost|date≥2016|mf2|all 0.675676       108 303.621634
+ XGBoost|date≥2017|mf3|top15 0.675573        15  16.587377
+     MLP|date≥2017|mf3|top30 0.673684        30 290.490526
+  Stacking|date≥2017|mf3|all 0.673591       108   0.000000
+CatBoost|date≥2017|mf3|top15 0.670483        15 176.631342
+       MLP|date≥2017|mf3|all 0.667656       108 294.388618
+  CatBoost|date≥2015|mf1|all 0.667082       108 353.371419
+    Voting|date≥2017|mf3|all 0.666172       108   0.000000
+  Stacking|date≥2015|mf1|all 0.665835       108   0.000000
+    Voting|date≥2016|mf2|all 0.664865       108   0.000000
+  LogReg|date≥2015|mf1|top30 0.664139        30   1.398936
+  Stacking|date≥2016|mf2|all 0.663514       108   0.000000
+  LogReg|date≥2017|mf3|top15 0.660305        15   0.085681
+     MLP|date≥2016|mf2|top15 0.657710        15 306.915662
+LightGBM|date≥2015|mf1|top15 0.657343        15  22.172572
+     MLP|date≥2015|mf1|top30 0.656555        30 308.252949
+ XGBoost|date≥2016|mf2|top15 0.656542        15  10.783381
+    LogReg|date≥2015|mf1|all 0.655860       108  10.953761
+CatBoost|date≥2016|mf2|top15 0.655374        15 205.946487
+ XGBoost|date≥2016|mf2|top30 0.653664        30  26.000549
+CatBoost|date≥2015|mf1|top15 0.653347        15 114.064755
+    LogReg|date≥2016|mf2|all 0.652703       108  10.711565
+CatBoost|date≥2016|mf2|top30 0.652482        30 294.439342
+  LogReg|date≥2016|mf2|top30 0.652482        30   0.885062
+ XGBoost|date≥2015|mf1|top15 0.651349        15  26.494843
+    Voting|date≥2015|mf1|all 0.650873       108   0.000000
+LightGBM|date≥2016|mf2|top15 0.650701        15  21.468240
+     MLP|date≥2017|mf3|top15 0.650127        15 304.100539
+LightGBM|date≥2016|mf2|top30 0.648936        30  25.425884
+     MLP|date≥2015|mf1|top15 0.647353        15 235.022066
+  LogReg|date≥2016|mf2|top15 0.644860        15   0.085119
+  LogReg|date≥2015|mf1|top15 0.643357        15   0.085576
+       MLP|date≥2015|mf1|all 0.637157       108 296.038543
+     MLP|date≥2016|mf2|top30 0.627660        30 308.881595
+       MLP|date≥2016|mf2|all 0.627027       108 275.975659
+
+Best overall: 0.7018
+Best config:  {'config': 'LogReg|date≥2017|mf3|all', 'acc': 0.701780415430267}
+IMPROVEMENT over baseline: +0.0124
+Saved to: model/ufc_model_best.pkl
+
+Best feature set (108 features):
+['R_wins', 'R_losses', 'R_Height_cms', 'R_age', 'R_avg_SIG_STR_landed', 'R_avg_TD_landed', 'R_current_win_streak', 'R_current_lose_streak', 'R_longest_win_streak', 'R_avg_SIG_STR_pct', 'R_avg_SUB_ATT', 'R_avg_TD_pct', 'R_Reach_cms', 'R_total_title_bouts', 'B_wins', 'B_losses', 'B_Height_cms', 'B_age', 'B_avg_SIG_STR_landed', 'B_avg_TD_landed', 'B_current_win_streak', 'B_current_lose_streak', 'B_longest_win_streak', 'B_avg_SIG_STR_pct', 'B_avg_SUB_ATT', 'B_avg_TD_pct', 'B_Reach_cms', 'B_total_title_bouts', 'win_dif', 'loss_dif']
+
+[DONE] 2026-04-20T12:38:15.696878

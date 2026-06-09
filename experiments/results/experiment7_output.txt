@@ -1,0 +1,188 @@
+========================================================================
+UFC EXPERIMENT 7  —  2026-04-20T16:28:04.437675
+Primary target  : temporal accuracy > 0.7022  (train<2024, test≥2024)
+Secondary target: random 80/20 accuracy
+========================================================================
+
+[Pre] Loading saved XGBoost model for Experiment E...
+  XGBoost loaded: XGBClassifier, 108 features
+
+[FE] Engineering features...
+  FE done in 1.4s  master: (7177, 201)
+  BASE_108 = 108 features
+
+========================================================================
+EXPERIMENT A — LR Optuna (100 trials, primary metric = temporal acc)
+========================================================================
+  Train (pre-2024): 2572 (aug'd 5144), Test (2024+): 984, Features: 108
+
+  Top 10 Optuna trials by temporal accuracy:
+   penalty        C scaler solver_l2  temporal_acc solver_l1  l1_ratio
+        l1 0.148505 robust       NaN      0.711382 liblinear       NaN
+        l1 0.165598 robust       NaN      0.711382 liblinear       NaN
+        l1 0.048193 robust       NaN      0.711382 liblinear       NaN
+        l1 0.162923 robust       NaN      0.711382 liblinear       NaN
+elasticnet 0.107741 robust       NaN      0.711382       NaN  0.835014
+elasticnet 0.097778 robust       NaN      0.711382       NaN  0.744631
+elasticnet 0.040629 robust       NaN      0.710366       NaN  0.504083
+        l1 0.047678 robust       NaN      0.710366 liblinear       NaN
+        l1 0.048953 robust       NaN      0.710366 liblinear       NaN
+        l1 0.047853 robust       NaN      0.710366 liblinear       NaN
+
+  Best params: {'penalty': 'elasticnet', 'C': 0.10774144910091868, 'scaler': 'robust', 'l1_ratio': 0.8350137588175889}
+  A_LR_Optuna_elasticnet_C0.1077_robust                                 t=0.7114  r=0.6629  feats=108  101s  *** NEW BEST (temporal) ***
+  *** Saved to model/ufc_model_best.pkl  +  model/model_metadata.json
+
+  Experiment A done in 101s
+
+========================================================================
+EXPERIMENT B — Feature selection for best-A LR config
+========================================================================
+
+  Top 20 features by |coef| (fitted on temporal training set):
+            feature  abs_coef
+           SLpM_dif  0.576968
+           SApM_dif  0.529731
+              R_age  0.346446
+              B_age  0.346444
+         avg_td_dif  0.300133
+         TD_Def_dif  0.236600
+          R_Str_Acc  0.161196
+          B_Str_Acc  0.161195
+ ko_finish_rate_dif  0.158180
+      R_avg_SUB_ATT  0.141044
+      B_avg_SUB_ATT  0.141044
+     win_streak_dif  0.122416
+    opp_quality_dif  0.099054
+         TD_Avg_dif  0.092475
+    B_layoff_90_180  0.091067
+          reach_dif  0.090722
+    R_layoff_90_180  0.089661
+sub_finish_rate_dif  0.088259
+     R_layoff_gt365  0.088225
+     B_layoff_gt365  0.086824
+  B_all_108                                                             t=0.7114  r=0.6629  feats=108  2s
+  B_top80_by_coef                                                       t=0.7114  r=0.6621  feats= 80  1s
+  B_top60_by_coef                                                       t=0.7114  r=0.6621  feats= 60  0s
+  B_top40_by_coef                                                       t=0.7083  r=0.6676  feats= 40  0s
+  B_top20_by_coef                                                       t=0.7063  r=0.6644  feats= 20  0s
+  B_diff_only_28                                                        t=0.6941  r=0.6582  feats= 28  0s
+  B_diff+age+cum+layoff_40                                              t=0.6972  r=0.6475  feats= 40  0s
+
+  Best feature subset (temporal): all_108  acc=0.7114
+  Experiment B done in 3s
+
+========================================================================
+EXPERIMENT C — Training window sweep
+========================================================================
+  2015+ train, 2024+ test                        train=3247  test= 984
+  C_2015+train_2024+test                                                t=0.7002  r=0.6482  feats=108  1s
+  2016+ train, 2024+ test                        train=2922  test= 984
+  C_2016+train_2024+test                                                t=0.7002  r=0.6867  feats=108  2s
+  2017+ train, 2024+ test                        train=2572  test= 984
+  C_2017+train_2024+test                                                t=0.7114  r=0.6629  feats=108  2s
+  2018+ train, 2024+ test                        train=2268  test= 984
+  C_2018+train_2024+test                                                t=0.7124  r=0.6513  feats=108  3s  *** NEW BEST (temporal) ***
+  *** Saved to model/ufc_model_best.pkl  +  model/model_metadata.json
+  2019+ train, 2024+ test                        train=1931  test= 984
+  C_2019+train_2024+test                                                t=0.6982  r=0.6913  feats=108  2s
+  2017+ train, 2023+ test                        train=2158  test=1398
+  C_2017+train_2023+test                                                t=0.6996  r=0.6629  feats=108  1s
+  2017+ train, 2022+ test                        train=1717  test=1839
+  C_2017+train_2022+test                                                t=0.6906  r=0.6629  feats=108  1s
+
+  Experiment C done in 12s
+
+========================================================================
+EXPERIMENT D — Calibration (isotonic / sigmoid, cv=5 on training set)
+========================================================================
+  Train: 2572 (aug'd 5144), Test: 984
+  Uncalibrated: acc=0.7114  brier=0.2011  logloss=0.5881
+  D_LR_uncalibrated                                                     t=0.7114  r=0.0000  feats=108  0s
+  isotonic  : acc=0.7124  brier=0.2045  logloss=0.6274
+  D_LR_calibrated_isotonic                                              t=0.7124  r=0.6671  feats=108  7s
+  sigmoid   : acc=0.7093  brier=0.2066  logloss=0.6017
+  D_LR_calibrated_sigmoid                                               t=0.7093  r=0.6643  feats=108  7s
+
+  Experiment D done in 15s
+
+========================================================================
+EXPERIMENT E — Soft-vote blend: LR + saved XGBoost
+========================================================================
+  LR features: 108, XGB features: 108
+  Test size: 984
+  Retraining XGBoost on temporal training set for fair comparison...
+  XGBoost (retrained temporal) solo accuracy: 0.6789
+  LR solo temporal accuracy: 0.7114
+  E_LR70pct_XGB30pct_blend                                              t=0.7083  r=0.6798  feats=108  3s
+  E_LR80pct_XGB20pct_blend                                              t=0.7134  r=0.6671  feats=108  3s  *** NEW BEST (temporal) ***
+  E_LR90pct_XGB10pct_blend                                              t=0.7144  r=0.6685  feats=108  3s  *** NEW BEST (temporal) ***
+
+  Experiment E done in 10s
+
+[Saving] Best LR config regardless of temporal baseline...
+  Saved: model/ufc_model_lr_best.pkl  (temporal=0.7114, random=0.6629)
+  Features: 108, Params: penalty=elasticnet C=0.1077 scaler=robust solver=saga
+
+========================================================================
+FINAL RESULTS — ALL EXPERIMENTS (ranked by temporal accuracy)
+========================================================================
+                               config  temporal_acc  random_acc  n_feats       secs
+             E_LR90pct_XGB10pct_blend      0.714431    0.668539      108   2.740902
+             E_LR80pct_XGB20pct_blend      0.713415    0.667135      108   2.734198
+             D_LR_calibrated_isotonic      0.712398    0.667135      108   7.137504
+               C_2018+train_2024+test      0.712398    0.651306      108   2.591015
+                            B_all_108      0.711382    0.662921      108   1.646282
+                    D_LR_uncalibrated      0.711382    0.000000      108   0.379304
+A_LR_Optuna_elasticnet_C0.1077_robust      0.711382    0.662921      108 101.179023
+                      B_top60_by_coef      0.711382    0.662069       60   0.253612
+                      B_top80_by_coef      0.711382    0.662069       80   0.697838
+               C_2017+train_2024+test      0.711382    0.662921      108   1.631941
+              D_LR_calibrated_sigmoid      0.709350    0.664326      108   7.385244
+                      B_top40_by_coef      0.708333    0.667586       40   0.088996
+             E_LR70pct_XGB30pct_blend      0.708333    0.679775      108   2.731858
+                      B_top20_by_coef      0.706301    0.664374       20   0.036775
+               C_2015+train_2024+test      0.700203    0.648170      108   0.843402
+               C_2016+train_2024+test      0.700203    0.686701      108   2.243093
+               C_2017+train_2023+test      0.699571    0.662921      108   1.483853
+               C_2019+train_2024+test      0.698171    0.691252      108   2.086525
+             B_diff+age+cum+layoff_40      0.697154    0.647530       40   0.196598
+                       B_diff_only_28      0.694106    0.658211       28   0.081569
+               C_2017+train_2022+test      0.690593    0.662921      108   1.382471
+
+Temporal baseline:  0.7022  (exp6 LR)
+Best temporal acc:  0.7124  (delta: +0.0102)
+
+✓ IMPROVEMENT — model saved to model/ufc_model_best.pkl + model/model_metadata.json
+  Model type: Pipeline
+  Features: 108
+  Metadata: {'params': {'penalty': 'elasticnet', 'C': 0.10774144910091868, 'scaler': 'robust', 'l1_ratio': 0.8350137588175889, 'solver': 'saga'}, 'train_window': '2018-01-01 to <2024-01-01'}
+
+[DONE]  2026-04-20T16:30:29.484330
+         B_all_108      0.711382    0.662921      108   1.646282
+                    D_LR_uncalibrated      0.711382    0.000000      108   0.379304
+A_LR_Optuna_elasticnet_C0.1077_robust      0.711382    0.662921      108 101.179023
+                      B_top60_by_coef      0.711382    0.662069       60   0.253612
+                      B_top80_by_coef      0.711382    0.662069       80   0.697838
+               C_2017+train_2024+test      0.711382    0.662921      108   1.631941
+              D_LR_calibrated_sigmoid      0.709350    0.664326      108   7.385244
+                      B_top40_by_coef      0.708333    0.667586       40   0.088996
+             E_LR70pct_XGB30pct_blend      0.708333    0.679775      108   2.731858
+                      B_top20_by_coef      0.706301    0.664374       20   0.036775
+               C_2015+train_2024+test      0.700203    0.648170      108   0.843402
+               C_2016+train_2024+test      0.700203    0.686701      108   2.243093
+               C_2017+train_2023+test      0.699571    0.662921      108   1.483853
+               C_2019+train_2024+test      0.698171    0.691252      108   2.086525
+             B_diff+age+cum+layoff_40      0.697154    0.647530       40   0.196598
+                       B_diff_only_28      0.694106    0.658211       28   0.081569
+               C_2017+train_2022+test      0.690593    0.662921      108   1.382471
+
+Temporal baseline:  0.7022  (exp6 LR)
+Best temporal acc:  0.7124  (delta: +0.0102)
+
+✓ IMPROVEMENT — model saved to model/ufc_model_best.pkl + model/model_metadata.json
+  Model type: Pipeline
+  Features: 108
+  Metadata: {'params': {'penalty': 'elasticnet', 'C': 0.10774144910091868, 'scaler': 'robust', 'l1_ratio': 0.8350137588175889, 'solver': 'saga'}, 'train_window': '2018-01-01 to <2024-01-01'}
+
+[DONE]  2026-04-20T16:30:29.484330
