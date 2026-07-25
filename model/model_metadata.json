@@ -1,5 +1,6 @@
 {
   "model_type": "M1_V2_blend_LR70_XGB30_mens",
+  "feature_schema_version": 1,
   "temporal_accuracy": 0.7281,
   "n_features": 129,
   "feature_list": [

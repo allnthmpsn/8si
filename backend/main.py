@@ -5,12 +5,25 @@ import joblib
 import json
 import os
 import re
+import sys
 import requests
 import numpy as np
 import pandas as pd
 import pickle
 from datetime import datetime
 from difflib import SequenceMatcher
+
+# ── 8SI Phase 5 Part A: reuse the trainer's QA-stats/got_finished_rate ──────
+# formulas instead of the placeholder values predict() used to send them —
+# see docs/DECISIONS.md. Backend is run with cwd=backend/, so ROOT resolves
+# one level up (mirrors training/walk_forward.py's own sys.path setup).
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+from training.train_model1 import compute_qa_stats, compute_got_finished_rate
+# 8SI Phase 5 Part B: WC_ORDER/WOMENS_CLASSES/layoff buckets shared with
+# training/train_model1.py via features/constants.py instead of duplicated.
+from features.constants import WC_ORDER, WOMENS_CLASSES, layoff_bucket_flags
 
 app = FastAPI()
 
@@ -34,6 +47,13 @@ XGB_WEIGHT = 0.30
 
 with open('../model/model_metadata.json') as _f:
     metadata = json.load(_f)
+
+EXPECTED_FEATURE_SCHEMA_VERSION = 1  # serving is pinned to the pre-8SI-Phase-1 model until Phase 5 unifies train/serve
+assert metadata.get('feature_schema_version') == EXPECTED_FEATURE_SCHEMA_VERSION, (
+    f"model/model_metadata.json feature_schema_version={metadata.get('feature_schema_version')!r} "
+    f"!= expected {EXPECTED_FEATURE_SCHEMA_VERSION}. Refusing to serve a model whose feature "
+    f"schema this backend wasn't built for — see 8si_remediation_plan.md Phase 5."
+)
 
 # ── WC stat averages for zero-stat fallback ──
 try:
@@ -101,8 +121,40 @@ except Exception as _e:
     MODEL3_AVAILABLE = False
     print(f"Model 3A/3B: not available ({_e})")
 
-GAP_THRESHOLD  = 0.10   # 10% — statistically robust (168 bets, +34.4% ROI)
-KELLY_FRACTION = 1 / 3
+# ── Probability shrinkage + bet gating (8SI Phase 4.1) ──────────────────────
+# p_final = w*p_model + (1-w)*p_market_novig, pulling the model's raw
+# probability toward the no-vig market consensus before any betting
+# decision is made.
+#
+# w is NOT grid-searched against real backtested performance. Doing that
+# properly requires scoring the currently-served model against genuinely
+# historical (point-in-time) fights, but get_career_stats()/get_elo_stats()/
+# etc. below always compute "stats as of right now" — there's no way to
+# point them at a past date without leaking each fighter's future fights
+# into that historical prediction. 0.3 is the midpoint of the plan's own
+# expected 0.2-0.4 range (8si_remediation_plan.md Phase 4.1) — a documented
+# placeholder, not a fitted value. Re-fit once Phase 5 swaps in the
+# already point-in-time-correct training/train_model1.py pipeline (which
+# training/walk_forward.py can score properly).
+SHRINKAGE_W = 0.30
+
+# GAP_THRESHOLD_RAW (0.10) was tuned on the raw (unshrunk) model-vs-market
+# gap — see the comment it used to carry: "168 bets, +34.4% ROI." Per the
+# plan's own ground rules, don't treat a small-sample backtested ROI as
+# validation; it's kept here only as a starting point for the algebraic
+# derivation below, not as evidence the number itself is correct.
+#
+# Since p_final = w*p_model + (1-w)*p_market, gap_final = p_final -
+# p_market = w*(p_model - p_market) = w * gap_raw EXACTLY. So the trigger
+# equivalent to the original 10% raw-gap threshold, expressed on the new
+# shrunk gap, is just w * 10% — an algebraic identity, not a re-fit. Also
+# still provisional pending Phase 5 (see SHRINKAGE_W above). Applied
+# uniformly to both Kelly paths in this file (previously 10% in one path,
+# an undocumented 5% in the other — see docs/DECISIONS.md).
+GAP_THRESHOLD_RAW = 0.10
+GAP_THRESHOLD      = SHRINKAGE_W * GAP_THRESHOLD_RAW   # 0.03
+
+KELLY_FRACTION = 1 / 3   # single shared config for both Kelly paths — see docs/DECISIONS.md
 MAX_BET        = 100
 BANKROLL       = 1000
 
@@ -227,6 +279,88 @@ for _fighter, _grp in _elo_hist_df.groupby('fighter'):
     _trend = float(_cur - _grp_s['elo_before'].iloc[-3]) if len(_grp_s) >= 3 else 0.0
     _elo_lookup[_fighter] = {'elo': _cur, 'elo_trend': _trend}
 
+# ── QA stats + got_finished_rate, as-of-today (8SI Phase 5 Part A) ──────────
+# predict()'s feature dict used to send the live model placeholders for
+# these — qa_SLpM/qa_SApM hardcoded 0.0, got_finished_rate hardcoded 0.5,
+# qa_win_rate silently aliased to plain career_win_rate — 14 of the model's
+# 129 trained features were wrong on every prediction. Fixed by reusing
+# train_model1.compute_qa_stats()/compute_got_finished_rate() directly
+# (same formulas the model was trained on) against one synthetic "as of
+# today" row per fighter. Both functions read a row's cumulative value
+# BEFORE folding in that row's own contribution (shift(1) discipline), so
+# the synthetic row's placeholder won/got_finish/opponent fields are never
+# actually read — what comes back is exactly "as of today, using every
+# real prior fight."
+_TODAY = pd.Timestamp.now().normalize()
+_synthetic_rows = pd.DataFrame({
+    'fighter':    career_df['fighter'].unique(),
+    'opponent':   '__synthetic_asof_today__',
+    'date':       _TODAY,
+    'won':        0,
+    'got_finish': 0,
+    'method':     '',
+})
+_career_df_asof_today = pd.concat([career_df, _synthetic_rows], ignore_index=True)
+
+_qa_today = compute_qa_stats(_career_df_asof_today, _elo_hist_df)
+_qa_today = _qa_today[_qa_today['date'] == _TODAY].drop_duplicates('fighter', keep='last')
+_qa_lookup: dict[str, dict] = _qa_today.set_index('fighter')[
+    ['qa_win_rate', 'qa_finish_rate', 'qa_SLpM', 'qa_SApM']
+].to_dict('index')
+
+_gf_today = compute_got_finished_rate(_career_df_asof_today)
+_gf_today = _gf_today[_gf_today['date'] == _TODAY].drop_duplicates('fighter', keep='last')
+_gf_lookup: dict[str, float] = dict(zip(_gf_today['fighter'], _gf_today['got_finished_rate']))
+
+print(f"QA stats + got_finished_rate: computed as-of-today for {len(_qa_lookup)} fighters")
+
+
+def get_qa_stats(name: str) -> dict:
+    stats = _qa_lookup.get(name, {})
+    return {
+        'qa_win_rate':    float(stats.get('qa_win_rate', 0.5)),
+        'qa_finish_rate': float(stats.get('qa_finish_rate', 0.0)),
+        'qa_SLpM':        float(stats.get('qa_SLpM', 0.0)),
+        'qa_SApM':        float(stats.get('qa_SApM', 0.0)),
+    }
+
+
+def get_got_finished_rate(name: str) -> float:
+    val = _gf_lookup.get(name)
+    return float(val) if val is not None and pd.notna(val) else 0.5
+
+
+def qa_and_gf_features(f1_name: str | None, f2_name: str | None) -> dict:
+    """
+    The 14 R_/B_/`_dif` QA-stat + got_finished_rate feature entries, real
+    values when fighter names are known, neutral defaults otherwise (a
+    direct /predict call without names has no way to look these up — same
+    fallback behavior as before this fix). Shared by predict() and
+    predict_method() so the same bug can't recur in two places (8SI Phase 5
+    Part A).
+    """
+    r_qa = get_qa_stats(f1_name) if f1_name else {'qa_win_rate': 0.5, 'qa_finish_rate': 0.0, 'qa_SLpM': 0.0, 'qa_SApM': 0.0}
+    b_qa = get_qa_stats(f2_name) if f2_name else {'qa_win_rate': 0.5, 'qa_finish_rate': 0.0, 'qa_SLpM': 0.0, 'qa_SApM': 0.0}
+    r_gf = get_got_finished_rate(f1_name) if f1_name else 0.5
+    b_gf = get_got_finished_rate(f2_name) if f2_name else 0.5
+    return {
+        'R_got_finished_rate': r_gf,
+        'B_got_finished_rate': b_gf,
+        'R_qa_win_rate':    r_qa['qa_win_rate'],
+        'B_qa_win_rate':    b_qa['qa_win_rate'],
+        'qa_win_rate_dif':  r_qa['qa_win_rate'] - b_qa['qa_win_rate'],
+        'R_qa_finish_rate': r_qa['qa_finish_rate'],
+        'B_qa_finish_rate': b_qa['qa_finish_rate'],
+        'qa_finish_rate_dif': r_qa['qa_finish_rate'] - b_qa['qa_finish_rate'],
+        'R_qa_SLpM':  r_qa['qa_SLpM'],
+        'B_qa_SLpM':  b_qa['qa_SLpM'],
+        'qa_SLpM_dif': r_qa['qa_SLpM'] - b_qa['qa_SLpM'],
+        'R_qa_SApM':  r_qa['qa_SApM'],
+        'B_qa_SApM':  b_qa['qa_SApM'],
+        'qa_SApM_dif': r_qa['qa_SApM'] - b_qa['qa_SApM'],
+    }
+
+
 # ── Women's Elo (computed from women's fights only — separate from men's pool) ──
 def _compute_womens_elo(df_master, K=48, base=1500.0):
     _WOMENS_CLS = {
@@ -265,22 +399,9 @@ print(f"LR model: {type(model_lr).__name__}, XGB: {type(model_xgb).__name__}, fe
 print(f"Fighter stats: {len(fighter_stats_lookup)}, Career WR cache: {len(_fighter_wr)}")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Weight class ordinal  (matches training script exactly)
+# Weight class ordinal (8SI Phase 5 Part B: shared with training/train_model1.py
+# via features/constants.py, not duplicated — see docs/DECISIONS.md)
 # ─────────────────────────────────────────────────────────────────────────────
-WC_ORDER = {
-    "Women's Strawweight": 0, "Women's Flyweight": 1, "Women's Bantamweight": 2,
-    "Women's Featherweight": 3, "Flyweight": 4, "Bantamweight": 5,
-    "Featherweight": 6, "Lightweight": 7, "Welterweight": 8,
-    "Middleweight": 9, "Light Heavyweight": 10, "Heavyweight": 11, "Catch Weight": 6,
-}
-
-WOMENS_CLASSES = {
-    "Women's Strawweight",
-    "Women's Flyweight",
-    "Women's Bantamweight",
-    "Women's Featherweight",
-}
-
 WC_ORDER_WOMENS = {
     "Women's Strawweight":   0,
     "Women's Flyweight":     1,
@@ -305,15 +426,6 @@ def clean_val(val, default=0):
     if hasattr(val, 'item'):
         return val.item()
     return val
-
-
-def _layoff_buckets(days: float) -> dict:
-    return {
-        'lt90':    1 if days < 90 else 0,
-        '90_180':  1 if 90 <= days < 180 else 0,
-        '180_365': 1 if 180 <= days < 365 else 0,
-        'gt365':   1 if days >= 365 else 0,
-    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -787,6 +899,9 @@ class FightInput(BaseModel):
 def predict(fight: FightInput):
     d = fight.dict()
 
+    # Real QA stats + got_finished_rate (8SI Phase 5 Part A — see qa_and_gf_features())
+    _qa_gf = qa_and_gf_features(d.get('f1_name'), d.get('f2_name'))
+
     # Stance
     R_southpaw  = int(d['F1_is_southpaw'])
     B_southpaw  = int(d['F2_is_southpaw'])
@@ -798,8 +913,8 @@ def predict(fight: FightInput):
     B_age_x_exp = d['F2_age'] * d['F2_cum_fights']
 
     # Layoff buckets
-    R_lb = _layoff_buckets(d['F1_layoff_days'])
-    B_lb = _layoff_buckets(d['F2_layoff_days'])
+    R_lb = layoff_bucket_flags(d['F1_layoff_days'])
+    B_lb = layoff_bucket_flags(d['F2_layoff_days'])
 
     # Weight class ordinal and title bout binary
     wc_name = d['weight_class']
@@ -938,29 +1053,14 @@ def predict(fight: FightInput):
         # finish danger = offensive KO + sub threat
         'R_finish_danger': d['F1_ko_finish_rate'] + d['F1_sub_finish_rate'],
         'B_finish_danger': d['F2_ko_finish_rate'] + d['F2_sub_finish_rate'],
-        # finish_danger_mismatch: needs got_finished_rate (chin) — default 0.5 (neutral)
-        # R_finish_resistance = 1 - R_got_finished_rate; B same
+        # finish_danger_mismatch — matches train_model1.compute_interaction_features()'s
+        # formula exactly, using real got_finished_rate (8SI Phase 5 Part A;
+        # previously a fixed 0.5 weight since got_finished_rate wasn't computed at all).
         'finish_danger_mismatch': (
-            (d['F1_ko_finish_rate'] + d['F1_sub_finish_rate']) * 0.5 -
-            (d['F2_ko_finish_rate'] + d['F2_sub_finish_rate']) * 0.5
+            (d['F1_ko_finish_rate'] + d['F1_sub_finish_rate']) * (1 - _qa_gf['B_got_finished_rate']) -
+            (d['F2_ko_finish_rate'] + d['F2_sub_finish_rate']) * (1 - _qa_gf['R_got_finished_rate'])
         ),
-        'R_got_finished_rate': 0.5,
-        'B_got_finished_rate': 0.5,
-        # QA stats (require fighter-name career elo lookup — default to neutral)
-        # The LR component (70%) has regularized these weights; XGB falls back on
-        # the other 109 features when qa_* are 0/0.5.
-        'R_qa_win_rate':    d['F1_career_win_rate'],
-        'B_qa_win_rate':    d['F2_career_win_rate'],
-        'qa_win_rate_dif':  d['F1_career_win_rate'] - d['F2_career_win_rate'],
-        'R_qa_finish_rate': d['F1_last5_finish_rate'],
-        'B_qa_finish_rate': d['F2_last5_finish_rate'],
-        'qa_finish_rate_dif': d['F1_last5_finish_rate'] - d['F2_last5_finish_rate'],
-        'R_qa_SLpM':  0.0,
-        'B_qa_SLpM':  0.0,
-        'qa_SLpM_dif': 0.0,
-        'R_qa_SApM':  0.0,
-        'B_qa_SApM':  0.0,
-        'qa_SApM_dif': 0.0,
+        **_qa_gf,
     }
 
     # ── Women's prediction path ───────────────────────────────────────────────
@@ -1161,6 +1261,39 @@ def _decimal(odds: float):
     return 1 + odds / 100
 
 
+def market_shrink(p_model: float, p_market_novig: float, w: float = SHRINKAGE_W) -> float:
+    """p_final = w*p_model + (1-w)*p_market_novig — see SHRINKAGE_W above for
+    why w isn't currently a fitted value. Use this (not the raw model
+    probability) for any betting decision (gap, Kelly)."""
+    return w * p_model + (1.0 - w) * p_market_novig
+
+
+def kelly_fraction(p: float, dec_odds, fraction: float) -> float:
+    """
+    Fractional Kelly criterion, as a fraction of bankroll (NOT a dollar
+    amount — see kelly_stake() for that). p = win probability for the side
+    being bet, dec_odds = decimal odds for that side, fraction = Kelly
+    fraction (e.g. KELLY_FRACTION, optionally further discounted by the
+    caller for a specific risk case). Returns 0.0 if dec_odds is invalid or
+    Kelly is non-positive.
+    """
+    if dec_odds is None or dec_odds <= 1:
+        return 0.0
+    b = dec_odds - 1.0
+    raw_kelly = max(0.0, (p * b - (1.0 - p)) / b)
+    return raw_kelly * fraction
+
+
+def kelly_stake(p: float, dec_odds, fraction: float, bankroll: float, max_bet: float) -> float:
+    """
+    Dollar Kelly stake — kelly_fraction() scaled to bankroll and capped at
+    max_bet. The single shared bet-sizing implementation for this file (8SI
+    Phase 4.2 — previously two divergent implementations, 1/3 vs. 1/4
+    Kelly with different gates; see docs/DECISIONS.md).
+    """
+    return min(max_bet, round(kelly_fraction(p, dec_odds, fraction) * bankroll))
+
+
 @app.post("/model2a")
 @app.post("/model2")
 def model2a_predict(data: Model2Input):
@@ -1286,26 +1419,28 @@ def model2a_predict(data: Model2Input):
     m2_prob_f1  = M2_LR_WEIGHT * lr_prob_f1 + M2_XGB_WEIGHT * xgb_prob_f1
     m2_prob_f2  = 1.0 - m2_prob_f1
 
-    # ── Gap between Model 2 and Vegas ─────────────────────────────────────────
-    final_gap = m2_prob_f1 - f1_novig
-    pick      = 'f1' if final_gap > 0 else 'f2'
-    pick_prob = m2_prob_f1 if pick == 'f1' else m2_prob_f2
-    pick_odds = data.f1_odds if pick == 'f1' else data.f2_odds
+    # ── Market-shrunk probability + gap vs. Vegas (8SI Phase 4.1) ──────────────
+    # p_final pulls the raw model2 blend toward the no-vig market before any
+    # betting decision is made — see market_shrink()/SHRINKAGE_W.
+    p_final_f1 = market_shrink(m2_prob_f1, f1_novig)
+    p_final_f2 = 1.0 - p_final_f1
+    final_gap  = p_final_f1 - f1_novig
+    pick       = 'f1' if final_gap > 0 else 'f2'
+    pick_prob  = p_final_f1 if pick == 'f1' else p_final_f2
+    pick_odds  = data.f1_odds if pick == 'f1' else data.f2_odds
 
-    # ── Kelly sizing ──────────────────────────────────────────────────────────
+    # ── Kelly sizing (8SI Phase 4.2 — shared kelly_stake()) ─────────────────────
     is_value = abs(final_gap) >= GAP_THRESHOLD
     bet_size = 0
 
     if is_value:
         dec = _decimal(pick_odds)
         if dec is not None and dec > 1:
-            b         = dec - 1.0
-            kelly_pct = max(0.0, (pick_prob * b - (1.0 - pick_prob)) / b)
-            eff_kelly = kelly_pct * KELLY_FRACTION
+            fraction = KELLY_FRACTION
             if (pick == 'f1' and data.f1_ufc_wins == 0) or \
                (pick == 'f2' and data.f2_ufc_wins == 0):
-                eff_kelly *= 0.5
-            bet_size = min(MAX_BET, round(eff_kelly * BANKROLL))
+                fraction *= 0.5   # debut-fighter risk discount
+            bet_size = kelly_stake(pick_prob, dec, fraction, BANKROLL, MAX_BET)
 
     return {
         "m2_prob_f1":     round(m2_prob_f1 * 100, 1),
@@ -1322,6 +1457,7 @@ def model2a_predict(data: Model2Input):
         "threshold_used": int(GAP_THRESHOLD * 100),
         "kelly_fraction": f"1/{int(1 / KELLY_FRACTION)}",
         "m2_blend":       "50% LR + 50% XGB",
+        "shrinkage_w":    SHRINKAGE_W,
     }
 
 
@@ -1501,6 +1637,8 @@ def predict_method(fight: FightInput):
         return {"error": "Method prediction models not loaded"}
 
     d = fight.dict()
+    # Real QA stats + got_finished_rate (8SI Phase 5 Part A — see qa_and_gf_features())
+    _qa_gf        = qa_and_gf_features(d.get('f1_name'), d.get('f2_name'))
     wc_name       = d['weight_class']
     is_womens     = is_womens_fight(wc_name)
     wc_ord        = WC_ORDER.get(wc_name, 8)
@@ -1595,8 +1733,8 @@ def predict_method(fight: FightInput):
     B_southpaw  = int(d['F2_is_southpaw'])
     R_age_x_exp = d['F1_age'] * d['F1_cum_fights']
     B_age_x_exp = d['F2_age'] * d['F2_cum_fights']
-    R_lb = _layoff_buckets(d['F1_layoff_days'])
-    B_lb = _layoff_buckets(d['F2_layoff_days'])
+    R_lb = layoff_bucket_flags(d['F1_layoff_days'])
+    B_lb = layoff_bucket_flags(d['F2_layoff_days'])
     wc_ord_m1   = WC_ORDER_WOMENS.get(wc_name, 1) if is_womens else WC_ORDER.get(wc_name, 6)
 
     m1_data = {
@@ -1696,19 +1834,13 @@ def predict_method(fight: FightInput):
                               - d['F2_age'] * min(d['F2_layoff_days'], 730)),
         'R_finish_danger': d['F1_ko_finish_rate'] + d['F1_sub_finish_rate'],
         'B_finish_danger': d['F2_ko_finish_rate'] + d['F2_sub_finish_rate'],
+        # 8SI Phase 5 Part A — real got_finished_rate (see qa_and_gf_features()),
+        # matches train_model1.compute_interaction_features()'s formula exactly.
         'finish_danger_mismatch': (
-            (d['F1_ko_finish_rate'] + d['F1_sub_finish_rate']) * 0.5 -
-            (d['F2_ko_finish_rate'] + d['F2_sub_finish_rate']) * 0.5
+            (d['F1_ko_finish_rate'] + d['F1_sub_finish_rate']) * (1 - _qa_gf['B_got_finished_rate']) -
+            (d['F2_ko_finish_rate'] + d['F2_sub_finish_rate']) * (1 - _qa_gf['R_got_finished_rate'])
         ),
-        'R_got_finished_rate': 0.5, 'B_got_finished_rate': 0.5,
-        'R_qa_win_rate': d['F1_career_win_rate'],
-        'B_qa_win_rate': d['F2_career_win_rate'],
-        'qa_win_rate_dif': d['F1_career_win_rate'] - d['F2_career_win_rate'],
-        'R_qa_finish_rate': d['F1_last5_finish_rate'],
-        'B_qa_finish_rate': d['F2_last5_finish_rate'],
-        'qa_finish_rate_dif': d['F1_last5_finish_rate'] - d['F2_last5_finish_rate'],
-        'R_qa_SLpM': 0.0, 'B_qa_SLpM': 0.0, 'qa_SLpM_dif': 0.0,
-        'R_qa_SApM': 0.0, 'B_qa_SApM': 0.0, 'qa_SApM_dif': 0.0,
+        **_qa_gf,
     }
 
     df_m1 = pd.DataFrame([m1_data])
@@ -1992,17 +2124,24 @@ def bet_recommendation(
     f1_novig = f1_raw / total
     f2_novig = f2_raw / total
 
+    # NOTE: m2a_picks_f1/m1_picks_f1 stay on RAW model probabilities — this is
+    # a model-vs-model agreement diagnostic, not a betting probability
+    # estimate, and shrinking both toward the market first would just make
+    # them agree more often for a spurious reason. Shrinkage (8SI Phase 4.1)
+    # is applied below, only to the probability actually used for gap sizing
+    # and Kelly staking.
     m2a_picks_f1 = m2a_prob > 0.5
     m1_picks_f1  = m1_prob  > 0.5
     vegas_fav_f1 = f1_novig > 0.5
 
-    pick_prob_val  = m2a_prob if m2a_picks_f1 else 1.0 - m2a_prob
     pick_novig_val = f1_novig if m2a_picks_f1 else f2_novig
+    pick_model_val = m2a_prob if m2a_picks_f1 else 1.0 - m2a_prob
+    pick_prob_val  = market_shrink(pick_model_val, pick_novig_val)
     closing_odds   = f1_odds  if m2a_picks_f1 else f2_odds
 
     gap      = pick_prob_val - pick_novig_val
     gap_size = abs(gap)
-    gap_dir  = 1.0 if gap >= 0 else -1.0
+    gap_dir  = 1.0 if gap >= 0 else -1.0   # sign is unaffected by shrinkage (w > 0)
 
     m1_m2a_agree = int(m1_picks_f1 == m2a_picks_f1)
     vegas_agree  = int(m2a_picks_f1 == vegas_fav_f1)
@@ -2016,19 +2155,15 @@ def bet_recommendation(
     else:
         agreement_type = 'NO_EDGE'
 
-    # ── 5. Quarter Kelly ──────────────────────────────────────────────────────
+    # ── 5. Kelly (8SI Phase 4.2 — shared kelly_fraction()) ──────────────────────
     if closing_odds > 0:
         dec_odds = closing_odds / 100.0 + 1.0
     else:
         dec_odds = 100.0 / abs(closing_odds) + 1.0
-    b            = dec_odds - 1.0
-    p            = pick_prob_val
-    q            = 1.0 - p
-    raw_kelly    = max(0.0, (b * p - q) / b)
-    kelly_fraction = round(raw_kelly * 0.25, 4)
+    kelly_frac_val = kelly_fraction(pick_prob_val, dec_odds, KELLY_FRACTION)
 
     # ── 6. should_bet ─────────────────────────────────────────────────────────
-    should_bet = agreement_type in ('CONFIRM_DOG', 'CONFIRM_FAV') and gap_size >= 0.05
+    should_bet = agreement_type in ('CONFIRM_DOG', 'CONFIRM_FAV') and gap_size >= GAP_THRESHOLD
 
     # ── 7. GTD parlay signal (3A) ─────────────────────────────────────────────
     gtd_prob   = None
@@ -2111,7 +2246,12 @@ def bet_recommendation(
 
     # ── 8. Build plain-English bet_notes ─────────────────────────────────────
     pick_name  = fighter1 if m2a_picks_f1 else fighter2
-    gap_label  = _ZONE_LABELS[_gap_zone(gap_size)]
+    # _gap_zone()'s boundaries are calibrated to the RAW (unshrunk) gap scale
+    # — model2b_predict() feeds it raw gap_size directly as a trained-model
+    # feature and must not change. gap_size here is already shrunk by w, so
+    # divide back out (gap_size / w == gap_raw exactly) rather than touching
+    # the shared zone function/boundaries.
+    gap_label  = _ZONE_LABELS[_gap_zone(gap_size / SHRINKAGE_W)]
     gap_pct    = round(gap_size * 100, 1)
 
     if agreement_type == 'SPLIT':
@@ -2163,15 +2303,20 @@ def bet_recommendation(
         "fighter2":        fighter2,
         "m2a_pick":        pick_name,
         "m1_prob_f1":      round(m1_prob * 100, 1),
-        "m2a_prob_pick":   round(pick_prob_val * 100, 1),
+        # market-shrunk (8SI Phase 4.1) — the value gap/Kelly above are
+        # actually computed from. m2a_prob_pick_raw is M2A's own (unshrunk)
+        # prediction, kept for transparency.
+        "m2a_prob_pick":     round(pick_prob_val * 100, 1),
+        "m2a_prob_pick_raw": round(pick_model_val * 100, 1),
         "agreement_type":  agreement_type,
         "should_bet":      should_bet,
         "gap_size_pct":    round(gap_size * 100, 2),
         "gap_zone":        gap_label,
-        "kelly_fraction":  kelly_fraction,
+        "kelly_fraction":  kelly_frac_val,
         "gtd_parlay":      gtd_parlay,
         "gtd_prob":        round(gtd_prob * 100, 1) if gtd_prob is not None else None,
         "bet_notes":       bet_notes,
+        "shrinkage_w":     SHRINKAGE_W,
     }
 
 

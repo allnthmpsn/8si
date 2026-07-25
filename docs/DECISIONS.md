@@ -2,6 +2,283 @@
 
 ---
 
+## 8SI Phase 7: Elo upgrades (Jul 2026)
+
+**Decision:** Promoted method-weighted K + 25% layoff regression to
+production defaults. `experiments/elo_v2/run_experiment.py` has the full
+methodology; summary here.
+
+**K-sensitivity** (grid {24,32,40,48}, lone-feature `elo_dif` LR across the
+same 5 walk-forward folds `training/walk_forward.py` uses): K=48 (the
+existing value) was already best in the tested range (0.6783 pooled log
+loss vs. 0.6799 at K=24) — accuracy/log loss improved monotonically with K
+across the whole grid, i.e. no evidence K=48 is "too aggressive" as the
+plan speculated. **No change** — kept K=48.
+
+**Method-weighted K** (×1.25 for KO/TKO/Sub wins, ×0.75 for split
+decisions, ×1.0 otherwise) and **layoff regression** (>365 days inactive
+→ regress rating toward 1500 by a tunable %, grid-checked at the plan's
+stated 10-25% range endpoints) were each evaluated individually through
+the FULL 133-feature model (not lone-feature — these change `elo_dif`
+throughout the whole feature set, so the meaningful test is the deployed
+model's own walk-forward log loss) via a new `elo_kwargs` parameter
+threaded through `compute_elo()` and `build_dataset()`, both `None`
+(default) or off unless explicitly requested — verified byte-identical
+baseline behavior via the full test suite before touching anything else.
+
+All three individually beat baseline (0.6200 pooled log loss):
+method-weighted K alone → 0.6168; layoff-regression 15% alone → 0.6184;
+layoff-regression 25% alone → 0.6178. Combining method-weighted K with the
+better-performing layoff-regression-25% (not literally "all three" — see
+bug note below) → **0.6152**, the best result, confirmed by an independent
+verification run reproducing the exact same number.
+
+**Bug caught while combining winners:** the experiment script's first
+version blindly `dict.update()`-merged every individual winner's kwargs in
+iteration order. `layoff-regression 15%` and `layoff-regression 25%` are
+mutually-exclusive VALUES of the same `layoff_regression` kwarg, not
+combinable — the naive merge let whichever ran last in the loop silently
+clobber the other, so the script's own printed label ("...15% + ...25%")
+overstated what actually ran (only 25% took effect). Caught by noticing
+the label implied 3 combined changes but the result exactly matched a
+2-way combination tested separately; fixed the script to pick the
+better-individual-performing value per colliding kwarg key rather than
+last-write-wins, and reran to confirm.
+
+**Promoted via new module constants** in `training/train_model1.py`:
+`ELO_METHOD_MULTIPLIERS`, `ELO_LAYOFF_REGRESSION = (365, 0.25)`. Wired in
+as `build_dataset()`'s DEFAULT when its `elo_kwargs` param is omitted
+(`None`) — explicitly passing `elo_kwargs={}` still gets the pre-Phase-7
+plain-K=48 baseline, which is what `experiments/elo_v2/run_experiment.py`'s
+own baseline run uses. Does NOT bump `FEATURE_SCHEMA_VERSION` — same
+column names/count, formula only (per that constant's own documented bump
+rule).
+
+**Cross-module consistency catch:** `features/build.py`'s `DataBundle`
+(Phase 5) computes its own independent Elo history for
+`get_fighter_state_asof()`'s point-in-time queries — promoting the new
+config in `build_dataset()` without ALSO updating `DataBundle` to match
+would have silently broken Phase 5's train/serve parity guarantee. Caught
+immediately by `tests/test_train_serve_parity.py` (an `R_elo` mismatch for
+Jon Jones's 2024 fight — his multi-year layoff before it is exactly the
+scenario layoff-regression changes). Root cause: `_elo_asof()`'s shortcut
+(a fighter's next `elo_before` normally equals their previous fight's
+`elo_after` exactly) stopped holding once layoff regression could
+intervene between two fights — fixed by replicating the same regression
+check inside `_elo_asof()`, gated on the SAME `ELO_LAYOFF_REGRESSION`
+constant imported from `train_model1.py` (not re-duplicated).
+
+**Retrained `model/v2/` with the promoted config** (serving paths
+untouched, same protocol as every prior phase): single-holdout accuracy
+68.96% (down slightly from 69.27% — expected noise, not the metric that
+matters, see Phase 3), log loss 0.5932 (down from 0.5960), Brier 0.2035
+(down from 0.2048). Pooled walk-forward — the honest number —
+**66.08%/0.6152/0.2134**, vs. 65.64%/0.6200/0.2156 before. The
+higher-Elo baseline itself jumped from 55.21% to 59.69% accuracy on the
+single holdout, consistent with the promoted Elo genuinely being a better
+standalone signal, not just interacting favorably with the rest of the
+model.
+
+**Not done:** Glicko-2 (explicitly marked "stretch" in the plan) — skipped
+given time budget and that the three required items already produced a
+measurable win; revisit only if a future pass specifically wants to chase
+further Elo gains.
+
+---
+
+## 8SI Phase 6: repo hygiene (Jul 2026)
+
+**Decision:** Resolved a pre-existing, unrelated README.md merge conflict
+(left unresolved since before this remediation project — see the Phase 0
+report) to unblock the plan's README-update requirement. One side was a
+2-line placeholder (`# 8si` / `UFC ML model and 8si frontend`), the other
+the full, detailed README matching the actual project structure — an
+unambiguous resolution (kept the detailed side), not a judgment call
+between two substantively different real options, so made directly rather
+than blocking on it again.
+
+**`.gitignore` scope — narrower than the plan's literal text.** The plan
+says ignore "large generated CSVs" alongside `__pycache__/`, `.DS_Store`,
+`*.pkl`, `catboost_info/`, `node_modules/`. Did NOT add a blanket
+`data/*.csv` pattern: `.gitignore` doesn't affect files already tracked
+(they stay tracked and stageable regardless), so the only effect of a
+broad CSV ignore would be to silently hide any genuinely NEW data file a
+future `git add` might otherwise catch — a footgun, not a hygiene win,
+for a repo where `data/` is being deliberately kept as still-tracked
+working data rather than migrated out (the plan marks the git-lfs
+migration path explicitly optional, not done here). Shipped: `__pycache__/`,
+`*.pyc`, `.DS_Store`, `catboost_info/`, `node_modules/`, `*.pkl`.
+
+**`git rm -r --cached`** (index-only, working tree left intact — verified
+files still exist on disk after) applied to every currently-tracked
+`__pycache__/`, `.DS_Store`, and `catboost_info/` path, including one
+`experiments/research/model1_v2/__pycache__/` that the plan's own example
+command list didn't call out explicitly — found by a follow-up
+`git ls-files | grep` sweep after the plan's literal command left it
+behind. `backend/__pycache__/main.cpython-313.pyc` needed `-f` (staged
+content had drifted from the working-tree file, from `.pyc` cache
+regeneration during this session's own work) — safe here since it's pure
+bytecode cache being untracked, not deleted.
+
+**`docs/DATA_SOURCES.md` provenance notes:** added a "Provenance /
+regeneration" line to every documented file. Where genuinely unclear
+(`ufc_gold_dataset_final.csv` — grepped the whole repo for a producer
+script and found none, only consumers), said so explicitly rather than
+guessing at a plausible-sounding origin. Added a blanket note for ~15
+archival `data/` files (intermediate byproducts of the Sherdog-cleanup and
+UFC-Stats-scraping sprints, e.g. `career_fights.csv`, `sherdog_records*.pkl`,
+`bad_sherdog_matches.csv`) that aren't read by any current production
+path, rather than fabricating individual provenance detail for files no
+code in this repo actually touches.
+
+**README:** rewrote the Models section to describe BOTH the currently-
+serving 129-feature model and the not-yet-cut-over 133-feature `model/v2/`
+one, explicitly flagging that 72.81% is not the honest number (pointing to
+the 65.64% pooled walk-forward figure) rather than just bumping the
+feature count as the plan's literal text asked — a stale-but-technically-
+updated README would have been worse than the one it replaced. Added `Run
+tests` and `Walk-forward evaluation` sections.
+
+---
+
+## 8SI Phase 5: unify train/serve feature pipeline (Jul 2026)
+
+**Decision:** Two independent pieces of work, both scoped and confirmed
+with the user before starting given the live-service stakes.
+
+### Part A — QA-stats / got_finished_rate bug fix (shipped, live model unaffected)
+
+While researching Phase 5, found that `backend/main.py`'s `predict()` (and
+a second, independent duplicate inside `predict_method()`) had NEVER
+computed real QA stats or `got_finished_rate` for the live model —
+placeholders instead: `qa_SLpM`/`qa_SApM` hardcoded `0.0`, `got_finished_rate`
+hardcoded `0.5`, `qa_win_rate`/`qa_finish_rate` silently aliased to
+unrelated stats (`career_win_rate`, `last5_finish_rate`). 14 of the
+currently-live model's 129 trained features got wrong values on every
+prediction, on both running services (ports 8000/8002) — independent of
+any leakage issue, a plain implementation gap. Confirmed with the user to
+fix immediately, keeping the old model/architecture unchanged.
+
+**Fix:** `training/train_model1.compute_qa_stats()` (untouched by Phases
+1–2 — no leakage concerns) and a newly-extracted
+`compute_got_finished_rate()` (pulled out of
+`compute_interaction_features()`, pure refactor, verified behavior-identical
+via the full test suite + a retrain producing byte-identical metrics) are
+now called directly from `backend/main.py` at startup, against one
+synthetic "as of today" row appended per fighter to `career_df`. This
+works because both functions read a row's cumulative value BEFORE folding
+in that row's own contribution (shift(1) discipline) — the synthetic row's
+placeholder fields are never actually read, so what comes back is exactly
+"as of today, using every real prior fight." `qa_and_gf_features()` is the
+single shared helper both `predict()` and `predict_method()` now call, so
+the same bug can't recur in two places again. `finish_danger_mismatch`
+was also fixed in passing — it used a fixed 0.5 weight in place of
+`got_finished_rate` for the same reason (that value didn't exist yet).
+
+**Independent finding, NOT fixed:** while verifying this, discovered
+`qa_SLpM` and `qa_SApM` in `compute_qa_stats()` itself are computed from
+the `won` flag, not any actual striking-volume data — `qa_SLpM ==
+qa_win_rate` and `qa_SApM == 1 - qa_win_rate` exactly, verified
+numerically. This is a pre-existing bug in the trainer's own formula
+(predates all of this remediation project, baked into both the original
+model's training data and the Phase 1–3 model's). Not fixed here — it's a
+trainer-formula change requiring retraining and its own scoping decision,
+out of scope for "give the currently-served model the inputs it expects."
+Flagged for a future pass.
+
+### Part B — shared feature module + parity test (built, NOT wired into serving)
+
+Per user's explicit choice: build the point-in-time-correct shared pipeline
+and prove it with a parity test, but do NOT cut backend over to serve the
+new model/schema in this pass. That remains a distinct future decision
+(would need: backend to load `model/v2/`, `get_fighter_state_asof()` wired
+into `/predict`/`bet_recommendation`, `EXPECTED_FEATURE_SCHEMA_VERSION`
+bumped to 2).
+
+- **`features/constants.py`** (new): `WC_ORDER`, `WOMENS_CLASSES`, layoff-
+  bucket thresholds, and the small interaction-feature formulas
+  (`age_x_exp`, `age_x_layoff`, `finish_danger`, `finish_danger_mismatch`)
+  — previously duplicated (with matching values, confirmed before merging)
+  in `train_model1.py` and `backend/main.py`. Deliberately has NO
+  dependency on `train_model1.py` or `features/build.py` — see below.
+- **`features/build.py`** (new): `get_fighter_state_asof(fighter_name,
+  as_of_date, bundle)` — the actual new capability, a point-in-time query
+  built on top of `train_model1.py`'s own `compute_career_stats()` /
+  `compute_qa_stats()` / `compute_got_finished_rate()` and
+  `style_stats.compute_style_stats_asof()` (not reimplemented), using a
+  synthetic as-of-date row per source table — same technique as Part A.
+  `as_of_date='today'` is what a live endpoint would eventually want;
+  an arbitrary historical date is what the parity test uses.
+- **Why constants live in a separate file from build.py:** `build.py`
+  imports `compute_*()` functions FROM `train_model1.py`. If
+  `train_model1.py` also imported shared constants back from `build.py`,
+  that's a circular import. `features/constants.py` has no dependency on
+  either side, so `train_model1.py`, `backend/main.py`, and `build.py` can
+  all safely import from it. `train_model1.py` and `backend/main.py`'s own
+  duplicate `WC_ORDER`/`WOMENS_CLASSES`/layoff-bucket definitions were
+  removed in favor of importing from here — confirmed behavior-identical
+  via full test suite + a retrain producing byte-identical metrics.
+- **`tests/test_train_serve_parity.py`** (new, Phase 5's stated acceptance
+  criterion): 10 sampled historical fights, asserts `get_fighter_state_asof()`
+  matches `train_model1.build_dataset()`'s own computed values within
+  `1e-6`. Getting this green surfaced three real, independent bugs/gotchas
+  along the way (see the test file's own comments for detail):
+  1. My own truncation bug: style-stat truncation used strict `<` where
+     the trainer's `merge_asof(direction='backward')` includes exact-date
+     ties — silently dropped a fighter's own gold-dataset row for the
+     target fight itself, undercounting their cumulative stats by one
+     fight. Fixed in `get_fighter_state_asof()`.
+  2. `_impute_by_weight_class()` fills every individual NaN style-stat
+     cell with a weight-class median, not just rows flagged
+     `R/B_style_missing` — that flag is only set from `R_SLpM`
+     specifically. Samples are now pre-filtered to fights where
+     `get_fighter_state_asof()` itself returns zero NaN across all 8 style
+     columns, so the test validates point-in-time correctness without
+     also needing to reproduce Phase 1's imputation logic (already
+     covered by `tests/test_no_leakage.py`).
+  3. Two genuine, pre-existing data-quality gaps in the source CSVs
+     (unrelated to any of this project's code): `career_fights_updated.csv`
+     is sometimes missing a fighter's own row for a specific
+     `ufc-master.csv` fight (a sync gap between the two files), and
+     `career_fights_updated.csv` sometimes double-logs the same fight
+     under two spellings of an opponent's name on the same date (e.g.
+     "Zachary Reese" / "Zach Reese" — the latter is the documented
+     `docs/DATA_SOURCES.md` "~2,235 duplicate (fighter, date) rows"
+     gotcha). Both make `merge_asof`'s tie-breaking and a from-scratch
+     as-of computation legitimately diverge — not a bug in either
+     approach, just two different reasonable answers to an
+     under-specified question. Samples with either issue are excluded
+     from the test rather than papered over.
+
+**Live-service handling (same protocol as Phase 4):** two `uvicorn`
+processes were running throughout (ports 8000/8002). Neither was touched
+directly. Port 8000 runs with `--reload` and auto-restarted on its own
+partway through this work (confirmed via a live request showing Phase 4's
+`gap_threshold: "3%"`) — flagged to the user immediately when discovered;
+confirmed fine to continue. Every change shipped in this phase was in a
+tested, working state at each step, so no broken intermediate state was
+ever live.
+
+---
+
+## 8SI Phase 4: betting-layer hardening — market shrinkage, unified Kelly (Jul 2026)
+
+**Decision:** Added market-shrinkage (`market_shrink()`) and unified Kelly staking (`kelly_fraction()`/`kelly_stake()`) to `backend/main.py`. Applied to the two live betting-decision paths: `model2a_predict`'s Kelly section and `bet_recommendation`'s Kelly section. `model2b_predict`'s feature computation (which feeds Model 2B, a separately-trained classifier) was deliberately left untouched — see below.
+
+**Why w=0.30 is a documented default, not a fitted value:** The plan (`8si_remediation_plan.md` Phase 4.1) calls for grid-searching `w` on walk-forward validation. That's straightforward for the new (Phase 1–3 remediated) model, which `training/walk_forward.py` can already score honestly at any historical date. It is NOT straightforward for the model backend actually serves — `get_career_stats()`, `get_elo_stats()`, `get_fighter_extra_stats()` etc. always compute "stats as of right now" (`pd.Timestamp.now()`/`datetime.now()`), with no date parameter. Pointing them at a historical fight to backtest would leak that fighter's entire future career into the "historical" prediction, making any resulting `w` meaningless. Building point-in-time-correct versions of those four functions specifically for the old model was considered and rejected as largely throwaway work, since Phase 5 replaces this model and its feature pipeline entirely. `w=0.30` is the midpoint of the plan's own stated expected range (0.2–0.4) — an informed placeholder, explicitly documented as such in `SHRINKAGE_W`'s comment, to be re-fit once Phase 5 lands.
+
+**Why GAP_THRESHOLD is a derivation, not a re-fit:** Since `p_final = w*p_model + (1-w)*p_market`, algebraically `gap_final = p_final - p_market = w * gap_raw` exactly. The original 10% raw-gap trigger (comment: "168 bets, +34.4% ROI" — a small-sample backtested number the plan explicitly warns not to treat as validated) becomes `w * 10% = 3%` on the new shrunk-gap scale, by construction, not by fitting. This preserves whatever the original threshold meant (for better or worse) rather than silently changing decision behavior as a side effect of adding shrinkage. Also provisional pending Phase 5.
+
+**Why one threshold, not two:** `model2a_predict`'s Kelly path used 10% (`GAP_THRESHOLD`); `bet_recommendation`'s used an undocumented, separately hardcoded 5% (`gap_size >= 0.05`) for `should_bet`. Per the plan's "pick one config" instruction, both paths now use the single derived `GAP_THRESHOLD` (3%). If the two decision points genuinely warrant different risk tolerances, that's a product decision to make explicitly later, not something that should persist as an undocumented inconsistency.
+
+**Why Kelly fraction unified to 1/3, not 1/4:** `KELLY_FRACTION = 1/3` was already the named, exposed module constant (referenced in `/predict`'s response and `model2a_predict`'s original code); `bet_recommendation`'s Kelly path had an inline, unnamed `0.25` instead. Standardized on the pre-existing named constant rather than the ad-hoc inline value. The debut-fighter risk discount (half Kelly when either fighter has zero UFC wins) in `model2a_predict` was preserved as a caller-side fraction adjustment, not baked into the shared `kelly_stake()` primitive.
+
+**Why `model2b_predict`'s gap/probability computation was NOT touched:** `_gap_zone()`'s boundaries and the `pick_prob_val`/`gap_size` values computed inside `model2b_predict` (lines ~1390–1477 as of this change) are fed directly as trained-model features into `_model2b_rf` (a pre-fit RandomForest, `model/ufc_model2b.pkl`). That model was trained on the RAW (unshrunk) gap/probability distribution and a specific `gap_zone` 0–6 ordinal encoding. Applying shrinkage or rescaling `_gap_zone()`'s boundaries there would feed the frozen model features from a completely different distribution than it was trained on — silently corrupting its predictions, a worse outcome than anything Phase 4 is trying to fix. `bet_recommendation` needed a shrunk-gap-consistent zone label for its own (human-readable, non-model-feeding) `gap_zone` response field; rather than duplicating or modifying `_gap_zone()`, it divides the shrunk `gap_size` back by `SHRINKAGE_W` before calling the existing, untouched function (`gap_size / w == gap_raw` exactly, by the same identity above).
+
+**Not done in this pass:** No live backtest of the currently-served model against `w`/`GAP_THRESHOLD` grid search (see above). No change to `model2b_predict`. No wiring of Model 1's own probability into shrinkage (Model 1's raw probability is only ever used as an *input feature* to Model 2/2A in this file, not directly for a standalone Model-1-only betting decision — there was no existing Model-1-only Kelly path to touch). Live server processes on ports 8000/8002 were left running; this file's changes take effect on their next restart, which is the user's call, not automated here.
+
+---
+
 ## Models 3A and 3B: method prediction layer (May 2026)
 
 **Decision:** Promoted Model 3A ("Goes the Distance") and Model 3B v2 ("Winner and Method") to production. Models are exposed via the `/method` endpoint. They run alongside M1/M2A/M2B and do not replace them.

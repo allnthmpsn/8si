@@ -1,4 +1,12 @@
-# Feature Reference — Model 1 (114 features)
+# Feature Reference — Model 1 (133 features)
+
+Note: this doc's groups were originally written against a 114-feature list;
+`FEAT_114` in `train_model1.py` has actually held 129+ features for a while
+(the name is stale — kept for compatibility, see the module docstring).
+Groups 1–9 below predate the QA-stats (`FEAT_QA`, 12 features) and most of
+the interaction-feature (`FEAT_INT`) additions, which are not yet documented
+here. Group 10 below covers only the 4 features added in the 8SI Phase 1
+leakage fix.
 
 All features are numeric. Diffs are always `R_value - B_value` (positive = Red advantage).
 Corner-flip augmentation negates all `_dif` columns and swaps R_/B_ pairs, so the model is corner-invariant.
@@ -100,7 +108,7 @@ Computed by `compute_career_stats()` in train_model1.py. Every value represents 
 | `R_last5_finish_rate` | last 5 | Rolling 5-fight finish rate |
 | `B_last5_finish_rate` | last 5 | |
 | `last5_finish_rate_dif` | | R - B |
-| `R_opp_quality` | last 5 | Avg career win rate of last 5 opponents |
+| `R_opp_quality` | last 5 | Avg win rate of last 5 opponents, each opponent's rate taken as-of this fight's date (Phase 2 fix — was each opponent's full-career rate, see docs/REBASELINE.md) |
 | `B_opp_quality` | last 5 | |
 | `opp_quality_dif` | | R - B |
 | `R_trend_score` | 3 vs 10 | `last3_win_rate - last10_win_rate` (momentum) |
@@ -145,20 +153,26 @@ Days since last fight, bucketed. Default 180 days if no prior fight.
 
 ---
 
-## Group 8 — Style stats from ufc_fighters_final_updated.csv (14 features)
+## Group 8 — Style stats, as-of (16 features)
 
-Joined as a left merge on fighter name (after deduplication). No temporal component — reflects career-to-date UFC Stats values.
+**Changed in 8SI Phase 1 (see docs/REBASELINE.md).** Previously joined as a
+plain left-merge on fighter name against `ufc_fighters_final_updated.csv` —
+a career-to-date snapshot with no date dimension, so every historical fight
+saw the fighter's snapshot-time (i.e. future) averages. Now computed by
+`training/style_stats.compute_style_stats_asof()` from
+`data/ufc_gold_dataset_final.csv` via `merge_asof` (backward): every value
+uses ONLY that fighter's fights strictly before the fight being evaluated.
 
 | Feature | Description |
 |---|---|
-| `R_SLpM`, `B_SLpM` | Strikes landed per minute |
-| `R_SApM`, `B_SApM` | Strikes absorbed per minute |
-| `R_Str_Acc`, `B_Str_Acc` | Striking accuracy (0–1) |
-| `R_Str_Def`, `B_Str_Def` | Striking defense (0–1) |
-| `R_TD_Avg`, `B_TD_Avg` | Takedowns per 15 min |
-| `R_TD_Acc`, `B_TD_Acc` | Takedown accuracy (0–1) |
-| `R_TD_Def`, `B_TD_Def` | Takedown defense (0–1) |
-| `R_Sub_Avg`, `B_Sub_Avg` | Submission attempts per 15 min |
+| `R_SLpM`, `B_SLpM` | Strikes landed per minute, as-of |
+| `R_SApM`, `B_SApM` | Strikes absorbed per minute, as-of |
+| `R_Str_Acc`, `B_Str_Acc` | Striking accuracy (0–1), as-of |
+| `R_Str_Def`, `B_Str_Def` | Striking defense (0–1), as-of |
+| `R_TD_Avg`, `B_TD_Avg` | Takedowns per 15 min, as-of |
+| `R_TD_Acc`, `B_TD_Acc` | Takedown accuracy (0–1), as-of |
+| `R_TD_Def`, `B_TD_Def` | Takedown defense (0–1), as-of |
+| `R_Sub_Avg`, `B_Sub_Avg` | Submission attempts per 15 min, as-of |
 | `SLpM_dif` | R_SLpM - B_SLpM |
 | `SApM_dif` | R_SApM - B_SApM |
 | `Str_Def_dif` | R_Str_Def - B_Str_Def |
@@ -178,3 +192,20 @@ Computed all-time from ufc-master.csv with K=48, base=1500. `elo_before` is the 
 | `elo_dif` | R_elo - B_elo |
 | `R_elo_trend`, `B_elo_trend` | elo_before - elo_before.shift(3) per fighter |
 | `elo_trend_dif` | R_elo_trend - B_elo_trend |
+
+---
+
+## Group 10 — Missingness indicators, Phase 1 (4 features)
+
+Added in the 8SI Phase 1 leakage fix (`_impute_by_weight_class()` in
+train_model1.py). Where the underlying as-of stat is unavailable (no prior
+UFC fight in the source, or the fighter's name isn't present in it), the
+raw stat is imputed to the training-window weight-class median (fallback:
+training-window global median) instead of a fixed constant like 0.0 or 0.5
+— these binary flags let the model distinguish "genuinely bad stat" from
+"unknown, imputed."
+
+| Feature | Description |
+|---|---|
+| `R_style_missing`, `B_style_missing` | 1 if the fighter had no prior fight in `ufc_gold_dataset_final.csv` as of this fight's date |
+| `R_gf_missing`, `B_gf_missing` | 1 if `got_finished_rate` was undefined (no prior loss to be finished in) |
