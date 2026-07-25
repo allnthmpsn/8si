@@ -1,0 +1,14 @@
+# Build / cache artifacts
+__pycache__/
+*.pyc
+.DS_Store
+catboost_info/
+
+# Node
+node_modules/
+
+# Model/data binaries — existing tracked *.pkl files are left as-is (already
+# in the index; .gitignore doesn't untrack them); this prevents NEW pkl
+# files from being added going forward. See docs/DATA_SOURCES.md for how to
+# obtain/regenerate each data file.
+*.pkl
