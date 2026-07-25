@@ -195,3 +195,124 @@ def test_style_stats_no_leakage(sample):
             f'{col} leaked for {fighter} on {date.date()}: '
             f'expected(truncated)={expected[col]} actual(pipeline)={actual[col]}'
         )
+
+
+# ─── Observed-mask robustness (8SI v2 style_stats.py hardening) ────────────
+# compute_style_stats_asof's raw source (ufc_gold_dataset_final.csv) has no
+# producer script (docs/DATA_SOURCES.md) and currently has zero NaNs in its
+# strike/TD columns, but a future re-scrape could easily introduce gaps.
+# These tests inject a synthetic NaN and pin the exact expected behavior of
+# the observed-mask design (see style_stats.py's docstring): a fight
+# missing one raw column must (a) not corrupt ITS OWN "as of before this
+# fight" aggregate, (b) be excluded entirely from later aggregates for the
+# stat(s) that depend on the missing column — not silently zero-filled —
+# and (c) leave every OTHER stat that doesn't depend on that column
+# completely unaffected.
+_NAN_TEST_FIGHTER = 'Aaron Riley'
+_NAN_TEST_IDX = 500  # Aaron Riley vs Spencer Fisher, 2006-01-16 (Fighter_2, F2_Sig_Landed=9)
+
+
+def test_style_stats_nan_does_not_poison_own_row():
+    nan_injected = gold_full.copy()
+    nan_injected.loc[_NAN_TEST_IDX, 'F2_Sig_Landed'] = np.nan
+
+    clean_stats = compute_style_stats_asof(gold_full)
+    nan_stats = compute_style_stats_asof(nan_injected)
+
+    nan_date = pd.to_datetime(gold_full.loc[_NAN_TEST_IDX, 'Event_Date'])
+    clean_row = _career_stat_row(clean_stats, _NAN_TEST_FIGHTER, nan_date)
+    nan_row = _career_stat_row(nan_stats, _NAN_TEST_FIGHTER, nan_date)
+
+    # This fight's own "as of before" aggregate depends only on Aaron
+    # Riley's ONE earlier fight (2002-05-10) — NaN'ing THIS fight's own
+    # sig_landed must not change it, and must never leave it NaN when real
+    # prior data exists.
+    for col in ('SLpM', 'Str_Acc'):
+        assert not math.isnan(float(nan_row[col])), (
+            f'{col} was unnecessarily NaN-poisoned at its own row ({nan_date.date()})'
+        )
+        assert math.isclose(float(clean_row[col]), float(nan_row[col]), abs_tol=TOL), (
+            f'{col} at {nan_date.date()} changed after NaN-ing this fight\'s OWN value: '
+            f'clean={clean_row[col]} nan_injected={nan_row[col]}'
+        )
+
+
+def test_style_stats_nan_excludes_not_zero_fills():
+    nan_injected = gold_full.copy()
+    nan_injected.loc[_NAN_TEST_IDX, 'F2_Sig_Landed'] = np.nan
+    dropped = gold_full.drop(index=_NAN_TEST_IDX)
+
+    clean_stats = compute_style_stats_asof(gold_full)
+    nan_stats = compute_style_stats_asof(nan_injected)
+    dropped_stats = compute_style_stats_asof(dropped)
+
+    nan_date = pd.to_datetime(gold_full.loc[_NAN_TEST_IDX, 'Event_Date'])
+    fighter_dates = sorted(pd.to_datetime(gold_full[
+        (gold_full['Fighter_1'] == _NAN_TEST_FIGHTER) | (gold_full['Fighter_2'] == _NAN_TEST_FIGHTER)
+    ]['Event_Date']))
+    later_dates = [d for d in fighter_dates if d > nan_date]
+    assert len(later_dates) >= 3, 'fixture assumption changed — need fights after the NaN-injected one'
+
+    for date in later_dates:
+        nan_row = _career_stat_row(nan_stats, _NAN_TEST_FIGHTER, date)
+        dropped_row = _career_stat_row(dropped_stats, _NAN_TEST_FIGHTER, date)
+        clean_row = _career_stat_row(clean_stats, _NAN_TEST_FIGHTER, date)
+
+        # sig_landed-dependent stats: the NaN'd fight must be excluded
+        # entirely from the running aggregate — same as if it had never
+        # happened (dropped) — not silently treated as a zero contribution
+        # (which would instead silently match a downward-biased number,
+        # never exactly equal to either clean or dropped by coincidence).
+        for col in ('SLpM', 'Str_Acc'):
+            assert math.isclose(float(nan_row[col]), float(dropped_row[col]), abs_tol=TOL), (
+                f'{col} for {_NAN_TEST_FIGHTER} on {date.date()}: NaN-injected={nan_row[col]} '
+                f'expected(fight dropped entirely)={dropped_row[col]}'
+            )
+            assert not math.isclose(float(nan_row[col]), float(clean_row[col]), abs_tol=TOL), (
+                f'{col} for {_NAN_TEST_FIGHTER} on {date.date()}: matched the unmodified value '
+                f'exactly — the NaN-injected fight\'s real strikes should have changed this'
+            )
+
+        # Stats that don't depend on sig_landed at all must be completely
+        # unaffected — this is the per-stat joint-mask isolation property:
+        # a gap in one raw column shouldn't touch stats built from a
+        # different column, even for the same fight.
+        for col in ('SApM', 'TD_Avg', 'Sub_Avg', 'TD_Acc', 'Str_Def', 'TD_Def'):
+            assert math.isclose(float(nan_row[col]), float(clean_row[col]), abs_tol=TOL), (
+                f'{col} for {_NAN_TEST_FIGHTER} on {date.date()} unexpectedly changed: '
+                f'clean={clean_row[col]} nan_injected={nan_row[col]}'
+            )
+
+
+def test_style_stats_snapshot_regression():
+    """Pins known-correct values (captured from the parity-tested pipeline
+    before the observed-mask refactor) for 5 real fighters on real,
+    NaN-free data — catches any future change to compute_style_stats_asof
+    that alters a real, already-correct value, even one that wouldn't be
+    caught by the leakage/robustness tests above."""
+    expected = [
+        ('Tom Aspinall', '2025-10-25', {'SLpM': 8.0653951, 'SApM': 2.88828338, 'Str_Acc': 0.67272727,
+                                         'Str_Def': 0.65359477, 'TD_Avg': 3.26975477, 'TD_Acc': 1.0,
+                                         'TD_Def': 1.0, 'Sub_Avg': 1.63487738}),
+        ('Chase Sherman', '2023-05-13', {'SLpM': 6.29587156, 'SApM': 6.85321101, 'Str_Acc': 0.46376077,
+                                          'Str_Def': 0.51930502, 'TD_Avg': 0.10321101, 'TD_Acc': 0.5,
+                                          'TD_Def': 0.66666667, 'Sub_Avg': 0.0}),
+        ('Alexander Hernandez', '2025-09-13', {'SLpM': 4.35548275, 'SApM': 4.60120815, 'Str_Acc': 0.40958983,
+                                                'Str_Def': 0.58296214, 'TD_Avg': 1.19791133, 'TD_Acc': 0.36111111,
+                                                'TD_Def': 0.73170732, 'Sub_Avg': 0.09214703}),
+        ('Jack Shore', '2024-11-02', {'SLpM': 3.74591652, 'SApM': 2.31941924, 'Str_Acc': 0.58703072,
+                                       'Str_Def': 0.56619145, 'TD_Avg': 3.10344828, 'TD_Acc': 0.3877551,
+                                       'TD_Def': 0.76, 'Sub_Avg': 0.65335753}),
+        ('Gilbert Burns', '2025-05-17', {'SLpM': 3.17227249, 'SApM': 3.57179443, 'Str_Acc': 0.48511749,
+                                          'Str_Def': 0.52755194, 'TD_Avg': 2.10005122, 'TD_Acc': 0.37614679,
+                                          'TD_Def': 0.53658537, 'Sub_Avg': 0.46098685}),
+    ]
+
+    for fighter, date, vals in expected:
+        row = _career_stat_row(style_stats_full, fighter, pd.Timestamp(date))
+        for col, expected_val in vals.items():
+            actual_val = float(row[col])
+            assert math.isclose(actual_val, expected_val, abs_tol=1e-6), (
+                f'{col} for {fighter} on {date}: expected {expected_val}, got {actual_val} '
+                f'— compute_style_stats_asof\'s output changed for real, already-correct data'
+            )

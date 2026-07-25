@@ -486,3 +486,15 @@ Low-confidence divisions flagged: Women's Flyweight, Light Heavyweight, Bantamwe
 **Why:** Pre-fight `R_wins` in ufc-master.csv stores wins going INTO the fight. A fighter who won their first UFC fight has `R_wins=0` on that fight's row. Using `wins==0` as the debut flag would incorrectly flag fighters like Brando Pericic (1-0 UFC) as debuts.
 
 **Effect in backend:** Debut fighters receive `🆕 UFC Debut` badge, a model-confidence warning, and `N/A` Kelly bet size (Model 2 not applied). Only Ben Johnston (Perth card) meets this criterion.
+
+---
+
+## style_stats.py: observed-mask design for missing raw values
+
+**Decision:** `compute_style_stats_asof()`'s per-stat cumulative sums now track, per numerator/denominator pair, a joint "was this fight observed" count and gate on it — instead of the `cumsum() - own_value` idiom used elsewhere in this codebase, gated on the cumulative value itself being `> 0`.
+
+**Why:** A code review surfaced a latent bug in the old idiom: pandas' `cumsum()` reports `NaN` at the position of a `NaN` input even with `skipna=True`. If a raw column (`Sig_Landed`, `Total_Fight_Time_Sec`, etc.) were ever `NaN` for one fight — plausible since `ufc_gold_dataset_final.csv` has no producer script (`docs/DATA_SOURCES.md`) and could pick up gaps on a future re-scrape — that fight's own "as of before" aggregate would wrongly go `NaN` even with real prior data available, AND every later fight for that same fighter would silently and permanently undercount (the missing fight treated as a silent zero contribution, with no record it happened). Not a leakage bug (no future information involved) and not caught by the existing leak tests, since they recompute with the same function.
+
+**Design:** for each of the 8 stats, a fight only counts toward EITHER side of that stat's running numerator/denominator if BOTH columns were observed for that fight — a fight missing just the numerator doesn't get to silently count its minutes toward the denominator (which would bias the rate down). "Has data" requires both a nonzero jointly-observed-fight count AND a nonzero cumulative denominator — the second check preserves the pre-existing (correct) behavior that a fighter whose priors are all genuinely zero attempts (e.g. never attempted a takedown) gets `NaN`, not a fabricated `0%` accuracy.
+
+**Verification:** the refactor is confirmed a byte-for-byte no-op on today's data — position-aligned comparison against the pre-fix implementation across all 17,102 rows / 8 stats found zero differences, and the pooled walk-forward log loss is unchanged (`0.6152062384218069`, identical to before). Two new regression tests in `tests/test_no_leakage.py` inject a synthetic `NaN` and pin the exact expected behavior (own-row not poisoned, later rows exclude the fight like it never happened, unrelated stats unaffected); a third pins known values for 5 real fighters against future regressions.

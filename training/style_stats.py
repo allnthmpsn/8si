@@ -64,35 +64,72 @@ def compute_style_stats_asof(fights_df):
     fighter-name spelling not present in ufc_gold_dataset_final.csv) —
     callers must impute this themselves rather than fillna(0), since 0 SLpM
     means "worst fighter alive," not "unknown."
+
+    Observed-mask design: a raw column can be individually NaN for a given
+    fight (this source has no producer script — see docs/DATA_SOURCES.md —
+    so a future re-scrape could easily introduce gaps even though today's
+    copy happens to have none). The naive `cumsum() - own_value` trick used
+    elsewhere in this codebase breaks under that: pandas' cumsum reports
+    NaN at the position of a NaN input even with skipna=True, so a single
+    missing raw value would (a) wrongly NaN out THAT fight's own "prior"
+    aggregate even when real prior data exists, and (b) silently and
+    permanently undercount every LATER fight for the same fighter — treating
+    the gap as a silent zero-contribution with no record it happened, not
+    caught by any test since a leak test recomputes with the same function.
+
+    Fixed per stat (not per raw column): each of the 8 stats is a
+    numerator/denominator pair (e.g. SLpM = sig_landed / fight_min). A
+    fight is only counted toward EITHER side of a given pair's running sum
+    if BOTH columns were observed for that fight — a fight missing just the
+    numerator doesn't get to silently count its minutes toward the
+    denominator (which would bias the rate down), and vice versa. "Has
+    data" is a per-pair cumulative COUNT of jointly-observed prior fights
+    (never itself NaN, so immune to the poisoning above), tracked
+    separately from the value sums.
     """
     df = _to_long(fights_df)
     df = df.sort_values(['fighter', 'date']).reset_index(drop=True)
     df['fight_min'] = df['Total_Fight_Time_Sec'] / 60.0
 
-    raw_cols = ['sig_landed', 'sig_att', 'opp_sig_landed', 'opp_sig_att',
-                'td_landed', 'td_att', 'opp_td_landed', 'opp_td_att',
-                'sub_att', 'fight_min']
+    # (stat, numerator col, denominator col, denominator is per-15-min, ratio is a complement (1 - x))
+    PAIRS = [
+        ('SLpM',    'sig_landed',     'fight_min',   False, False),
+        ('SApM',    'opp_sig_landed', 'fight_min',   False, False),
+        ('TD_Avg',  'td_landed',      'fight_min',   True,  False),
+        ('Sub_Avg', 'sub_att',        'fight_min',   True,  False),
+        ('Str_Acc', 'sig_landed',     'sig_att',     False, False),
+        ('Str_Def', 'opp_sig_landed', 'opp_sig_att', False, True),
+        ('TD_Acc',  'td_landed',      'td_att',      False, False),
+        ('TD_Def',  'opp_td_landed',  'opp_td_att',  False, True),
+    ]
+
+    for stat, ncol, dcol, _, _ in PAIRS:
+        joint = df[ncol].notna() & df[dcol].notna()
+        df[f'_jn_{stat}'] = df[ncol].where(joint, 0.0)
+        df[f'_jd_{stat}'] = df[dcol].where(joint, 0.0)
+        df[f'_jo_{stat}'] = joint.astype(float)
+
     g = df.groupby('fighter', sort=False)
-    for col in raw_cols:
-        df[f'_cs_{col}'] = (g[col].cumsum() - df[col]).astype(float)
-
-    has_min         = (df['_cs_fight_min'] > 0).to_numpy()
-    has_sig_att     = (df['_cs_sig_att'] > 0).to_numpy()
-    has_opp_sig_att = (df['_cs_opp_sig_att'] > 0).to_numpy()
-    has_td_att      = (df['_cs_td_att'] > 0).to_numpy()
-    has_opp_td_att  = (df['_cs_opp_td_att'] > 0).to_numpy()
-
-    min_  = df['_cs_fight_min'].clip(lower=EPS).to_numpy()
-    per15 = (df['_cs_fight_min'] / 15.0).clip(lower=EPS).to_numpy()
+    for stat, *_ in PAIRS:
+        df[f'_csn_{stat}'] = (g[f'_jn_{stat}'].cumsum() - df[f'_jn_{stat}']).astype(float)
+        df[f'_csd_{stat}'] = (g[f'_jd_{stat}'].cumsum() - df[f'_jd_{stat}']).astype(float)
+        df[f'_cso_{stat}'] = (g[f'_jo_{stat}'].cumsum() - df[f'_jo_{stat}']).astype(float)
 
     nan = np.nan
-    df['SLpM']    = np.where(has_min, df['_cs_sig_landed'] / min_, nan)
-    df['SApM']    = np.where(has_min, df['_cs_opp_sig_landed'] / min_, nan)
-    df['Str_Acc'] = np.where(has_sig_att, df['_cs_sig_landed'] / df['_cs_sig_att'].clip(lower=EPS), nan)
-    df['Str_Def'] = np.where(has_opp_sig_att, 1.0 - df['_cs_opp_sig_landed'] / df['_cs_opp_sig_att'].clip(lower=EPS), nan)
-    df['TD_Avg']  = np.where(has_min, df['_cs_td_landed'] / per15, nan)
-    df['Sub_Avg'] = np.where(has_min, df['_cs_sub_att'] / per15, nan)
-    df['TD_Acc']  = np.where(has_td_att, df['_cs_td_landed'] / df['_cs_td_att'].clip(lower=EPS), nan)
-    df['TD_Def']  = np.where(has_opp_td_att, 1.0 - df['_cs_opp_td_landed'] / df['_cs_opp_td_att'].clip(lower=EPS), nan)
+    for stat, ncol, dcol, per15, is_complement in PAIRS:
+        # Two separate conditions, both required: _cso>0 ("we've actually
+        # observed this pair before" — fixes the NaN-poisoning bug) AND
+        # _csd>0 ("those observed fights collectively attempted at least
+        # once" — a fighter whose priors are all genuinely zero attempts
+        # has an undefined 0/0 rate, same as the pre-fix behavior; without
+        # this second check a genuinely-zero denominator would silently
+        # report 0% instead of NaN, which is wrong for e.g. a fighter who
+        # has simply never attempted a takedown yet).
+        has = (df[f'_cso_{stat}'] > 0).to_numpy() & (df[f'_csd_{stat}'] > 0).to_numpy()
+        denom = df[f'_csd_{stat}'] / 15.0 if per15 else df[f'_csd_{stat}']
+        ratio = df[f'_csn_{stat}'].to_numpy() / denom.clip(lower=EPS).to_numpy()
+        if is_complement:
+            ratio = 1.0 - ratio
+        df[stat] = np.where(has, ratio, nan)
 
     return df[['fighter', 'date'] + STYLE_STATS]
