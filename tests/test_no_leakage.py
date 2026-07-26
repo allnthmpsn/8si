@@ -385,3 +385,59 @@ _round_feature_samples = (
 )
 def test_round_derived_feature_no_leakage(sample):
     assert_round_feature_no_leakage(_toy_kd_cumulative, sample['fighter'], sample['date'], ['kd_cum'])
+
+
+# ─── KD/damage family (8SI v2 Stage 2.1) ────────────────────────────────────
+# training/features_kd.py doesn't fit assert_round_feature_no_leakage's
+# contract directly: each fighter's feature value depends on the OPPONENT's
+# stats too (from the same shared past fights, via a self-join), plus an
+# external ufc_fight_results.csv merge for fight duration and a name_map.csv
+# canonical-name join — none of which the generic single-fighter-column
+# harness above accounts for. Same truncate-and-recompute strategy as
+# test_style_stats_no_leakage, adapted: truncate round_stats.parquet to
+# FIGHTS INVOLVING the sampled fighter (not just their own 'fighter'-column
+# rows) up to and including the target date, so each of their own past
+# fights keeps BOTH corners for the self-join to work correctly on the
+# truncated data — recompute via the exact same compute_kd_features_asof()
+# (pointed at a temp copy), compare to the full-pipeline value.
+from training.features_kd import compute_kd_features_asof, KD_FEATURES, _load_name_map  # noqa: E402
+
+_kd_full = compute_kd_features_asof()
+_kd_name_map = _load_name_map()
+_canonical_to_raw = {}
+for _raw, _canon in _kd_name_map.items():
+    _canonical_to_raw.setdefault(_canon, set()).add(_raw)
+
+_kd_eligible = _kd_full.dropna(subset=['damage_ratio']).groupby('fighter').size()
+_kd_eligible = _kd_eligible[_kd_eligible >= 5].index.tolist()
+_kd_samples = [
+    {'fighter': f, 'date': _kd_full[_kd_full['fighter'] == f].sample(n=1, random_state=SEED).iloc[0]['date']}
+    for f in pd.Series(_kd_eligible).sample(n=8, random_state=SEED).tolist()
+]
+
+
+@pytest.mark.parametrize(
+    'sample', _kd_samples,
+    ids=lambda s: f"{s['fighter']}@{pd.Timestamp(s['date']).date()}",
+)
+def test_kd_features_no_leakage(sample, tmp_path):
+    fighter, date = sample['fighter'], pd.Timestamp(sample['date'])
+    raw_names = _canonical_to_raw.get(fighter, {fighter})
+
+    own_events = round_stats_full[
+        round_stats_full['fighter'].isin(raw_names) & (round_stats_full['date'] <= date)
+    ][['event', 'bout']].drop_duplicates()
+    trunc = round_stats_full.merge(own_events, on=['event', 'bout']).query('date <= @date')
+
+    trunc_path = tmp_path / 'round_stats_trunc.parquet'
+    trunc.to_parquet(trunc_path, index=False)
+
+    expected_stats = compute_kd_features_asof(round_stats_path=str(trunc_path))
+    expected = _career_stat_row(expected_stats, fighter, date)
+    actual = _career_stat_row(_kd_full, fighter, date)
+
+    for col in KD_FEATURES:
+        assert _close_or_both_nan(float(expected[col]), float(actual[col])), (
+            f'{col} leaked for {fighter} on {date.date()}: '
+            f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
+        )

@@ -303,10 +303,67 @@ harness extended and passing (104/104 tests total). All work committed
 in three checkpoints: the fighter-identity data fix, Stage 1's own
 deliverables, and this live-verification snapshot.
 
+## Stage 2 — Feature build
+
+Baseline for every family's delta below: **0.6134525** (post
+fighter-identity-fix, not the 0.6152 Stage-0-start figure — see the
+callout under "Market benchmark" above).
+
+### 2.1 Knockdowns & damage — DROPPED
+
+`training/features_kd.py`: `kd_per15_for`, `kd_per15_against`,
+`kd_absorbed_per_sig_str`, `damage_ratio` — as-of, shift(1), computed
+from `data/round_stats.parquet` (round-level rows summed to fight-level,
+then the same per-stat joint numerator/denominator observed-mask design
+`training/style_stats.py` uses). `tests/test_no_leakage.py::
+test_kd_features_no_leakage` (8 cases) verifies no leakage via the same
+truncate-and-recompute strategy as every other as-of feature in this
+codebase, adapted for this family's extra dependencies (opponent stats
+via a same-fight self-join, `ufc_fight_results.csv` for fight duration,
+`data/name_map.csv` for the canonical-name join).
+
+**A real bug caught before evaluating anything**: the first pass omitted
+the `_csd_{feat} > 0` gate `style_stats.py`'s own fix already established
+— the exact same class of bug, reintroduced in new code by not copying
+the earlier fix. `damage_ratio` blew up to a mean of 43 million (max 48
+billion) whenever a fighter's cumulative opponent-sig-strikes-landed
+denominator was genuinely (not missing, just actually) zero — division
+by an EPS-clipped near-zero instead of the correct `NaN`. Fixed
+identically to the earlier style_stats.py fix. Re-verified
+`kd_per15_for`'s own remaining outliers (max 128.57) separately — that
+one's real, not a bug: `R_SLpM` (the existing, already-shipped feature)
+has the identical small-sample-tiny-denominator pattern (max 56 against
+a mean of 3.9), from very short early-career fights. Consistent with an
+existing, accepted characteristic of per-time-rate features in this
+codebase, not something specific to this new family.
+
+`experiments/kd_v2/run_experiment.py` (same behind-a-flag pattern as
+`experiments/elo_v2/`) tested two variants via `training/train_model1.py`'s
+own `build_dataset()`/training loop, unmodified:
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (current FEAT_114, no KD) | 0.6135 | — (sanity-check match to 0.6134525) |
+| + KD family (12 new columns) | 0.6172 | **+0.0038** |
+| + KD family, retire `got_finished_rate`/`finish_danger_mismatch` | 0.6164 | **+0.0029** |
+
+**Neither variant beats baseline — dropped, per the spec's own rule with
+no exception.** The spec calls this family "highest expected value"
+because it was the top SHAP family in someone else's model; that isn't
+evidence for this one, and isn't grounds for a discretionary pass — the
+pooled number is the only thing that decides, and it says no. Retiring
+`got_finished_rate`/`finish_danger_mismatch` alongside KD is closer to
+breakeven than adding KD on top of the full existing set, meaning those
+two retired features were carrying at least as much signal as KD adds —
+another data point against the family, not for it. `training/train_model1
+.py`'s `FEAT_114` is unchanged. `training/features_kd.py` and
+`experiments/kd_v2/run_experiment.py` stay in the repo (code kept,
+shipped disabled) as a record and in case a future family (e.g. RAPM)
+changes the calculus by interacting with it.
+
 ## Next
 
-Stages 0 and 1 are complete. Stage 2 (feature build — knockdowns/damage,
-control/grappling, cardio/late-round profile, style vectors, situational
-priors, RAPM) is gated one family at a time against pooled walk-forward
-log loss, per the spec's own governing rule — a natural checkpoint before
-starting it.
+Stage 2.2 (control & grappling exposure) is next, same one-family-at-a-
+time discipline: build, leakage-test, evaluate via a dedicated experiment
+script against the current baseline (0.6134525, unchanged since 2.1
+didn't ship), log the verdict before starting 2.3.
