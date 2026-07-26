@@ -432,8 +432,42 @@ win-rate/style-stat features already capture at this fight count), not
 three repeats of the same bug. `FEAT_114` unchanged; code kept, shipped
 disabled.
 
+### 2.4 Style vectors (position/target mix) — DROPPED; interactions not built
+
+`training/features_style_vectors.py`: `dist_share`, `clinch_share`,
+`ground_share` (position mix) and `head_share`, `body_share`, `leg_share`
+(target mix) — career as-of shares of a fighter's own landed significant
+strikes. Simplest family so far: every input column already lives in
+`round_stats.parquet`, no second source needed. Both partitions verified
+exact (`distance+clinch+ground == sig_str_landed`, `head+body+leg ==
+sig_str_landed`, every 2015+ row) before relying on them. Leakage-tested
+(8 cases).
+
+`experiments/style_v2/run_experiment.py` — one variant (no existing
+feature to test retiring; this is new signal, nothing like it is in
+`FEAT_114` today):
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (current FEAT_114) | 0.6135 | — |
+| + style vector family (18 new columns) | 0.6150 | **+0.0016** |
+
+**Does not beat baseline — dropped.** Fourth consecutive round-derived
+family to fail the gate. The spec's matchup-interaction sub-bullet (own
+`leg_share` × opp stance; own `ground_share` × opp `ctrl_pct_against`;
+own `td_landed_per15` × opp `td_absorbed_per15`) was explicitly gated
+"only after mains are in" — the mains didn't clear the bar, and two of
+the three named interactions are built on Stage 2.2's `ctrl_pct_against`/
+`td_landed_per15`, which already failed independently — so the
+interactions were not built at all rather than tested and dropped.
+`FEAT_114` unchanged; code kept, shipped disabled.
+
 ## Next
 
-Stage 2.4 (style vectors & matchup interactions) is next, same
-discipline: build, leakage-test, evaluate against 0.6134525 (unchanged —
-none of 2.1/2.2/2.3 shipped), log the verdict before starting 2.5.
+Stage 2.5 (situational & priors) is next, same discipline. Note: the
+spec explicitly says not to build days'-notice or missed-weight features
+in this pass (no structured source, high parsing effort) — 2.5 covers
+only age×division, travel proxy, five_round_bout, division_change,
+catchweight. Evaluate against 0.6134525 (unchanged — none of 2.1-2.4
+shipped), log the verdict before starting 2.6 (RAPM, the stage's
+biggest remaining lift).

@@ -544,3 +544,34 @@ def test_cardio_features_no_leakage(sample, tmp_path):
             f'{col} leaked for {fighter} on {date.date()}: '
             f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
         )
+
+
+# ─── Style vectors: position/target mix family (8SI v2 Stage 2.4) ──────────
+from training.features_style_vectors import compute_style_vector_features_asof, STYLE_VECTOR_FEATURES  # noqa: E402
+
+_sv_full = compute_style_vector_features_asof()
+_sv_eligible = _sv_full.dropna(subset=['dist_share']).groupby('fighter').size()
+_sv_eligible = _sv_eligible[_sv_eligible >= 5].index.tolist()
+_sv_samples = [
+    {'fighter': f, 'date': _sv_full[_sv_full['fighter'] == f].sample(n=1, random_state=SEED).iloc[0]['date']}
+    for f in pd.Series(_sv_eligible).sample(n=8, random_state=SEED).tolist()
+]
+
+
+@pytest.mark.parametrize(
+    'sample', _sv_samples,
+    ids=lambda s: f"{s['fighter']}@{pd.Timestamp(s['date']).date()}",
+)
+def test_style_vector_features_no_leakage(sample, tmp_path):
+    fighter, date = sample['fighter'], pd.Timestamp(sample['date'])
+    trunc_path = _truncated_round_stats_path(fighter, date, tmp_path)
+
+    expected_stats = compute_style_vector_features_asof(round_stats_path=trunc_path)
+    expected = _career_stat_row(expected_stats, fighter, date)
+    actual = _career_stat_row(_sv_full, fighter, date)
+
+    for col in STYLE_VECTOR_FEATURES:
+        assert _close_or_both_nan(float(expected[col]), float(actual[col])), (
+            f'{col} leaked for {fighter} on {date.date()}: '
+            f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
+        )
