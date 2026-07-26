@@ -481,3 +481,66 @@ def test_grappling_features_no_leakage(sample, tmp_path):
             f'{col} leaked for {fighter} on {date.date()}: '
             f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
         )
+
+
+# ─── Cardio / late-round profile family (8SI v2 Stage 2.3) ─────────────────
+from training.features_cardio import compute_cardio_features_asof, CARDIO_FEATURES  # noqa: E402
+from training.features_kd import RAW_DIR as _RAW_DIR  # noqa: E402
+
+_fight_results_full = pd.read_csv(os.path.join(_RAW_DIR, 'ufc_fight_results.csv'))
+_fight_results_full['EVENT'] = _fight_results_full['EVENT'].str.strip()
+
+
+def _truncated_raw_dir(fighter, date, tmp_path):
+    """Same idea as _truncated_round_stats_path, but for the cardio
+    family's second source (ufc_fight_results.csv) — write a temp raw_dir
+    containing a truncated fight_results.csv (fights involving `fighter`,
+    up to and including `date`) plus the untouched event_details.csv
+    (needed for the date merge inside features_cardio.py)."""
+    raw_names = _canonical_to_raw.get(fighter, {fighter})
+    bouts = _fight_results_full[
+        _fight_results_full['BOUT'].str.split(' vs. ', n=1).str[0].isin(raw_names)
+        | _fight_results_full['BOUT'].str.split(' vs. ', n=1).str[1].isin(raw_names)
+    ][['EVENT', 'BOUT']].drop_duplicates()
+    trunc = _fight_results_full.merge(bouts, on=['EVENT', 'BOUT'])
+
+    ev_dates = pd.read_csv(os.path.join(_RAW_DIR, 'ufc_event_details.csv'))
+    ev_dates['date'] = pd.to_datetime(ev_dates['DATE'], format='%B %d, %Y')
+    trunc = trunc.merge(ev_dates[['EVENT', 'date']], on='EVENT', how='left')
+    trunc = trunc[trunc['date'] <= date].drop(columns=['date'])
+
+    raw_dir = tmp_path / 'raw_dir'
+    raw_dir.mkdir(exist_ok=True)
+    trunc.to_csv(raw_dir / 'ufc_fight_results.csv', index=False)
+    ev = pd.read_csv(os.path.join(_RAW_DIR, 'ufc_event_details.csv'))
+    ev.to_csv(raw_dir / 'ufc_event_details.csv', index=False)
+    return str(raw_dir)
+
+
+_cd_full = compute_cardio_features_asof()
+_cd_eligible = _cd_full.dropna(subset=['r1_finish_rate']).groupby('fighter').size()
+_cd_eligible = _cd_eligible[_cd_eligible >= 5].index.tolist()
+_cd_samples = [
+    {'fighter': f, 'date': _cd_full[_cd_full['fighter'] == f].sample(n=1, random_state=SEED).iloc[0]['date']}
+    for f in pd.Series(_cd_eligible).sample(n=8, random_state=SEED).tolist()
+]
+
+
+@pytest.mark.parametrize(
+    'sample', _cd_samples,
+    ids=lambda s: f"{s['fighter']}@{pd.Timestamp(s['date']).date()}",
+)
+def test_cardio_features_no_leakage(sample, tmp_path):
+    fighter, date = sample['fighter'], pd.Timestamp(sample['date'])
+    round_stats_path = _truncated_round_stats_path(fighter, date, tmp_path)
+    raw_dir = _truncated_raw_dir(fighter, date, tmp_path)
+
+    expected_stats = compute_cardio_features_asof(round_stats_path=round_stats_path, raw_dir=raw_dir)
+    expected = _career_stat_row(expected_stats, fighter, date)
+    actual = _career_stat_row(_cd_full, fighter, date)
+
+    for col in CARDIO_FEATURES:
+        assert _close_or_both_nan(float(expected[col]), float(actual[col])), (
+            f'{col} leaked for {fighter} on {date.date()}: '
+            f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
+        )

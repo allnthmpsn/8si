@@ -397,8 +397,43 @@ features aren't strictly dominated here, contrary to what the spec
 anticipated for this family. `FEAT_114` unchanged; code kept, shipped
 disabled.
 
+### 2.3 Cardio / late-round profile — DROPPED
+
+`training/features_cardio.py`: `r3_output_ratio`, `late_round_finish_rate`,
+`r1_finish_rate`. Two sources, not one: round-level strike volume
+(`data/round_stats.parquet`, for the round-1-vs-round-3+ output
+comparison) and win/method/finish-round (`data/raw/ufcstats_rounds/
+ufc_fight_results.csv`, parsed via `BOUT`'s " vs. " delimiter — verified
+zero non-matching rows before relying on it — since `round_stats.parquet`
+has no notion of how a fight ended). "Finish" reuses
+`compute_career_stats()`'s own `KO|TKO` / `Sub` string-match definition
+rather than inventing a second one. `r3_output_ratio` honors the spec's
+own `>=3` prior round-3-reaching-fights minimum-sample guard. Leakage-
+tested (8 cases) — this family needed a *second* truncation helper
+(`_truncated_raw_dir`) since it depends on `ufc_fight_results.csv` too,
+not just `round_stats.parquet`.
+
+`experiments/cardio_v2/run_experiment.py` — no existing feature to test
+retiring here (unlike 2.1/2.2, this family has no snapshot-era
+predecessor in `FEAT_114`), so one variant:
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (current FEAT_114) | 0.6135 | — |
+| + cardio family (9 new columns) | 0.6162 | **+0.0028** |
+
+**Does not beat baseline — dropped.** Third consecutive round-derived
+family to fail the gate (2.1 +0.0038, 2.2 +0.0009, 2.3 +0.0028) — each
+individually leakage-tested, bug-checked (2.1's `_csd>0` catch applied
+correctly to 2.2 and 2.3 from the start), and value-distribution-sanity-
+checked before evaluation, so this reads as a real pattern (round-level
+volume/timing signal not adding much on top of what career-level Elo/
+win-rate/style-stat features already capture at this fight count), not
+three repeats of the same bug. `FEAT_114` unchanged; code kept, shipped
+disabled.
+
 ## Next
 
-Stage 2.3 (cardio / late-round profile) is next, same discipline: build,
-leakage-test, evaluate against 0.6134525 (unchanged — neither 2.1 nor
-2.2 shipped), log the verdict before starting 2.4.
+Stage 2.4 (style vectors & matchup interactions) is next, same
+discipline: build, leakage-test, evaluate against 0.6134525 (unchanged —
+none of 2.1/2.2/2.3 shipped), log the verdict before starting 2.5.
