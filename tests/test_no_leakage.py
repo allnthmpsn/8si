@@ -402,12 +402,29 @@ def test_round_derived_feature_no_leakage(sample):
 # (pointed at a temp copy), compare to the full-pipeline value.
 from training.features_kd import compute_kd_features_asof, KD_FEATURES, _load_name_map  # noqa: E402
 
-_kd_full = compute_kd_features_asof()
 _kd_name_map = _load_name_map()
 _canonical_to_raw = {}
 for _raw, _canon in _kd_name_map.items():
     _canonical_to_raw.setdefault(_canon, set()).add(_raw)
 
+
+def _truncated_round_stats_path(fighter, date, tmp_path):
+    """Write round_stats.parquet truncated to FIGHTS INVOLVING `fighter`
+    (both corners kept, so any same-fight self-join still works) up to
+    and including `date`, to a temp file — reusable across every
+    round-derived feature family with an opponent dependency (KD,
+    grappling, ...), since they all share this exact truncation need."""
+    raw_names = _canonical_to_raw.get(fighter, {fighter})
+    own_events = round_stats_full[
+        round_stats_full['fighter'].isin(raw_names) & (round_stats_full['date'] <= date)
+    ][['event', 'bout']].drop_duplicates()
+    trunc = round_stats_full.merge(own_events, on=['event', 'bout']).query('date <= @date')
+    trunc_path = tmp_path / 'round_stats_trunc.parquet'
+    trunc.to_parquet(trunc_path, index=False)
+    return str(trunc_path)
+
+
+_kd_full = compute_kd_features_asof()
 _kd_eligible = _kd_full.dropna(subset=['damage_ratio']).groupby('fighter').size()
 _kd_eligible = _kd_eligible[_kd_eligible >= 5].index.tolist()
 _kd_samples = [
@@ -422,21 +439,44 @@ _kd_samples = [
 )
 def test_kd_features_no_leakage(sample, tmp_path):
     fighter, date = sample['fighter'], pd.Timestamp(sample['date'])
-    raw_names = _canonical_to_raw.get(fighter, {fighter})
+    trunc_path = _truncated_round_stats_path(fighter, date, tmp_path)
 
-    own_events = round_stats_full[
-        round_stats_full['fighter'].isin(raw_names) & (round_stats_full['date'] <= date)
-    ][['event', 'bout']].drop_duplicates()
-    trunc = round_stats_full.merge(own_events, on=['event', 'bout']).query('date <= @date')
-
-    trunc_path = tmp_path / 'round_stats_trunc.parquet'
-    trunc.to_parquet(trunc_path, index=False)
-
-    expected_stats = compute_kd_features_asof(round_stats_path=str(trunc_path))
+    expected_stats = compute_kd_features_asof(round_stats_path=trunc_path)
     expected = _career_stat_row(expected_stats, fighter, date)
     actual = _career_stat_row(_kd_full, fighter, date)
 
     for col in KD_FEATURES:
+        assert _close_or_both_nan(float(expected[col]), float(actual[col])), (
+            f'{col} leaked for {fighter} on {date.date()}: '
+            f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
+        )
+
+
+# ─── Control & grappling exposure family (8SI v2 Stage 2.2) ────────────────
+from training.features_grappling import compute_grappling_features_asof, GRAPPLING_FEATURES  # noqa: E402
+
+_gr_full = compute_grappling_features_asof()
+_gr_eligible = _gr_full.dropna(subset=['ctrl_pct_for']).groupby('fighter').size()
+_gr_eligible = _gr_eligible[_gr_eligible >= 5].index.tolist()
+_gr_samples = [
+    {'fighter': f, 'date': _gr_full[_gr_full['fighter'] == f].sample(n=1, random_state=SEED).iloc[0]['date']}
+    for f in pd.Series(_gr_eligible).sample(n=8, random_state=SEED).tolist()
+]
+
+
+@pytest.mark.parametrize(
+    'sample', _gr_samples,
+    ids=lambda s: f"{s['fighter']}@{pd.Timestamp(s['date']).date()}",
+)
+def test_grappling_features_no_leakage(sample, tmp_path):
+    fighter, date = sample['fighter'], pd.Timestamp(sample['date'])
+    trunc_path = _truncated_round_stats_path(fighter, date, tmp_path)
+
+    expected_stats = compute_grappling_features_asof(round_stats_path=trunc_path)
+    expected = _career_stat_row(expected_stats, fighter, date)
+    actual = _career_stat_row(_gr_full, fighter, date)
+
+    for col in GRAPPLING_FEATURES:
         assert _close_or_both_nan(float(expected[col]), float(actual[col])), (
             f'{col} leaked for {fighter} on {date.date()}: '
             f'expected(truncated)={expected[col]} actual(full)={actual[col]}'

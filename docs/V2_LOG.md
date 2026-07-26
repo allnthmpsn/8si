@@ -361,9 +361,44 @@ another data point against the family, not for it. `training/train_model1
 shipped disabled) as a record and in case a future family (e.g. RAPM)
 changes the calculus by interacting with it.
 
+### 2.2 Control & grappling exposure — DROPPED
+
+`training/features_grappling.py`: `ctrl_pct_for`, `ctrl_pct_against`,
+`ground_share_landed`, `td_landed_per15`, `td_absorbed_per15` — same
+architecture as 2.1 (fight-level aggregation, opponent self-join, joint
+observed-mask design, `_csd>0` gate applied correctly from the start this
+time). One scoping note: the spec's `ground_time_share` is approximated
+as `ground_share_landed` (share of a fighter's own landed significant
+strikes thrown from ground position) — ufcstats.com has no direct
+ground-TIME stat, only ground-STRIKE counts and an overall control-time
+figure that mixes clinch and ground control together, so literal ground
+*time* isn't available; documented as an approximation rather than
+silently presented as the real thing. Verified `distance_landed +
+clinch_landed + ground_landed == sig_str_landed` for every 2015+ row
+before relying on it. Leakage-tested (8 cases,
+`test_grappling_features_no_leakage`, reusing the same truncation helper
+2.1's test introduced).
+
+`experiments/grappling_v2/run_experiment.py` tested two variants against
+the 0.6134525 baseline:
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (current FEAT_114) | 0.6135 | — (sanity-check match) |
+| + grappling family (10 new columns) | 0.6144 | **+0.0009** |
+| + grappling family, retire `TD_Avg`/`TD_Def` lineage | 0.6162 | **+0.0027** |
+
+**Neither beats baseline — dropped.** The plain add is close to
+breakeven (+0.0009, well under the spec's 0.002 "matters" threshold used
+elsewhere) but still doesn't clear the bar, and retiring the existing
+`TD_Avg`/`TD_Def` style-stat features in favor of the round-derived
+takedown rates makes things worse, not better — the older snapshot-era
+features aren't strictly dominated here, contrary to what the spec
+anticipated for this family. `FEAT_114` unchanged; code kept, shipped
+disabled.
+
 ## Next
 
-Stage 2.2 (control & grappling exposure) is next, same one-family-at-a-
-time discipline: build, leakage-test, evaluate via a dedicated experiment
-script against the current baseline (0.6134525, unchanged since 2.1
-didn't ship), log the verdict before starting 2.3.
+Stage 2.3 (cardio / late-round profile) is next, same discipline: build,
+leakage-test, evaluate against 0.6134525 (unchanged — neither 2.1 nor
+2.2 shipped), log the verdict before starting 2.4.
