@@ -174,10 +174,114 @@ until real v2-era bets are logged.
       (`docs/REBASELINE.md`). Backend continues to serve the original
       pre-remediation model, unchanged.
 
+## Stage 1 — Data ingestion
+
+### 1.1 Round-level UFCStats data
+
+Downloaded the Greco1899/scrape_ufc_stats pre-scraped CSVs (not scraped —
+that project runs its own rate-limited, daily-automated scraper against
+ufcstats.com and publishes plain CSVs, exactly per the spec's "download,
+don't scrape" instruction) into `data/raw/ufcstats_rounds/`.
+`training/ingest_rounds.py` parses `ufc_fight_stats.csv` (one row per
+fight/round/fighter) into `data/round_stats.parquet`: knockdowns, sig
+strikes landed/attempted by target (head/body/leg) and position
+(distance/clinch/ground), total strikes, takedowns, sub attempts,
+reversals, control time in seconds — 41,298 rows, 8,762 fights, 2,702
+fighters, 1994–2026. Handles a real live-source edge case gracefully
+(one event's fight_stats rows briefly outpacing its own event_details
+row, since the two CSVs aren't refreshed atomically) by dropping and
+warning rather than crashing.
+
+`training/build_name_map.py` reconciles ufcstats.com's own fighter-name
+spelling against this project's canonical names (`ufc-master.csv` ∪
+`career_fights_updated.csv`): exact match, then rapidfuzz
+(`token_sort_ratio`, threshold 92) for the remainder, with a
+`manual_override` column for human-reviewed cases (22 applied — real
+fighters ufcstats records under a nickname/ring name the canonical set
+doesn't, e.g. Mirko Filipovic → Mirko Cro Cop, Antonio Rodrigo Nogueira →
+Minotauro Nogueira — each verified against the *specific* real person,
+not just a plausible-looking string match; see docs/DECISIONS.md for why
+that distinction matters). **1.27% of 2015+ fights have an unmatched
+fighter — passes the <2% bar.**
+
+`training/scrape_rounds_update.py` is the "incremental updater" — but
+deliberately re-downloads the source's already-fresh CSVs rather than
+scraping ufcstats.com directly a second time, since Greco1899's own daily
+job already does that scrape responsibly; running it ourselves too would
+just double the load on the actual site for no benefit. Verified it
+end-to-end: a live re-run picked up 12 new fights and handled a source
+sync-lag gracefully.
+
+**Side discovery, fixed as its own checkpoint:** cross-referencing
+`round_stats.parquet` against `ufc-master.csv` surfaced a serious,
+pre-existing, unrelated bug in `career_fights_updated.csv` — 69 fighter
+names (Cris Cyborg, Rampage Jackson, and other prominent fighters among
+them) had 100% fabricated fight histories, and 24 more pairs were real
+fighters split across two name spellings. Full writeup in
+`docs/DECISIONS.md`. Fixing it **improved** pooled walk-forward log loss
+0.6152062 → 0.6134525 (confirming it was restoring real signal, not just
+cleanup) and raised round_stats coverage from 95.96% to 97.24%.
+
+**Acceptance:** round_stats.parquet coverage of 2015+ `ufc-master.csv`
+fights is **97.24%**, short of the spec's 98% target. The residual gap is
+fighters genuinely absent from ufcstats.com's own scrape (e.g. Katlyn
+Chookagian: zero rows under any spelling in round_stats.parquet at all —
+confirmed this is a source data gap, not a reconciliation failure) —
+not fixable from this side without a deeper investigation into the
+external source itself. Documented and accepted short of the bar rather
+than silently claimed.
+
+### 1.2 Odds pipeline
+
+Historical backfill coverage: **95.26%** of 2015+ `ufc-master.csv` fights
+have opening-line odds — comfortably above the spec's 85% bar, so per the
+spec's own rule, no BestFightOdds scraper was built (ToS-gray, fragile,
+and unnecessary given this coverage).
+
+`training/collect_odds.py`: forward snapshot collector, meant to run on a
+schedule (cron/manual per card). Appends to the *existing*
+`data/odds_snapshots.json` (list of `{timestamp, fights: [{f1, f2,
+f1_price, f2_price}]}`) rather than the spec's literal
+`data/odds_snapshots/` directory suggestion — that file already has two
+established consumers (`training/backfill_clv.py` reads it,
+`backend/main.py`'s `/odds` endpoint writes it), so forking the format
+would fragment it for no benefit. Requires `ODDS_API_KEY` as an
+environment variable; verified the parsing/append logic and the
+missing-key error path locally, but **did not execute a live call**
+against the account's real API key/quota without asking first.
+
+**Also found and fixed while investigating this:** `backend/main.py` had
+a live Odds API key hardcoded in source (predates this session), already
+pushed to the public repo in an earlier commit this session. Per explicit
+user direction: the key is free-tier/no billing risk, so left as-is
+rather than rotated; git history is not being rewritten for a dead
+credential. Code now reads `ODDS_API_KEY` from the environment with the
+old literal as a fallback, so it no longer regresses.
+
+### 1.3 Leakage tests for new data
+
+`tests/test_no_leakage.py` gained a reusable harness
+(`assert_round_feature_no_leakage()`) for any Stage 2 feature function
+satisfying the contract `feature_fn(round_stats_df) -> DataFrame[fighter,
+date, ...]`, one row per fight, shift(1) discipline — mirrors
+`test_style_stats_no_leakage`'s truncate-and-recompute strategy exactly.
+Exercised now with a proof-of-concept function (cumulative knockdowns
+landed) since no real Stage 2 feature exists yet; 15 parametrized cases,
+all passing, ready for Stage 2's real feature functions to reuse
+directly.
+
+**Acceptance:** round_stats.parquet coverage 97.24% (target 98%, gap
+explained and documented above); name-map unmatched 1.27% (target <2%,
+pass); forward odds collection built and unit-verified, live end-to-end
+test pending explicit go-ahead to spend real API quota; leakage harness
+extended and passing (104/104 tests total). All work committed in two
+checkpoints: the fighter-identity data fix, then Stage 1's own
+deliverables.
+
 ## Next
 
-Stage 0 is complete. Stage 1 (data ingestion — round-level scraping, name
-reconciliation, odds pipeline) is a distinct scope with external network
-dependencies (scraping, dataset downloads, a live odds API) not present
-in Stage 0's self-contained work — a deliberate checkpoint before starting
-it.
+Stages 0 and 1 are complete. Stage 2 (feature build — knockdowns/damage,
+control/grappling, cardio/late-round profile, style vectors, situational
+priors, RAPM) is gated one family at a time against pooled walk-forward
+log loss, per the spec's own governing rule — a natural checkpoint before
+starting it.

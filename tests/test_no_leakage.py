@@ -316,3 +316,72 @@ def test_style_stats_snapshot_regression():
                 f'{col} for {fighter} on {date}: expected {expected_val}, got {actual_val} '
                 f'— compute_style_stats_asof\'s output changed for real, already-correct data'
             )
+
+
+# ─── Round-data leakage harness (8SI v2 Stage 1.3) ──────────────────────────
+# data/round_stats.parquet (training/ingest_rounds.py) is the source for
+# every Stage 2 feature family. No Stage 2 feature function exists yet, so
+# rather than a per-feature test, this is the REUSABLE harness those
+# functions plug into as they land — per the v2 spec's Stage 1.3
+# requirement to "write the test harness now, parameterized to accept the
+# Stage 2 feature functions as they land."
+#
+# Contract a round-derived feature function must satisfy:
+#   feature_fn(round_stats_df) -> DataFrame[fighter, date, <feature cols>],
+#   one row per (fighter, fight), value computed using ONLY that fighter's
+#   ROUND rows strictly before `date` (shift(1) discipline, same as
+#   compute_career_stats()/compute_style_stats_asof() — see this file's
+#   module docstring for the general strategy).
+round_stats_full = pd.read_parquet(os.path.join(DATA, 'round_stats.parquet'))
+
+
+def assert_round_feature_no_leakage(feature_fn, fighter, date, feature_cols, tol=TOL):
+    """For `feature_fn` satisfying the contract above, assert its output at
+    (fighter, date) is unchanged whether computed from the full
+    round_stats_full or from a copy truncated to this fighter's own rounds
+    up to and including `date` — a mismatch means a round from on/after
+    `date` leaked into the 'as of' value. Mirrors
+    test_style_stats_no_leakage's truncate-and-recompute strategy exactly."""
+    date = pd.Timestamp(date)
+    trunc = round_stats_full[(round_stats_full['fighter'] == fighter) & (round_stats_full['date'] <= date)]
+    expected_stats = feature_fn(trunc)
+    expected = _career_stat_row(expected_stats, fighter, date)
+    actual = _career_stat_row(feature_fn(round_stats_full), fighter, date)
+    for col in feature_cols:
+        assert _close_or_both_nan(float(expected[col]), float(actual[col])), (
+            f'{col} leaked for {fighter} on {date.date()}: '
+            f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
+        )
+
+
+def _toy_kd_cumulative(round_stats):
+    """Proof-of-concept round-derived feature satisfying the contract
+    above: cumulative knockdowns landed per fighter, as-of each fight
+    (round-level rows summed to fight-level, then shift(1) across fights —
+    the same two-step pattern any Stage 2.1 'per15' family will need).
+    Exists purely to exercise assert_round_feature_no_leakage() with a real
+    function; Stage 2's actual feature functions replace this and are
+    tested the same way."""
+    fight_level = round_stats.groupby(['fighter', 'date'], as_index=False)['kd'].sum()
+    fight_level = fight_level.sort_values(['fighter', 'date']).reset_index(drop=True)
+    g = fight_level.groupby('fighter', sort=False)
+    fight_level['kd_cum'] = g['kd'].cumsum() - fight_level['kd']
+    return fight_level[['fighter', 'date', 'kd_cum']]
+
+
+_round_stats_eligible = round_stats_full[round_stats_full['date'] >= '2015-01-01']
+_round_feature_samples = (
+    _round_stats_eligible[['fighter', 'date']]
+    .drop_duplicates()
+    .groupby('fighter').filter(lambda g: len(g) >= 3)
+    .sample(n=15, random_state=SEED)
+    .to_dict('records')
+)
+
+
+@pytest.mark.parametrize(
+    'sample', _round_feature_samples,
+    ids=lambda s: f"{s['fighter']}@{pd.Timestamp(s['date']).date()}",
+)
+def test_round_derived_feature_no_leakage(sample):
+    assert_round_feature_no_leakage(_toy_kd_cumulative, sample['fighter'], sample['date'], ['kd_cum'])

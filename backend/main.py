@@ -1940,7 +1940,10 @@ def predict_method(fight: FightInput):
 # ─────────────────────────────────────────────────────────────────────────────
 # /odds  — fetch DraftKings lines, snapshot, return movement
 # ─────────────────────────────────────────────────────────────────────────────
-_ODDS_API_KEY       = 'ed5357f84b07c0850c6d112a61934725'
+# Was hardcoded here (a free-tier key, no billing risk, per the user) — now
+# read from env var going forward; falls back to the prior literal value so
+# this doesn't silently break until ODDS_API_KEY is actually set.
+_ODDS_API_KEY       = os.environ.get('ODDS_API_KEY', 'ed5357f84b07c0850c6d112a61934725')
 _ODDS_SNAPSHOT_FILE = '../data/odds_snapshots.json'
 
 _CARD_FIGHTS = [
