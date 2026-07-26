@@ -33,6 +33,17 @@ loss at Stage 0 start: 0.6152 vs. market 0.5991). Closing this gap is the
 whole point of v2 — nothing here should be read as "the model is good,"
 only "here is how big the gap is and whether a given change narrows it."
 
+> **Current baseline for every Stage 2+ family's delta: 0.6134525**, not
+> 0.6152. The 0.6152 figure above is Stage 0's starting point, kept for
+> historical record. The fighter-identity data fix (documented under
+> Stage 1.1 below, full writeup in `docs/DECISIONS.md`) moved pooled log
+> loss to 0.6134525 *before* any Stage 2 feature work began — that
+> improvement belongs to the identity fix, not to whichever family
+> happens to be tested next. Every Stage 2 entry's "before" number must
+> read 0.6134525 (or the prior family's own "after," once one ships) —
+> never 0.6152 — or the identity fix's gain gets double-counted into a
+> feature that didn't earn it.
+
 ## Stage 0.1 — Market baseline
 
 Landed above. No trainer change.
@@ -246,9 +257,23 @@ f1_price, f2_price}]}`) rather than the spec's literal
 established consumers (`training/backfill_clv.py` reads it,
 `backend/main.py`'s `/odds` endpoint writes it), so forking the format
 would fragment it for no benefit. Requires `ODDS_API_KEY` as an
-environment variable; verified the parsing/append logic and the
-missing-key error path locally, but **did not execute a live call**
-against the account's real API key/quota without asking first.
+environment variable.
+
+**Live-tested 2026-07-26**: one real snapshot captured (16 fights, e.g.
+Aleksandar Rakic/Marcin Tybura, Ian Garry/Islam Makhachev), confirmed
+correctly appended to `data/odds_snapshots.json` with the right schema
+including `commence_time`. `backfill_clv.py`'s `_earliest_snapshot_prices
+()` is already per-fight-pair scoped (keyed by matchup, not "first entry
+in the whole file"), so this collector can run indefinitely across many
+cards without the open/close proxies degrading over time.
+
+**Cadence, now settled**: run once when a card's lines first appear
+(open proxy — whichever snapshot is earliest for a given matchup is what
+`backfill_clv.py` already picks up automatically) and once more as close
+to event start as reliably achievable (close proxy — consistency in
+*when* this second run happens matters more than getting arbitrarily
+close to first pitch). No third mode or special "final" flag needed;
+running it more often near fight night is sufficient on its own.
 
 **Also found and fixed while investigating this:** `backend/main.py` had
 a live Odds API key hardcoded in source (predates this session), already
@@ -272,11 +297,11 @@ directly.
 
 **Acceptance:** round_stats.parquet coverage 97.24% (target 98%, gap
 explained and documented above); name-map unmatched 1.27% (target <2%,
-pass); forward odds collection built and unit-verified, live end-to-end
-test pending explicit go-ahead to spend real API quota; leakage harness
-extended and passing (104/104 tests total). All work committed in two
-checkpoints: the fighter-identity data fix, then Stage 1's own
-deliverables.
+pass); forward odds collection built, unit-tested, and live-tested
+against a real card (one real snapshot captured and verified); leakage
+harness extended and passing (104/104 tests total). All work committed
+in three checkpoints: the fighter-identity data fix, Stage 1's own
+deliverables, and this live-verification snapshot.
 
 ## Next
 
