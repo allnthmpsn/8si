@@ -495,12 +495,98 @@ existing feature to retire):
 **Does not beat baseline — dropped.** Fifth consecutive family to fail
 the gate. `FEAT_114` unchanged; code kept, shipped disabled.
 
+### 2.6 RAPM (opponent-adjusted ridge regression) — SHIPPED DISABLED
+
+`training/rapm.py`: for each walk-forward fold's `[train_start,
+train_cutoff)` window, a ridge regression (`RidgeCV`, alpha grid
+1–300) across every fight in the window at once — a sparse
+`2×n_fighters`-column design matrix (offense + defense per fighter),
++1/-1 per fight-row, response = the fighter's own per-minute output
+(significant strikes for `rapm_off`/`rapm_def`/`rapm_net`; takedowns for
+`rapm_grap_off`/`rapm_grap_def`/`rapm_grap_net`). Structurally different
+from every other Stage 2 family: not a per-fighter as-of timeline, a
+single fold-level fit, refit fresh per fold, never seeing a fight from
+the test period or later (leakage-tested by proving
+`fit_rapm(train_cutoff=X)` on the full data matches a fit on data
+pre-truncated to `date < X`, rather than the per-row truncate-and-compare
+every other family's test uses — there's no single per-row value to
+truncate-and-compare against here).
+
+**Two real bugs caught before trusting any output:**
+1. The first formulation used each fighter's *differential* (own minus
+   opponent) as the ridge response. That makes the two rows any single
+   fight contributes (one per fighter's perspective) exact negatives of
+   each other — a perfect antisymmetry that ridge's L2 penalty (symmetric
+   in offense/defense) resolves by forcing `rapm_off == rapm_def` for
+   every fighter, silently. Caught empirically (every fighter's off/def
+   were identical to 6 decimal places — an unmistakable tell, not a
+   subtle one) before it reached the experiment stage. Fixed by using
+   each fighter's own *raw* per-minute rate as the response instead (the
+   standard APM formulation) — offense and defense separated correctly
+   after the fix; `rapm_net` (their sum) was unaffected by the bug either
+   way, since the degenerate split still summed to the same total.
+2. The experiment script's merge-then-impute step passed a stale-index
+   boolean mask into `_impute_by_weight_class()` after `df.merge()` reset
+   the index — `pandas.errors.IndexingError`, not a silent bug, but worth
+   noting since it blocked the first corrected run.
+
+**A real methodology gap, also fixed before evaluating**: the initial
+merge used a blind `fillna(0.0)` for fighters absent from a fold's RAPM
+fit (no fights before that fold's `train_cutoff`) instead of this
+project's established weight-class-median imputation. Measured directly:
+missingness is 10x higher in the test period (8.1%) than the train
+period (0.8%) for the obvious reason (every train-period fighter fought
+at least once before `train_cutoff` by construction; test-period debuts
+often haven't). Fixed to match the pattern every other Stage 2 family
+already uses.
+
+`experiments/rapm_v2/run_experiment.py`, after both fixes:
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (current FEAT_114) | 0.6135 | — |
+| + RAPM (striking + grappling, 24 new columns) | 0.6479 | **+0.0345** |
+
+**A large, genuine regression — not a leftover bug.** Re-verified after
+fixing both the offense/defense degeneracy and the imputation gap; the
+regression persisted at essentially the same magnitude (+0.0330 before
+the imputation fix, +0.0345 after), which is what settled it as real
+rather than an artifact still being chased. Plausible cause, not proven:
+many fighters in a 5-6-year training window have only 1-3 fights, giving
+high-variance individual RAPM estimates despite regularization — noise
+that may be actively confusing the LR+XGB blend rather than adding
+signal, especially given Elo and the QA stats already provide some
+opponent-adjustment along a related axis.
+
+Per the spec's own explicit rule for this family (unlike 2.1-2.5's plain
+drop-on-failure): keep the code, ship it disabled, log it here rather
+than delete it — RAPM is the spec's "most novel component" and the
+magnitude here, while much larger than the spec's own <0.002 threshold
+anticipated, doesn't change that the code itself is correct (both real
+bugs are fixed, the leakage test is genuine and passing) and may be
+worth revisiting with different regularization or a minimum-fights
+floor before writing off opponent-adjustment entirely. `FEAT_114`
+unchanged.
+
+## Stage 2 summary
+
+All six families attempted; none shipped. 2.1-2.5 failed the plain
+pooled-log-loss gate by small margins (+0.0009 to +0.0038); 2.6 (RAPM)
+failed by a much larger margin (+0.0345) but is kept disabled per its
+own explicit spec rule rather than dropped. Pooled walk-forward log loss
+remains **0.6134525** — unchanged from the post-fighter-identity-fix
+baseline going into Stage 2, since nothing here cleared the bar. Every
+family was independently leakage-tested and bug-checked before its
+result was trusted; two real implementation bugs were caught and fixed
+along the way (`training/style_stats.py`'s `_csd>0` gate reused
+correctly from 2.1 onward, and RAPM's offense/defense degeneracy) —
+this stage's five-and-a-half failures are a genuine result of this
+discipline being followed consistently, not five bugs that would have
+looked like wins if left unchecked.
+
 ## Next
 
-Stage 2.6 (RAPM — opponent-adjusted ridge regression) is next: the
-spec's own "most novel component," explicitly meant to replace what the
-QA striking stats pretended to be, and materially more involved than
-2.1-2.5 (per-fold ridge fit, not just as-of aggregation). Per the spec's
-own instruction, if the pooled log-loss gain is <0.002, ship the code
-disabled rather than drop it outright — RAPM gets a different bar than
-2.1-2.5 got.
+Stage 3 (model consolidation — pooled men's+women's model, blend
+re-tuning, monotonic constraints, Glicko-2, the single serving cutover)
+is next per the spec. The gap to the market benchmark (0.5991) is
+unchanged by Stage 2: none of the six families moved the pooled number.

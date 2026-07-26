@@ -622,3 +622,44 @@ def test_division_change_no_leakage(sample, tmp_path):
         f'division_change leaked for {fighter} on {date.date()}: '
         f'expected(truncated)={expected["division_change"]} actual(full)={actual["division_change"]}'
     )
+
+
+# ─── RAPM (8SI v2 Stage 2.6) ─────────────────────────────────────────────
+# Structurally different from every other round-derived family: RAPM
+# fits ONE ridge regression across a whole training window at once, not a
+# per-fighter as-of timeline, so there's no single (fighter, date) row to
+# truncate-and-recompare the way every test above does. Instead: verify
+# fit_rapm(train_cutoff=X) called on the FULL round_stats.parquet (which
+# has real data on/after X) produces IDENTICAL ratings to fit_rapm()
+# called with no cutoff on a copy of round_stats.parquet PRE-TRUNCATED to
+# date < X. A mismatch would mean the internal date filter has a bug
+# (wrong comparison direction, off-by-one) that lets future fights into
+# the fit. Not parametrized (unlike the tests above) — each RidgeCV fit
+# takes real time, and one solid case is enough to catch a filtering bug,
+# which would be systematic, not sample-dependent.
+from training.rapm import fit_rapm  # noqa: E402
+
+_RAPM_CUTOFF = pd.Timestamp('2021-01-01')
+
+
+def test_rapm_no_leakage(tmp_path):
+    striking_a, grappling_a, _ = fit_rapm(train_start='2015-01-01', train_cutoff=str(_RAPM_CUTOFF.date()))
+
+    pretrunc = round_stats_full[round_stats_full['date'] < _RAPM_CUTOFF]
+    trunc_path = tmp_path / 'round_stats_trunc.parquet'
+    pretrunc.to_parquet(trunc_path, index=False)
+    striking_b, grappling_b, _ = fit_rapm(round_stats_path=str(trunc_path), train_start='2015-01-01', train_cutoff=None)
+
+    s = striking_a.merge(striking_b, on='fighter', suffixes=('_full', '_pretrunc'))
+    assert len(s) == len(striking_a) == len(striking_b), 'fighter universe differs between the two paths'
+    for col in ('rapm_off', 'rapm_def', 'rapm_net'):
+        assert np.allclose(s[f'{col}_full'], s[f'{col}_pretrunc'], atol=TOL), (
+            f'{col} differs between train_cutoff-filtered (full data) and pre-truncated inputs — '
+            f'the internal date filter let future data influence the fit'
+        )
+
+    g = grappling_a.merge(grappling_b, on='fighter', suffixes=('_full', '_pretrunc'))
+    for col in ('rapm_grap_off', 'rapm_grap_def', 'rapm_grap_net'):
+        assert np.allclose(g[f'{col}_full'], g[f'{col}_pretrunc'], atol=TOL), (
+            f'{col} differs between train_cutoff-filtered (full data) and pre-truncated inputs'
+        )
