@@ -663,3 +663,44 @@ def test_rapm_no_leakage(tmp_path):
         assert np.allclose(g[f'{col}_full'], g[f'{col}_pretrunc'], atol=TOL), (
             f'{col} differs between train_cutoff-filtered (full data) and pre-truncated inputs'
         )
+
+
+# ─── Glicko-2 (8SI v2 Stage 3.3) ─────────────────────────────────────────
+from training.ratings import compute_glicko2  # noqa: E402
+
+glicko_hist_full = compute_glicko2(ufc_master_full)
+
+
+@pytest.mark.parametrize(
+    'sample', elo_samples,
+    ids=lambda s: f"{s['R_fighter']}_v_{s['B_fighter']}@{s['date'].date()}",
+)
+def test_glicko2_no_leakage(sample):
+    """Same strategy as test_elo_no_leakage, same sample set (reusing
+    elo_samples is fine — the leakage property being tested, 'the
+    pre-fight rating depends only on strictly-prior fights,' is identical
+    in shape for both rating systems)."""
+    date = sample['date']
+    trunc = ufc_master_full[ufc_master_full['date'] <= date]
+    glicko_hist_trunc = compute_glicko2(trunc)
+
+    for corner in ('R_fighter', 'B_fighter'):
+        fighter = sample[corner]
+        opponent = sample['B_fighter'] if corner == 'R_fighter' else sample['R_fighter']
+        expected = glicko_hist_trunc[
+            (glicko_hist_trunc['fighter'] == fighter)
+            & (glicko_hist_trunc['opponent'] == opponent)
+            & (glicko_hist_trunc['date'] == date)
+        ]
+        actual = glicko_hist_full[
+            (glicko_hist_full['fighter'] == fighter)
+            & (glicko_hist_full['opponent'] == opponent)
+            & (glicko_hist_full['date'] == date)
+        ]
+        assert len(expected) >= 1 and len(actual) >= 1
+        assert math.isclose(
+            float(expected.iloc[-1]['rating_before']), float(actual.iloc[-1]['rating_before']), abs_tol=TOL
+        ), f'Glicko-2 rating_before leaked for {fighter} vs {opponent} on {date.date()}'
+        assert math.isclose(
+            float(expected.iloc[-1]['rd_before']), float(actual.iloc[-1]['rd_before']), abs_tol=TOL
+        ), f'Glicko-2 rd_before leaked for {fighter} vs {opponent} on {date.date()}'

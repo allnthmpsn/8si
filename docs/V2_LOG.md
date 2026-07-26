@@ -659,7 +659,43 @@ added as its own named tuple. Retrained: single-holdout accuracy
 paths and live processes confirmed untouched (writes to `model/v2/`
 only, per the established convention since Phase 2).
 
+### 3.3 Glicko-2 — feature NOT shipped; bet gate deferred to Stage 4
+
+`training/ratings.py`: standard Glicko-2 (Glickman 2013), alongside —
+not replacing — Elo. One rating period per fight, single chronological
+pass (same architecture as `compute_elo()`). Draws/no-contests (8/7,183
+fights) get 0.5/0.5 partial credit, matching `compute_elo()`'s own
+convention exactly rather than silently diverging (caught by the first
+leakage-test run: a sampled draw/NC fight had no history row at all
+under an earlier skip-non-decisive-fights version). Deliberately does
+NOT model inter-fight calendar-time decay as a second inactivity
+mechanism — Elo already has an explicit, tested layoff-regression
+feature for that. Sanity check: top-rated fighters are Jon Jones, Ilia
+Topuria, Islam Makhachev, Khabib Nurmagomedov, Alexander Volkanovski —
+exactly who you'd expect. Leakage-tested (10 cases, reusing `elo_samples`
+— the property under test, "pre-fight rating depends only on strictly-
+prior fights," is identical in shape to Elo's own).
+
+`experiments/glicko_v2/run_experiment.py` tested `rd_max = max(R_rd,
+B_rd)` as a model feature against the current (post-3.1b) baseline:
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (0.6094540) | 0.6095 | — |
+| + `rd_max` | 0.6108 | **+0.0014** |
+
+**Does not beat baseline — not shipped as a feature**, per the spec's
+own rule. The bet-gate use (Stage 4: gate on `rd_max` below some
+percentile of historical RD) ships regardless — it needs no training —
+but isn't built yet since Stage 4 (betting layer rebuild) hasn't
+started. WHR (the spec's stretch goal) is explicitly gated on Glicko-2's
+feature version improving log loss, which it didn't, so it wasn't
+attempted. `training/ratings.py` stays in the repo for Stage 4's gate
+use even though nothing here changed `FEAT_114`.
+
 ## Next
 
-3.2 (retire Model 2A/2B/CONFIRM_DOG-FAV taxonomy/women's fork from the
-serving path) is next.
+3.2+3.4 (retire the Model 2A/2B/CONFIRM_DOG-FAV cascade and execute the
+single serving cutover) are next, combined into one reviewable diff per
+explicit user direction — the first change in this v2 pass to touch the
+live-serving path at all.
