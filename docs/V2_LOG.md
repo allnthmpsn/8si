@@ -462,12 +462,45 @@ the three named interactions are built on Stage 2.2's `ctrl_pct_against`/
 interactions were not built at all rather than tested and dropped.
 `FEAT_114` unchanged; code kept, shipped disabled.
 
+### 2.5 Situational & priors — DROPPED; travel proxy not built
+
+`training/features_situational.py`: `age_x_division` (row-level, no
+leakage risk — same category as the existing `age_x_layoff`),
+`five_round_bout`, `catchweight` (both row-level), and `division_change`
+(the one genuinely history-dependent piece — shift(1) on a fighter's own
+`ufc-master.csv` weight-class timeline, no `round_stats.parquet`
+dependency at all, unlike every other Stage 2 family so far). Leakage-
+tested only where there's leakage risk to test (`division_change`, 8
+cases) — the three row-level features can't leak by construction (both
+inputs are properties of the fight itself, known at prediction time).
+
+**Travel proxy not built**: the spec wants fighter-country vs.
+event-country. `ufc-master.csv` has event `country`; nothing in this
+codebase carries fighter *nationality* — checked
+`data/ufc_fighters_final_updated.csv` and ufcstats.com's own
+`ufc_fighter_details.csv`/`ufc_fighter_tott.csv` directly, none has it.
+Approximating a fighter's home country from their own fight-location
+history would be circular (most fights are wherever the promotion
+scheduled them), so this was left out rather than built on a fabricated
+signal.
+
+`experiments/situational_v2/run_experiment.py` — one variant (no
+existing feature to retire):
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (current FEAT_114) | 0.6135 | — |
+| + situational family (7 new columns) | 0.6145 | **+0.0010** |
+
+**Does not beat baseline — dropped.** Fifth consecutive family to fail
+the gate. `FEAT_114` unchanged; code kept, shipped disabled.
+
 ## Next
 
-Stage 2.5 (situational & priors) is next, same discipline. Note: the
-spec explicitly says not to build days'-notice or missed-weight features
-in this pass (no structured source, high parsing effort) — 2.5 covers
-only age×division, travel proxy, five_round_bout, division_change,
-catchweight. Evaluate against 0.6134525 (unchanged — none of 2.1-2.4
-shipped), log the verdict before starting 2.6 (RAPM, the stage's
-biggest remaining lift).
+Stage 2.6 (RAPM — opponent-adjusted ridge regression) is next: the
+spec's own "most novel component," explicitly meant to replace what the
+QA striking stats pretended to be, and materially more involved than
+2.1-2.5 (per-fold ridge fit, not just as-of aggregation). Per the spec's
+own instruction, if the pooled log-loss gain is <0.002, ship the code
+disabled rather than drop it outright — RAPM gets a different bar than
+2.1-2.5 got.

@@ -575,3 +575,50 @@ def test_style_vector_features_no_leakage(sample, tmp_path):
             f'{col} leaked for {fighter} on {date.date()}: '
             f'expected(truncated)={expected[col]} actual(full)={actual[col]}'
         )
+
+
+# ─── Situational & priors: division_change (8SI v2 Stage 2.5) ──────────────
+# age_x_division/five_round_bout/catchweight are row-level (properties of
+# the CURRENT fight only, not derived from history) so carry no leakage
+# risk to test — only division_change (needs the fighter's PRIOR weight
+# class, shift(1)) does. Source is ufc-master.csv itself, not
+# round_stats.parquet, so this needs its own truncation, not the round-
+# data helpers above.
+from training.features_situational import _division_change_asof  # noqa: E402
+
+_ufc_master_for_dc = pd.read_csv(os.path.join(DATA, 'ufc-master.csv'), low_memory=False)
+_ufc_master_for_dc['date'] = pd.to_datetime(_ufc_master_for_dc['date'])
+_dc_full = _division_change_asof()
+
+_dc_eligible = _dc_full.dropna(subset=['division_change']).groupby('fighter').size()
+_dc_eligible = _dc_eligible[_dc_eligible >= 3].index.tolist()
+_dc_samples = [
+    {'fighter': f, 'date': _dc_full[_dc_full['fighter'] == f].sample(n=1, random_state=SEED).iloc[0]['date']}
+    for f in pd.Series(_dc_eligible).sample(n=8, random_state=SEED).tolist()
+]
+
+
+@pytest.mark.parametrize(
+    'sample', _dc_samples,
+    ids=lambda s: f"{s['fighter']}@{pd.Timestamp(s['date']).date()}",
+)
+def test_division_change_no_leakage(sample, tmp_path):
+    fighter, date = sample['fighter'], pd.Timestamp(sample['date'])
+
+    trunc = _ufc_master_for_dc[
+        ((_ufc_master_for_dc['R_fighter'] == fighter) | (_ufc_master_for_dc['B_fighter'] == fighter))
+        & (_ufc_master_for_dc['date'] <= date)
+    ]
+    involved_dates = trunc[['date']].drop_duplicates()
+    full_trunc = _ufc_master_for_dc.merge(involved_dates, on='date')  # keep both corners of each involved date
+    trunc_path = tmp_path / 'ufc_master_trunc.csv'
+    full_trunc.to_csv(trunc_path, index=False)
+
+    expected_stats = _division_change_asof(master_path=str(trunc_path))
+    expected = _career_stat_row(expected_stats, fighter, date)
+    actual = _career_stat_row(_dc_full, fighter, date)
+
+    assert _close_or_both_nan(float(expected['division_change']), float(actual['division_change'])), (
+        f'division_change leaked for {fighter} on {date.date()}: '
+        f'expected(truncated)={expected["division_change"]} actual(full)={actual["division_change"]}'
+    )
