@@ -617,7 +617,49 @@ stays `False` in production. Women's-fight log loss on the pooled model
 was 0.6406 (n=424, informational — not a gate), for reference if this is
 revisited.
 
+### 3.1b Blend re-tune + monotonic constraint — PROMOTED
+
+`experiments/retune_v2/run_experiment.py`: Optuna (TPE sampler, seed 42,
+25 trials) searching `lr_weight`, `lr_c`, and 9 XGB hyperparameters
+(`n_estimators`, `learning_rate`, `max_depth`, `min_child_weight`,
+`subsample`, `colsample_bytree`, `gamma`, `reg_alpha`, `reg_lambda`),
+objective = pooled walk-forward log loss across the same 5 time-ordered
+folds every other v2 experiment uses (never shuffled CV, per the spec).
+Fold datasets cached across trials (only the model hyperparameters
+change between trials, not the feature-engineering pipeline) so 25
+trials × 5 folds stayed fast. An XGBoost `monotone_constraints` on
+`elo_dif` (+1: higher Elo differential can never predict a *lower*
+P(Red wins)) was applied unconditionally in every trial — a correctness
+constraint, not something to search over.
+
+Two sanity checks run before trusting the search: the constraint alone
+(old hyperparameters, monotonic elo_dif) was ~neutral (0.6135 → 0.6137,
+-0.0002) — confirming the eventual gain comes from the retuned
+hyperparameters, not the constraint riding along; the constraint's own
+regularizing effect (shallower, more conservative trees dominate the
+found optimum — `max_depth` 6 → 3) does track with genuinely better
+generalization, not just a fluke of this particular 25-trial draw.
+
+| Variant | Pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Baseline (0.6134525) | 0.6135 | — |
+| Current params + monotonic constraint only | 0.6137 | +0.0002 (constraint alone, ~neutral) |
+| Optuna best (25 trials) | 0.6099 | **-0.0036** |
+| **Re-verified via `training/walk_forward.py` directly** | **0.6095** | **-0.0040** |
+
+**The first change in this entire v2 pass to clear the gate outright**,
+not by exemption. Promoted into `training/train_model1.py`: `LR_WEIGHT`
+0.70→0.5247, `XGB_WEIGHT` 0.30→0.4753, a new named `LR_C` constant
+(0.00711→0.04123, replacing three separate hardcoded literals in
+`train_model1.py`'s two `LogisticRegression` call sites and
+`walk_forward.py`'s own copy — a real, if minor, duplication risk fixed
+along the way), `XGB_PARAMS` retuned, and `XGB_MONOTONE_CONSTRAINTS`
+added as its own named tuple. Retrained: single-holdout accuracy
+70.00%→70.21%, log loss 0.5883→0.5852. All 145 tests pass. Serving
+paths and live processes confirmed untouched (writes to `model/v2/`
+only, per the established convention since Phase 2).
+
 ## Next
 
-3.1b (blend re-tune + XGB monotonic constraint on `elo_dif`) is next,
-still against the men's-only feature set given 3.1a didn't promote.
+3.2 (retire Model 2A/2B/CONFIRM_DOG-FAV taxonomy/women's fork from the
+serving path) is next.

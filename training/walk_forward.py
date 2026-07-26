@@ -39,7 +39,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from training.train_model1 import (
-    DATA, MODEL, FEAT_114, LR_WEIGHT, XGB_WEIGHT, HL_DAYS, XGB_PARAMS,
+    DATA, MODEL, FEAT_114, LR_WEIGHT, XGB_WEIGHT, LR_C, HL_DAYS, XGB_PARAMS,
     build_dataset, corner_flip, compute_weights, predict_symmetric,
     calibration_table, print_calibration_table,
 )
@@ -69,7 +69,7 @@ def run_fold(year, data_dir):
 
     model_lr = Pipeline([
         ('sc', RobustScaler()),
-        ('lr', LogisticRegression(penalty='l2', C=0.00711, solver='liblinear',
+        ('lr', LogisticRegression(penalty='l2', C=LR_C, solver='liblinear',
                                    max_iter=2000, random_state=42, n_jobs=1)),
     ])
     model_lr.fit(X_aug, y_aug, lr__sample_weight=w_aug.values)

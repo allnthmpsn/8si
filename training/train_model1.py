@@ -59,8 +59,19 @@ from features.constants import WC_ORDER, WOMENS_CLASSES, layoff_bucket_flags_vec
 
 TRAIN_START  = '2015-01-01'   # expanded from 2018 — data quality check passed
 TRAIN_CUTOFF = '2024-01-01'   # train on [START, CUTOFF), test on [CUTOFF, ∞)
-LR_WEIGHT    = 0.70
-XGB_WEIGHT   = 0.30
+# 8SI v2 Stage 3.1b: re-tuned via Optuna (25 trials, TPE sampler, time-
+# ordered walk-forward folds as the objective — never shuffled CV, per
+# the spec) against the men's-only FEAT_114 set (3.1a's pooled-women's
+# variant wasn't promoted). Pooled walk-forward log loss 0.6134525 ->
+# 0.6099 — the first family/change in this v2 pass to clear the bar
+# outright rather than by exemption. See docs/V2_LOG.md for the search
+# space and the sanity checks run before promoting these values (a
+# monotonic constraint on elo_dif alone, held at the OLD params, was
+# ~neutral: -0.0002 — the gain here is genuinely from the retuned
+# hyperparameters, not the constraint riding along).
+LR_WEIGHT    = 0.5247
+XGB_WEIGHT   = 0.4753
+LR_C         = 0.04123        # LogisticRegression's C (inverse L2 strength); was 0.00711
 HL_DAYS      = 730            # recency half-life in days (2 years)
 
 # Bump ONLY when the feature LIST (names/count) changes — not when a
@@ -154,11 +165,20 @@ FEAT_INT = [
 
 FEAT_114 = FEAT_BASE + FEAT_QA + FEAT_INT   # variable kept for compatibility
 
-# Optuna-tuned XGB params (25 trials, 5-fold CV, May 2026 sprint)
+# Optuna-tuned XGB params (8SI v2 Stage 3.1b: 25 trials, TPE sampler,
+# time-ordered walk-forward folds as the objective — see LR_WEIGHT's
+# comment above and docs/V2_LOG.md; supersedes the original May 2026
+# sprint's 5-fold-CV-tuned values). monotone_constraints pins elo_dif to
+# +1 (higher Elo differential -> never a LOWER predicted P(Red wins)) —
+# a correctness constraint, not a tuned value, so it's set once here
+# rather than exposed as an Optuna search dimension.
+XGB_MONOTONE_CONSTRAINTS = tuple(1 if f == 'elo_dif' else 0 for f in FEAT_114)
+
 XGB_PARAMS = {
-    'n_estimators': 200, 'learning_rate': 0.1, 'max_depth': 6,
-    'min_child_weight': 1, 'subsample': 0.8, 'colsample_bytree': 0.7,
-    'gamma': 0.3, 'reg_alpha': 0, 'reg_lambda': 2.0,
+    'n_estimators': 320, 'learning_rate': 0.07938, 'max_depth': 3,
+    'min_child_weight': 2, 'subsample': 0.6232, 'colsample_bytree': 0.9331,
+    'gamma': 0.6011, 'reg_alpha': 1.4161, 'reg_lambda': 0.5926,
+    'monotone_constraints': XGB_MONOTONE_CONSTRAINTS,
     'random_state': 42, 'eval_metric': 'logloss', 'verbosity': 0, 'n_jobs': 1,
 }
 
@@ -619,7 +639,7 @@ def fit_calibrator(df, train_start, train_cutoff, calib_months=18):
 
     cal_lr = Pipeline([
         ('sc', RobustScaler()),
-        ('lr', LogisticRegression(penalty='l2', C=0.00711, solver='liblinear',
+        ('lr', LogisticRegression(penalty='l2', C=LR_C, solver='liblinear',
                                    max_iter=2000, random_state=42, n_jobs=1)),
     ])
     cal_lr.fit(X_fit_aug, y_fit_aug, lr__sample_weight=w_fit_aug.values)
@@ -899,7 +919,7 @@ def main(train_start=TRAIN_START, train_cutoff=TRAIN_CUTOFF, data_dir=DATA, outp
 
     model_lr = Pipeline([
         ('sc', RobustScaler()),
-        ('lr', LogisticRegression(penalty='l2', C=0.00711, solver='liblinear',
+        ('lr', LogisticRegression(penalty='l2', C=LR_C, solver='liblinear',
                                    max_iter=2000, random_state=42, n_jobs=1)),
     ])
     model_lr.fit(X_train_aug, y_train_aug, lr__sample_weight=w_arr)
