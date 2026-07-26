@@ -584,9 +584,40 @@ this stage's five-and-a-half failures are a genuine result of this
 discipline being followed consistently, not five bugs that would have
 looked like wins if left unchecked.
 
+## Stage 3 — Model consolidation
+
+### 3.1a Pooled men's+women's model — NOT PROMOTED
+
+`training/train_model1.py`'s `build_dataset()` gained an
+`include_womens` parameter (default `False`, current production
+behavior unchanged — same safe-default pattern as `elo_kwargs`).
+Elo/career-stats/QA-stats were never actually computed men's-only (only
+the final training-row filter excluded women's fights), so flipping this
+flag is low-risk: women's fights get their already-correct upstream
+histories, no separate code path needed.
+
+`experiments/pooled_v2/run_experiment.py` trained men's+women's pooled
+vs. the current men's-only baseline, **scoring both on the exact same
+men's-only test fights** (apples-to-apples per the spec's own framing —
+pooling adds training data, the question is whether it helps or hurts
+predictions on the fights the current model already makes), with
+`is_womens`, `is_womens_x_elo_dif`, `is_womens_x_age_dif` added for the
+pooled variant:
+
+| Variant | Men's pooled log loss | Δ vs. baseline |
+|---|---|---|
+| Men's-only baseline | 0.6135 | — |
+| Pooled (scored on men's subset) | 0.6146 | **+0.0011** |
+
+**Misses the spec's own ≤0.001 degradation bar** — by one ten-thousandth,
+essentially within noise of the boundary, and not what the spec
+anticipated ("pooling wins or ties"). Applying the gate on its number,
+not its closeness to the number: **not promoted**, `include_womens`
+stays `False` in production. Women's-fight log loss on the pooled model
+was 0.6406 (n=424, informational — not a gate), for reference if this is
+revisited.
+
 ## Next
 
-Stage 3 (model consolidation — pooled men's+women's model, blend
-re-tuning, monotonic constraints, Glicko-2, the single serving cutover)
-is next per the spec. The gap to the market benchmark (0.5991) is
-unchanged by Stage 2: none of the six families moved the pooled number.
+3.1b (blend re-tune + XGB monotonic constraint on `elo_dif`) is next,
+still against the men's-only feature set given 3.1a didn't promote.

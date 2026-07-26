@@ -640,7 +640,7 @@ def fit_calibrator(df, train_start, train_cutoff, calib_months=18):
     return calibrator, info
 
 
-def build_dataset(train_start, train_cutoff, data_dir, elo_kwargs=None):
+def build_dataset(train_start, train_cutoff, data_dir, elo_kwargs=None, include_womens=False):
     """
     Runs the full feature-engineering pipeline (load, Elo, career stats, QA
     stats, style stats, feature engineering, fight filter) and returns
@@ -661,6 +661,18 @@ def build_dataset(train_start, train_cutoff, data_dir, elo_kwargs=None):
     config. Pass elo_kwargs={} explicitly to get the original pre-Phase-7
     plain K=48 baseline instead (as experiments/elo_v2/run_experiment.py
     does for its own baseline).
+
+    include_womens: default False (current production behavior — men's
+    weight classes only). Elo/career-stats/QA-stats are computed on the
+    FULL master/career data regardless of this flag (women's fight
+    history was never excluded from those upstream computations, only
+    from the final training-row filter below) — so flipping this to True
+    is a clean, low-risk toggle: women's fights get their already-correct
+    career/Elo histories, plus an `is_womens` indicator and its Stage 3.1
+    interaction columns (`is_womens_x_elo_dif`, `is_womens_x_age_dif`).
+    See experiments/pooled_v2/ for the walk-forward validation gating
+    promotion (8SI v2 Stage 3.1) — this parameter exists so that script
+    doesn't have to reimplement the pipeline to test pooling.
     """
     # Distinguish "caller omitted elo_kwargs" (None -> promoted default)
     # from "caller explicitly passed {}" (plain pre-Phase-7 baseline) — an
@@ -704,7 +716,8 @@ def build_dataset(train_start, train_cutoff, data_dir, elo_kwargs=None):
     df = df[df['date'] >= train_start].copy()
     df = df[df['Winner'].isin(['Red', 'Blue'])].copy()
     n_before_mens = len(df)
-    df = df[~df['weight_class'].isin(WOMENS_CLASSES)].copy()
+    if not include_womens:
+        df = df[~df['weight_class'].isin(WOMENS_CLASSES)].copy()
     df = df.sort_values('date').reset_index(drop=True)
     print(f'   Women\'s fights excluded: {n_before_mens - len(df):,} | Remaining: {len(df):,}')
 
